@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scenarios in Plain English · Nimbus SRE</title>
+  <meta name="description" content="Our eight most likely Nimbus incidents explained for senior managers: what is happening, what users feel, the typical fix, and your decisions.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead-scenarios">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
+      <h1>Scenarios in plain English</h1>
+      <p class="lede">These are our eight most likely incidents, without the jargon. Each one tells you what's happening, what users feel, the typical fix and how long it takes, the decisions you may be asked to make, and the questions to ask. Engineers use the matching <a href="../playbooks.html">playbooks</a>.</p>
+      <div class="tldr">
+        <ul>
+          <li>Most of our incidents are <strong>slowness</strong>, <strong>failures</strong>, <strong>CDN problems</strong>, or <strong>sign-in rejections</strong>.</li>
+          <li>Your decisions usually involve <strong>money</strong> (more capacity), <strong>priority</strong> (which feature to protect), <strong>risk</strong> (rollback, failover), or <strong>communication</strong>.</li>
+        </ul>
+      </div>
+      <div class="card-grid">
+        <a class="card" href="#s-latency-one-feature"><h3>One feature is slow</h3><p>Users of one feature (say, Writing Assist) wait much longer than usual.</p></a>
+        <a class="card" href="#s-429-surge"><h3>We hit our AI usage limit</h3><p>Requests are rejected because we're over our capacity with the AI provider ("429s").</p></a>
+        <a class="card" href="#s-foundry-5xx"><h3>The AI provider is having problems</h3><p>Microsoft's AI service is failing or slow for many features at once..</p></a>
+        <a class="card" href="#s-slow-first-token"><h3>Answers take long to start</h3><p>The AI takes longer than usual to begin its answer, even if the full answer then arrives normally..</p></a>
+        <a class="card" href="#s-client-rollout"><h3>A new app version is misbehaving</h3><p>Problems are limited to users who received the latest desktop app update..</p></a>
+        <a class="card" href="#s-dashboards-green"><h3>Users complain but our monitoring says fine</h3><p>Support tickets or social posts say Nimbus is broken, but our monitoring shows nothing wrong..</p></a>
+        <a class="card" href="#s-cdn-edge"><h3>The front door (CDN) is failing</h3><p>The internet-facing entrance to our services is failing to reach them, or our security firewall is blocking requests..</p></a>
+        <a class="card" href="#s-401-surge"><h3>Users or services are being refused at sign-in</h3><p>The system is rejecting credentials ("401s").</p></a>
+      </div>
+
+      <section class="playbook" id="s-latency-one-feature">
+        <div class="playbook-head"><h2>One feature is slow</h2></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">What's happening</div><div>Users of one feature (say, Writing Assist) wait much longer than usual. Other features are fine.</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>"Nimbus is slow when I rewrite text." Some give up and stop using the feature.</div></div>
+          <div class="pb-section"><div class="pb-label">Typical fix</div><div>Usually a recent change by that team, such as a new release or a bigger AI prompt. A rollback typically fixes it within 30–60 minutes.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Approve a rollback even if it delays that team's launch.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Did something change recently? Can we roll it back? How many users are affected?</div></div>
+          <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-latency-one-feature">The engineering playbook →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="s-429-surge">
+        <div class="playbook-head"><h2>We hit our AI usage limit</h2></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">What's happening</div><div>Requests are rejected because we're over our capacity with the AI provider ("429s"). This often happens when one team's background job uses up capacity everyone shares.</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>"Nimbus is busy, try again later." Customer-facing features fail while background tasks run.</div></div>
+          <div class="pb-section"><div class="pb-label">Typical fix</div><div>Pause the background workload, or buy overflow capacity. Usually under 30 minutes once someone decides.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Which feature gets priority, and whether to approve the extra spend for overflow capacity.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Whose traffic is using the capacity? Can it pause? What does overflow cost per hour?</div></div>
+          <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-429-surge">The engineering playbook →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="s-foundry-5xx">
+        <div class="playbook-head"><h2>The AI provider is having problems</h2></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">What's happening</div><div>Microsoft's AI service is failing or slow for many features at once.</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>Many features fail or hang. It looks like "Nimbus is down".</div></div>
+          <div class="pb-section"><div class="pb-label">Typical fix</div><div>Switch to our backup region, and open a Microsoft support case. Anywhere from 15 minutes to several hours, depending on Microsoft.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Approve failover (check data residency and cost), notify executives, and approve customer messaging.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it on Microsoft's side? Is a support case open, and at what severity? Can we use the other region?</div></div>
+          <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-foundry-5xx">The engineering playbook →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="s-slow-first-token">
+        <div class="playbook-head"><h2>Answers take long to start</h2></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">What's happening</div><div>The AI takes longer than usual to <em>begin</em> its answer, even if the full answer then arrives normally.</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>Nimbus feels sluggish, with the spinner staying up longer before any text appears.</div></div>
+          <div class="pb-section"><div class="pb-label">Typical fix</div><div>Free up capacity, or shrink the request. Often within an hour.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Whether to accept slightly lower answer quality (a smaller model, less context) for speed, temporarily.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it capacity or how we build the request? How noticeable is it to users?</div></div>
+          <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-slow-first-token">The engineering playbook →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="s-client-rollout">
+        <div class="playbook-head"><h2>A new app version is misbehaving</h2></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">What's happening</div><div>Problems are limited to users who received the latest desktop app update.</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>Crashes or errors right after updating. Support tickets mention "since the update".</div></div>
+          <div class="pb-section"><div class="pb-label">Typical fix</div><div>Pause the rollout immediately (the NOC can do this), then the team fixes the bug. Pausing takes minutes. The fix takes days.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Hold the release, and coordinate messaging with release management, partners, and support.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Has the rollout been paused? What share of users have the new version?</div></div>
+          <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-client-rollout">The engineering playbook →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="s-dashboards-green">
+        <div class="playbook-head"><h2>Users complain but our monitoring says fine</h2></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">What's happening</div><div>Support tickets or social posts say Nimbus is broken, but our monitoring shows nothing wrong.</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>Whatever they're reporting. The problem is that we can't see it.</div></div>
+          <div class="pb-section"><div class="pb-label">Typical fix</div><div>First the team has to <em>measure</em> the problem. Time varies, and it often reveals a monitoring gap.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Treat "customers told us before our monitoring did" as a serious finding, and fund the fix.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>How do we know how many users are affected? Why didn't our monitoring catch it?</div></div>
+          <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-dashboards-green">The engineering playbook →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="s-cdn-edge">
+        <div class="playbook-head"><h2>The front door (CDN) is failing</h2></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">What's happening</div><div>The internet-facing entrance to our services is failing to reach them, or our security firewall is blocking requests.</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>Often <em>everything</em> fails at once: "Nimbus can't connect". Or one group of users is blocked.</div></div>
+          <div class="pb-section"><div class="pb-label">Typical fix</div><div>Platform fixes the connection, reverts a firewall rule, or reroutes traffic. 15–60 minutes is typical. Some causes are on Microsoft's side.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Approve rerouting or rollback of a security rule (security sign-off), and approve customer messaging, since impact is usually broad.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it all users or some regions? Did anyone change a firewall or CDN setting? Is it Microsoft's edge?</div></div>
+          <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-cdn-edge">The engineering playbook →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="s-401-surge">
+        <div class="playbook-head"><h2>Users or services are being refused at sign-in</h2></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">What's happening</div><div>The system is rejecting credentials ("401s"). This can be all users (a server-side sign-in change), one app version (a bug), or our own services (an expired secret).</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>Features refuse to work, or "please sign in again" loops. Sometimes total lockout.</div></div>
+          <div class="pb-section"><div class="pb-label">Typical fix</div><div>Undo the recent sign-in or configuration change, or renew the expired secret. Fast once the cause is found, often under an hour.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Approve an emergency change to sign-in settings, and customer messaging if many users are locked out.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it everyone or one app version? Did anything change in sign-in, keys, or certificates? When do our secrets expire?</div></div>
+          <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-401-surge">The engineering playbook →</a></div></div>
+        </div>
+      </section>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

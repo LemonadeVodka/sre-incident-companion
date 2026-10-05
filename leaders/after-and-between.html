@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manager: After & Between Incidents · Nimbus SRE</title>
+  <meta name="description" content="Postmortems, follow-through, the monthly operations health check, and red flags for Nimbus senior managers.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead-after">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
+      <h1>After &amp; between incidents</h1>
+      <p class="lede">What happens after an incident decides whether you have it again. Between incidents, a few good questions each month tell you more than any dashboard.</p>
+      <div class="tldr">
+        <ul>
+          <li>Thank responders, keep postmortems <strong>blameless</strong>, and <strong>fund the action items</strong>.</li>
+          <li>As a new team, the most valuable follow-up is often <strong>a runbook</strong>. Make sure one gets written.</li>
+          <li>Each month, review SLO health, detection source, CFT response times, runbook coverage, and action-item completion.</li>
+        </ul>
+      </div>
+      <h2 id="after-the-incident">After the incident</h2>
+      <ul class="checklist" data-key="leader-after">
+        <li><strong>Thank the responders</strong>, by name and in public. Incidents are stressful, and recognition makes people willing to take on-call.</li>
+        <li><strong>Attend the postmortem review</strong> for Sev 1–2. Listen more than you talk.</li>
+        <li><strong>Protect blamelessness.</strong> If anyone asks "who did this?", redirect to "how did the system allow this?". People hide information when they fear blame, and hidden information causes the next outage.</li>
+        <li><strong>Fund the action items.</strong> Make sure each one has an owner, a date, and room in the roadmap. Action items that never get done mean you'll have the same incident again.</li>
+        <li><strong>Check a runbook was assigned.</strong> We're a new team, so every incident should leave one behind.</li>
+        <li><strong>Follow up in 30 days.</strong> Ask: "Which action items are done, and which are stuck?"</li>
+      </ul>
+      <h3 id="good-postmortem-questions">Good postmortem questions</h3>
+      <ul>
+        <li>"How did we find out? Would we have found out without a customer telling us?"</li>
+        <li>"What made this harder to diagnose than it should have been?"</li>
+        <li>"Where did we lose time? Was it detection, finding the owner, or deciding?"</li>
+        <li>"What would have to be true for this to never happen again, and what's a realistic step toward that?"</li>
+        <li>"Did anyone feel they couldn't escalate or speak up?"</li>
+      </ul>
+      <h2 id="between-incidents">Between incidents: monthly health check</h2>
+      <p>Ask these in your monthly operations review. You'll learn more than any status dashboard can show you.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Question</th><th>Why it matters</th></tr></thead>
+          <tbody>
+            <tr><td>"Are we meeting our SLOs for the top features? How much error budget is left?"</td><td>This is the clearest sign of reliability from the user's point of view.</td></tr>
+            <tr><td>"How were our incidents detected: alerts or customers?"</td><td>Customer-detected incidents mean we can't see our own product.</td></tr>
+            <tr><td>"How long from the page to knowing who owns the problem?"</td><td>In an immature org, unclear ownership is often the biggest delay.</td></tr>
+            <tr><td>"How many pages did on-call get, and how many needed action?"</td><td>Noisy alerts burn people out and train them to ignore pages.</td></tr>
+            <tr><td>"How long did CFTs take to acknowledge pages this month? Which CFTs still have no PagerDuty service?"</td><td>Slow CFT response is one of our biggest known delays. These numbers come from pinned incident records.</td></tr>
+            <tr><td>"How many runbooks did we write this month? How many of last month's incidents had one?"</td><td>We're a new team. Runbook coverage is how we stop solving the same incident from scratch.</td></tr>
+            <tr><td>"What share of postmortem action items are done?"</td><td>This shows whether you're learning or just writing documents.</td></tr>
+            <tr><td>"What share of our features have a dashboard and an SLO?"</td><td>Today it's under 10%. Track it until it's 100% for interactive features.</td></tr>
+            <tr><td>"Where do teams share capacity, and who decides priority when it runs out?"</td><td>Noisy-neighbor incidents are a governance problem as much as a technical one.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h2 id="red-flags">Red flags</h2>
+      <div class="callout danger">
+        <div class="callout-title">Act when you see these</div>
+        <ul>
+          <li>Incidents keep happening with <strong>no Incident Commander</strong>, or with two parallel channels.</li>
+          <li>The <strong>same incident repeats</strong> because the action items weren't done.</li>
+          <li>One engineer is the <strong>only person</strong> who can diagnose a feature.</li>
+          <li>On-call engineers are <strong>afraid to escalate</strong> or to declare an incident.</li>
+          <li>Alerts go to channels that <strong>nobody owns</strong>.</li>
+          <li>Teams argue about <strong>whose problem it is</strong> while users are affected.</li>
+        </ul>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

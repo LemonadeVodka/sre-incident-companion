@@ -16,8 +16,8 @@
   <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Foundations</div>
-      <div class="eyebrow">Foundations</div>
+      <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
+      <div class="eyebrow">Shared · all roles</div>
       <h1>SRE fundamentals</h1>
       <p class="lede">The core ideas from Google's <em>Site Reliability Engineering</em> book and <em>The Site Reliability Workbook</em>, updated with modern practice and applied to an LLM-backed product.</p>
 
@@ -107,7 +107,7 @@
       </div>
       <div class="callout warn">
         <div class="callout-title">Averages lie</div>
-        <p>If the average latency is 2 s, the P99 could still be 25 s. LLM latency is long-tailed because it depends on output length. Use P50, P95, and P99, and remember sampling: weight counts by <code>itemCount</code>.</p>
+        <p>If the average latency is 2 s, the P95 could still be 12 s. LLM latency is long-tailed because it depends on output length. Nimbus tracks <strong>P50</strong> (typical) and <strong>P95</strong> (bad day), never averages. Remember that P95 still hides the slowest 5%, which is why adding P99 is on the <a href="observability-maturity.html">roadmap</a>. Also remember sampling: weight counts by <code>itemCount</code>.</p>
       </div>
 
       <h2 id="llm-specific-signals">LLM-specific signals</h2>

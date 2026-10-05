@@ -3,36 +3,48 @@
 (function () {
   "use strict";
 
+  /* Each group is a track. Prev/next paging stays inside the track. */
   var NAV = [
-    { group: "Start", items: [
+    { group: "Start", track: "shared", items: [
       { id: "index", href: "index.html", title: "Home & triage" },
-      { id: "environment", href: "environment.html", title: "The Nimbus environment" },
-      { id: "leaders", href: "leaders.html", title: "For senior managers", lead: true }
+      { id: "environment", href: "environment.html", title: "Background: Nimbus" }
     ]},
-    { group: "Foundations", items: [
+    { group: "NOC · First line", track: "noc", items: [
+      { id: "noc", href: "noc/index.html", title: "NOC role" },
+      { id: "noc-detect", href: "noc/detect.html", title: "Watch & detect" },
+      { id: "noc-triage", href: "noc/triage-and-escalate.html", title: "Triage & escalate" },
+      { id: "noc-actions", href: "noc/safe-actions.html", title: "Pre-approved actions" }
+    ]},
+    { group: "SRE On-Call", track: "sre", items: [
+      { id: "sre", href: "sre/index.html", title: "SRE on-call role" },
+      { id: "sre-investigate", href: "sre/investigate.html", title: "Investigate" },
+      { id: "sre-deep", href: "sre/deep-dives.html", title: "Deep dives" },
+      { id: "sre-ic", href: "sre/incident-command.html", title: "Incident command" }
+    ]},
+    { group: "Senior Manager", track: "lead", items: [
+      { id: "lead", href: "leaders/index.html", title: "Manager path" },
+      { id: "lead-during", href: "leaders/during-an-incident.html", title: "During an incident" },
+      { id: "lead-scenarios", href: "leaders/scenarios.html", title: "Scenarios in plain English" },
+      { id: "lead-after", href: "leaders/after-and-between.html", title: "After & between incidents" },
+      { id: "lead-invest", href: "leaders/investing.html", title: "Investing in reliability" },
+      { id: "lead-jargon", href: "leaders/jargon.html", title: "Jargon decoder" }
+    ]},
+    { group: "Shared toolkit", track: "shared", items: [
       { id: "fundamentals", href: "fundamentals.html", title: "SRE fundamentals" },
-      { id: "incident-response", href: "incident-response.html", title: "Incident response" }
-    ]},
-    { group: "Troubleshooting", items: [
-      { id: "beginner", href: "troubleshooting/beginner.html", title: "Beginner", tier: "beginner" },
-      { id: "intermediate", href: "troubleshooting/intermediate.html", title: "Intermediate", tier: "intermediate" },
-      { id: "advanced", href: "troubleshooting/advanced.html", title: "Advanced", tier: "advanced" }
-    ]},
-    { group: "Toolkit", items: [
-      { id: "playbooks", href: "playbooks.html", title: "Playbooks" },
-      { id: "queries", href: "queries.html", title: "KQL query library" },
-      { id: "observability-maturity", href: "observability-maturity.html", title: "Observability maturity" }
-    ]},
-    { group: "Reference", items: [
+      { id: "incident-response", href: "incident-response.html", title: "Incident process" },
+      { id: "ways-of-working", href: "ways-of-working.html", title: "Ways of working" },
+      { id: "playbooks", href: "playbooks.html", title: "Starter playbooks" },
+      { id: "queries", href: "queries.html", title: "Nimbus KQL" },
+      { id: "observability-maturity", href: "observability-maturity.html", title: "Observability maturity" },
       { id: "references", href: "references.html", title: "Glossary & references" }
     ]}
   ];
+  var TRACK_HOME = { noc: "noc/index.html", sre: "sre/index.html", lead: "leaders/index.html" };
+  var TRACK_LABEL = { noc: "NOC track", sre: "SRE track", lead: "Manager guide" };
 
   var body = document.body;
   var root = body.getAttribute("data-root") || "./";
   var page = body.getAttribute("data-page") || "";
-  var flat = [];
-  NAV.forEach(function (g) { g.items.forEach(function (i) { flat.push(i); }); });
 
   function store(key, val) {
     try {
@@ -43,12 +55,23 @@
   }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 
+  var current = null, currentTrack = "shared";
+  NAV.forEach(function (g) { g.items.forEach(function (i) { if (i.id === page) { current = i; currentTrack = g.track; } }); });
+  if (currentTrack !== "shared") store("nimbus-role", currentTrack);
+  var myRole = store("nimbus-role");
+  body.setAttribute("data-track", currentTrack);
+
   var CLOUD = '<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--accent)"/>' +
     '<path d="M10.5 22.5h11.2a4.3 4.3 0 0 0 .6-8.56 6 6 0 0 0-11.5 1.4 3.6 3.6 0 0 0-.3 7.16z" fill="var(--accent-fg)"/>' +
     '<path d="M12.5 19.2h2l1.2-2.4 1.6 4 1.2-1.6h2" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
   var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
   var MENU = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
+  var ICONS = {
+    lead: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/></svg>',
+    noc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M7 11l2.5-3 2.5 4 2-2.5L17 11"/></svg>',
+    sre: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6M11 8v6"/></svg>'
+  };
 
   /* ---------- Header ---------- */
   var header = document.getElementById("site-header");
@@ -89,11 +112,11 @@
   var sidebar = document.getElementById("sidebar");
   if (sidebar) {
     sidebar.innerHTML = NAV.map(function (g) {
-      return '<div class="nav-group"><h4>' + esc(g.group) + '</h4>' + g.items.map(function (i) {
+      var role = g.track !== "shared";
+      var cls = "nav-group" + (role ? " t-" + g.track : "") + (role && g.track === myRole ? " mine" : "");
+      return '<div class="' + cls + '"><h4>' + (role ? '<i class="track-dot"></i>' : "") + esc(g.group) + '</h4>' + g.items.map(function (i) {
         var cur = i.id === page ? ' aria-current="page"' : "";
-        var badge = i.tier ? '<span class="badge ' + i.tier + '">' + (i.tier === "beginner" ? "L1" : i.tier === "intermediate" ? "L2" : "L3") + '</span>'
-          : i.lead ? '<i class="lead-dot" aria-hidden="true"></i>' : "";
-        return '<a href="' + root + i.href + '"' + cur + '><span>' + esc(i.title) + '</span>' + badge + '</a>';
+        return '<a href="' + root + i.href + '"' + cur + '><span>' + esc(i.title) + '</span></a>';
       }).join("") + '</div>';
     }).join("");
     sidebar.addEventListener("click", function (e) {
@@ -101,23 +124,100 @@
     });
   }
 
-  /* ---------- Pager ---------- */
+  /* ---------- Pager (stays inside the current track) ---------- */
   var pager = document.getElementById("pager");
-  if (pager) {
-    var idx = -1;
-    flat.forEach(function (i, n) { if (i.id === page) idx = n; });
+  if (pager && current) {
+    var seq = [];
+    NAV.forEach(function (g) { if (g.track === currentTrack) g.items.forEach(function (i) { seq.push(i); }); });
+    var idx = seq.indexOf(current);
     var html = "";
-    if (idx > 0) html += '<a class="prev" href="' + root + flat[idx - 1].href + '"><small>← Previous</small>' + esc(flat[idx - 1].title) + '</a>';
-    if (idx >= 0 && idx < flat.length - 1) html += '<a class="next" href="' + root + flat[idx + 1].href + '"><small>Next →</small>' + esc(flat[idx + 1].title) + '</a>';
+    if (idx > 0) html += '<a class="prev" href="' + root + seq[idx - 1].href + '"><small>← Previous</small>' + esc(seq[idx - 1].title) + '</a>';
+    if (idx >= 0 && idx < seq.length - 1) html += '<a class="next" href="' + root + seq[idx + 1].href + '"><small>Next →</small>' + esc(seq[idx + 1].title) + '</a>';
     pager.innerHTML = html;
     pager.setAttribute("aria-label", "Previous and next pages");
   }
+
+  /* ---------- Role chooser cards remember the role ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-choose-role]"), function (a) {
+    a.addEventListener("click", function () { store("nimbus-role", a.getAttribute("data-choose-role")); });
+  });
 
   /* ---------- Footer ---------- */
   var footer = document.getElementById("footer");
   if (footer) {
     footer.innerHTML = 'Nimbus is a fictional product used for training. SRE concepts are summarized from public sources — see ' +
-      '<a href="' + root + 'references.html">references</a>. · <a href="https://github.com/LemonadeVodka/sre-incident-companion">Source on GitHub</a>';
+      '<a href="' + root + 'references.html">references</a>. · <a href="https://github.com/LemonadeVodka/kql-toolkit">KQL toolkit</a> · ' +
+      '<a href="https://github.com/LemonadeVodka/sre-incident-companion">Source on GitHub</a>';
+  }
+
+  /* ---------- Role panels: icon + link to that role's track ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".leader"), function (panel) {
+    var role = panel.classList.contains("noc") ? "noc" : panel.classList.contains("sre") ? "sre" : "lead";
+    var h = panel.querySelector(".leader-head");
+    if (!h) return;
+    h.insertAdjacentHTML("afterbegin", ICONS[role]);
+    if (currentTrack !== role) {
+      var target = panel.getAttribute("data-guide") || TRACK_HOME[role];
+      h.insertAdjacentHTML("beforeend", '<a class="guide-link" href="' + root + target + '">' + TRACK_LABEL[role] + ' →</a>');
+    }
+  });
+
+  /* ---------- KQL placeholder highlighting ----------
+     Lines like:  let role = "svc";  // [NIMBUS] explanation
+     get the value highlighted and tagged. Copy still copies plain text. */
+  var PARAM_RE = /^(\s*let\s+)([A-Za-z_]\w*)(\s*=\s*)(.+?)(;\s*)(\/\/\s*\[(NIMBUS|AZURE|TUNE|CHANGE)\].*)$/;
+  Array.prototype.forEach.call(document.querySelectorAll(".code-card pre code"), function (code) {
+    var lines = code.textContent.split("\n"), adapt = 0, touched = false;
+    var out = lines.map(function (line) {
+      var m = line.match(PARAM_RE);
+      if (!m) return esc(line);
+      touched = true;
+      var tag = m[7], val = esc(m[4]);
+      if (tag === "NIMBUS" || tag === "CHANGE") { adapt++; val = '<mark class="p-nimbus" data-param="' + m[2] + '" data-orig="' + val + '">' + val + '</mark>'; }
+      else if (tag === "TUNE") { adapt++; val = '<span class="p-tune">' + val + '</span>'; }
+      return esc(m[1]) + esc(m[2]) + esc(m[3]) + val + esc(m[5]) +
+        '<span class="p-tag' + (tag === "NIMBUS" || tag === "CHANGE" ? " nimbus" : "") + '">' + esc(m[6]) + '</span>';
+    });
+    if (!touched) return;
+    code.innerHTML = out.join("\n");
+    var head = code.closest(".code-card").querySelector(".code-head");
+    if (head && adapt) {
+      var chip = document.createElement("span");
+      chip.className = "adapt-chip";
+      chip.title = "Values to change for your environment";
+      chip.textContent = "Adapts: " + adapt + " value" + (adapt > 1 ? "s" : "");
+      head.insertBefore(chip, head.querySelector(".title").nextSibling);
+    }
+  });
+
+  /* ---------- "Make it yours": swap Nimbus values for the reader's own (saved per browser) ---------- */
+  var params = {};
+  try { params = JSON.parse(store("nimbus-kql-params") || "{}") || {}; } catch (e) { params = {}; }
+  function applyParams() {
+    Array.prototype.forEach.call(document.querySelectorAll("mark.p-nimbus[data-param]"), function (mk) {
+      var v = params[mk.getAttribute("data-param")];
+      mk.textContent = v ? JSON.stringify(v) : mk.getAttribute("data-orig");
+    });
+  }
+  applyParams();
+  var form = document.getElementById("myq");
+  if (form) {
+    Array.prototype.forEach.call(form.querySelectorAll("input[data-param]"), function (inp) {
+      var k = inp.getAttribute("data-param");
+      if (params[k]) inp.value = params[k];
+      inp.addEventListener("input", function () {
+        var v = inp.value.trim();
+        if (v) params[k] = v; else delete params[k];
+        store("nimbus-kql-params", JSON.stringify(params));
+        applyParams();
+      });
+    });
+    var resetBtn = document.getElementById("myq-reset");
+    if (resetBtn) resetBtn.addEventListener("click", function () {
+      params = {}; store("nimbus-kql-params", null);
+      Array.prototype.forEach.call(form.querySelectorAll("input"), function (i) { i.value = ""; });
+      applyParams();
+    });
   }
 
   /* ---------- Heading anchors + TOC ---------- */
@@ -128,7 +228,7 @@
     var heads = article.querySelectorAll("h2, h3");
     var tocLinks = [];
     Array.prototype.forEach.call(heads, function (h) {
-      if (h.closest(".card, .triage, .leader")) return;
+      if (h.closest(".card, .triage, .leader, .role-card")) return;
       if (!h.id) {
         var base = h.textContent.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "section";
         var id = base, n = 2;
@@ -171,15 +271,6 @@
       }
     }
   }
-
-  /* ---------- Senior-manager panels: icon + link to the full guide ---------- */
-  var LEAD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/><path d="M12 11v3"/></svg>';
-  Array.prototype.forEach.call(document.querySelectorAll(".leader-head"), function (h) {
-    h.insertAdjacentHTML("afterbegin", LEAD_ICON);
-    if (page !== "leaders") {
-      h.insertAdjacentHTML("beforeend", '<a href="' + root + 'leaders.html" style="margin-left:auto;font-weight:600;font-size:.85rem">Full manager guide →</a>');
-    }
-  });
 
   /* ---------- Copy buttons ---------- */
   Array.prototype.forEach.call(document.querySelectorAll(".code-card"), function (card) {

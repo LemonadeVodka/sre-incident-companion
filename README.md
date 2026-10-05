@@ -1,6 +1,6 @@
 # SRE Incident Companion
 
-A practical incident-response companion for SREs. It draws on the Google SRE books and modern practice, with beginner, intermediate, and advanced troubleshooting guides.
+An incident-response companion organized around three roles: **NOC (first line of defense)**, **SRE On-Call**, and **Senior Manager**. It's grounded in the Google SRE books and modern practice, and written for a new team in an immature environment.
 
 **Live site:** https://lemonadevodka.github.io/sre-incident-companion/
 
@@ -8,41 +8,40 @@ A practical incident-response companion for SREs. It draws on the Google SRE boo
 
 The guide is set in **Nimbus**, a fictional desktop AI companion:
 
-- **Backbone:** Azure AI Foundry model deployments, shared by every team, behind an Azure API Management gateway.
-- **Telemetry:** OpenTelemetry → Azure Application Insights → Grafana.
-- **Organization:** five cross-functional teams (CFTs), each owning a "feature experience", plus a Platform team.
-- **Maturity:** low on purpose. Fewer than 10% of services have a usable dashboard, naming is inconsistent, and trace propagation is patchy. The guide is written to work in those conditions.
-- **Typical incidents:** high latency and high error rates.
+- **Built in Rust:** the desktop client, the local Agent, and the backend orchestration services.
+- **Request path:** Client → Azure Front Door (CDN/WAF) → APIM → Rust services → Azure AI Foundry, with Entra ID auth.
+- **Telemetry:** Rust OpenTelemetry → OTel Collector → Application Insights. Front Door and APIM logs go to Log Analytics. Grafana sits on top, with **under 10% dashboard coverage**.
+- **Latency measured at P50 and P95 only.**
+- **Common incidents:** AI latency, error rates, CDN/edge errors, and 401s.
+- **Organization:** five CFTs, each owning a feature experience, plus a Platform team.
+- **Reality:** a new team with few runbooks, a locked-down Jira, PagerDuty for paging, our team on Slack while some CFTs use Teams (workflows are Slack-only), and CFTs that sometimes respond slowly.
 
 ## Site map
 
-| Page | What's in it |
+| Track | Pages |
 |---|---|
-| `index.html` | Interactive triage decision tree and a first-15-minutes checklist |
-| `environment.html` | Architecture, ownership, telemetry pipeline, and known gaps |
-| `leaders.html` | For senior managers: what to do, ask, and avoid, and the decisions only they can make |
-| `fundamentals.html` | SLIs/SLOs, error budgets, golden signals, LLM signals, burn-rate alerting |
-| `incident-response.html` | Lifecycle, severity levels, roles, mitigation levers, comms templates |
-| `troubleshooting/beginner.html` | First responder: confirm, scope, escalate |
-| `troubleshooting/intermediate.html` | Latency decomposition, tracing, error types, timeout budgets |
-| `troubleshooting/advanced.html` | Noisy neighbors, retry storms, sampling bias, failover, model regressions |
-| `playbooks.html` | Six scenario runbooks |
-| `queries.html` | KQL query library for Application Insights and Grafana |
-| `observability-maturity.html` | Maturity model, scorecard, and a 90-day roadmap |
-| `references.html` | Glossary and sources |
+| **Start** | `index.html` (role chooser, handoff diagram, triage) · `environment.html` (background) |
+| **NOC** | `noc/`: role · watch & detect (shift health sweep) · triage & escalate · pre-approved actions |
+| **SRE On-Call** | `sre/`: role · investigate (layers, P50/P95, CDN, 401, Rust) · deep dives · incident command |
+| **Senior Manager** | `leaders/`: path · during an incident · scenarios in plain English · after & between · investing · jargon decoder |
+| **Shared** | fundamentals · incident process · ways of working · starter playbooks · Nimbus KQL · observability maturity · references |
+
+Old URLs (`troubleshooting/*.html`, `leaders.html`) redirect to their new homes.
+
+## Adapting the KQL
+
+Every query starts with a parameter block. Nimbus-specific values are tagged `[NIMBUS]` and highlighted on the site. `[TUNE]` values depend on your data, and `[AZURE]` values are real schema. The **Make it yours** form on the Nimbus KQL page swaps in your own names across the whole site.
+
+For generic queries that work in any Azure environment, see **[kql-toolkit](https://github.com/LemonadeVodka/kql-toolkit)**.
 
 ## Running locally
 
-The site is plain HTML, CSS, and JavaScript, with no build step and no dependencies.
-
-Open `index.html` directly in a browser, or serve the folder:
+The site is plain HTML, CSS, and JavaScript, with no build step and no dependencies. Open `index.html`, or serve the folder:
 
 ```sh
 npx serve .          # or: python -m http.server 8000
 ```
 
-Every page also has a **For senior managers** panel. It frames the topic for non-engineering leaders: what to do, what to ask, and what to avoid.
-
 ## Disclaimer
 
-Nimbus, its teams, numbers, and incidents are fictional. The SRE practices are real and are summarized in this guide's own words, with links to the original sources on the references page.
+Nimbus, its teams, numbers, flags, and incidents are fictional. The SRE practices are real and are summarized in this guide's own words, with links to the original sources on the references page.

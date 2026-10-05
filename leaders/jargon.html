@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jargon Decoder · Nimbus SRE</title>
+  <meta name="description" content="Plain-English translations of the technical terms you will hear during Nimbus incidents, and why each matters.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead-jargon">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
+      <h1>Jargon decoder</h1>
+      <p class="lede">Keep this open during incidents. The left column is what engineers say, the middle is what it means, and the right is why you should care.</p>
+
+      <h2 id="error-codes">Error codes</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>They say</th><th>It means</th><th>Why you care</th></tr></thead>
+          <tbody>
+            <tr><td>"401s"</td><td>The system didn't accept the user's or service's credentials</td><td>Users may be effectively locked out. Often caused by a sign-in change or an expired secret.</td></tr>
+            <tr><td>"403s" / "WAF blocks"</td><td>The request was recognized but refused, often by our security firewall</td><td>A security rule may be blocking real users.</td></tr>
+            <tr><td>"429s" / "throttling"</td><td>We hit our usage limit with the AI provider</td><td>Features fail until load drops or we buy more capacity. Usually a cost or priority decision for you.</td></tr>
+            <tr><td>"5xx" / "500s" / "503s"</td><td>Something on the server side broke</td><td>Which layer matters: ours, Microsoft's, or the CDN's.</td></tr>
+            <tr><td>"502 / 504 at the edge"</td><td>The CDN couldn't reach our systems, or they answered too slowly</td><td>Often affects everyone at once.</td></tr>
+            <tr><td>"Timeouts"</td><td>Something took so long that the system gave up</td><td>Usually a slowness problem underneath.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="speed-and-reliability">Speed and reliability</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>They say</th><th>It means</th><th>Why you care</th></tr></thead>
+          <tbody>
+            <tr><td>"Latency"</td><td>How long users wait</td><td>Slow AI answers are our most common incident.</td></tr>
+            <tr><td>"P50"</td><td>The typical wait: half of users wait less than this</td><td>The everyday experience.</td></tr>
+            <tr><td>"P95"</td><td>How long the slowest 1 in 20 users waits</td><td>The bad-day experience. If P95 doubles, many users notice.</td></tr>
+            <tr><td>"Error rate"</td><td>The share of requests that fail</td><td>1% sounds small, but at our volume it's a lot of people.</td></tr>
+            <tr><td>"Time to first token"</td><td>How long until the AI starts showing its answer</td><td>This is what makes Nimbus feel fast or slow.</td></tr>
+            <tr><td>"SLO"</td><td>Our reliability target, for example "99.5% of requests succeed"</td><td>A business decision. You help set it.</td></tr>
+            <tr><td>"Error budget"</td><td>How much failure the target allows before we must slow down feature work</td><td>When it's used up, reliability work takes priority.</td></tr>
+            <tr><td>"Burn rate"</td><td>How fast we're using the error budget</td><td>A high burn rate means it's urgent.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="systems-and-capacity">Systems and capacity</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>They say</th><th>It means</th><th>Why you care</th></tr></thead>
+          <tbody>
+            <tr><td>"CDN" / "Front Door" / "edge"</td><td>The internet-facing entrance in front of all our services</td><td>When it fails, everything fails.</td></tr>
+            <tr><td>"APIM" / "gateway"</td><td>The checkpoint that verifies credentials and routes requests</td><td>Sits in front of every feature.</td></tr>
+            <tr><td>"Foundry" / "the model"</td><td>Microsoft's AI service that generates the answers</td><td>Shared by every team. Some problems are on Microsoft's side.</td></tr>
+            <tr><td>"PTU" / "provisioned capacity"</td><td>AI capacity we reserve and pay for whether we use it or not</td><td>Predictable but fixed. Overflow costs extra.</td></tr>
+            <tr><td>"Spillover" / "pay-as-you-go"</td><td>Sending overflow to on-demand AI capacity</td><td>Keeps features working, at extra cost.</td></tr>
+            <tr><td>"Noisy neighbor"</td><td>One team's workload using up shared capacity</td><td>A priority and governance question.</td></tr>
+            <tr><td>"Failover"</td><td>Switching to a backup region</td><td>Restores service, but may affect data residency and cost.</td></tr>
+            <tr><td>"Rollback"</td><td>Undoing a recent change</td><td>Usually the fastest fix. It may delay a launch.</td></tr>
+            <tr><td>"Staged rollout" / "ramp"</td><td>Releasing a new app version to a growing share of users</td><td>Pausing it limits the damage from a bad release.</td></tr>
+            <tr><td>"Panic" (Rust)</td><td>The program hit something unexpected and stopped</td><td>Usually triggered by a recent change. Rollback is typical.</td></tr>
+            <tr><td>"Telemetry" / "traces"</td><td>The data our systems report about themselves</td><td>If it's missing, we're flying blind.</td></tr>
+            <tr><td>"KQL"</td><td>The query language engineers use to search that data</td><td>You don't need it. Ask for the chart instead.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="process-words">Process words</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>They say</th><th>It means</th></tr></thead>
+          <tbody>
+            <tr><td>"IC"</td><td>Incident Commander: the person running the response</td></tr>
+            <tr><td>"Sev 1 / Sev 2"</td><td>Severity: Sev 1 is most users affected, Sev 2 is a major feature affected</td></tr>
+            <tr><td>"Mitigated"</td><td>Users are no longer badly affected, but the cause may not be fixed yet</td></tr>
+            <tr><td>"Resolved"</td><td>Stable and back to normal</td></tr>
+            <tr><td>"Bridge person"</td><td>Someone relaying updates between Slack and Teams</td></tr>
+            <tr><td>"Postmortem"</td><td>A blameless review after an incident, to learn and prevent a repeat</td></tr>
+            <tr><td>"Runbook" / "playbook"</td><td>Written steps for handling a known problem. We have few so far.</td></tr>
+            <tr><td>"Toil"</td><td>Repetitive manual work that could be automated</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

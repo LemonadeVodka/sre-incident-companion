@@ -16,8 +16,8 @@
   <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Toolkit</div>
-      <div class="eyebrow">Toolkit</div>
+      <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
+      <div class="eyebrow">Shared · all roles</div>
       <h1>Observability maturity</h1>
       <p class="lede">Nimbus has telemetry, but very little of it is usable during an incident. This page covers where we are, where we're going, and a practical order for getting there.</p>
 
@@ -29,7 +29,7 @@
         </ul>
       </div>
 
-      <aside class="leader" aria-label="For senior managers">
+      <aside class="leader" aria-label="For senior managers" data-guide="leaders/investing.html">
         <div class="leader-head">For senior managers <small>· where leadership matters most</small></div>
         <div class="leader-grid">
           <div><h4>Your role</h4><ul>
@@ -68,7 +68,7 @@
           <thead><tr><th>Level</th><th>What it looks like</th><th>How incidents go</th></tr></thead>
           <tbody>
             <tr><td><strong>0 · Dark</strong></td><td>Little or no telemetry</td><td>Users report outages. Diagnosis is guesswork.</td></tr>
-            <tr><td><strong>1 · Reactive</strong></td><td>Telemetry in App Insights, inconsistent naming, &lt;10% dashboards, threshold alerts, unclear owners</td><td>Detected late, slow to scope, KQL written from scratch every time</td></tr>
+            <tr><td><strong>1 · Reactive</strong></td><td>Telemetry in App Insights, inconsistent naming, &lt;10% dashboards, few runbooks, P50/P95 only, threshold alerts, unclear owners</td><td>Detected late, slow to scope, KQL written from scratch every time</td></tr>
             <tr><td><strong>2 · Standardized</strong></td><td>Standard attributes everywhere, a golden-signals dashboard per feature from a template, every alert has an owner, client traces connected</td><td>Scoped in minutes, the right CFT paged first time</td></tr>
             <tr><td><strong>3 · SLO-driven</strong></td><td>SLOs per feature, burn-rate alerts, error budget policy, tail-based sampling, GenAI metrics everywhere</td><td>Alerts mean user impact. Priorities follow the budgets.</td></tr>
             <tr><td><strong>4 · Proactive</strong></td><td>Game days, capacity forecasting, evals in CI, automated mitigations</td><td>Many incidents prevented or self-healed</td></tr>
@@ -89,7 +89,7 @@
         <li>Every alert routes to a named owner who acts on it</li>
         <li>At least one SLO is defined and visible</li>
         <li>Alerts use burn rate instead of raw thresholds</li>
-        <li>A playbook exists for the top 2 failure modes</li>
+        <li>A runbook exists for the top 2 alerts or failure modes</li>
         <li>A game day has been run in the last quarter</li>
       </ul>
       <div class="score-out" aria-live="polite">
@@ -108,6 +108,8 @@
         <li><strong>Every alert has an owner.</strong> Delete or reroute alerts that nobody acts on.</li>
         <li><strong>A golden-signals dashboard template</strong>, provisioned as code with a <code>$feature</code> variable, so one template covers every feature.</li>
         <li><strong>A telemetry-volume alert</strong>, so silence is never mistaken for health.</li>
+        <li><strong>Run at least two OpenTelemetry Collector replicas</strong> and alert on their dropped or refused spans. Every Rust service's telemetry goes through them.</li>
+        <li><strong>Save the NOC shift sweep</strong> as shared queries. It's the NOC's dashboard until Grafana coverage catches up.</li>
       </ul>
       <div class="code-card">
         <div class="code-head"><span class="lang">Env</span><span class="title">Standard OpenTelemetry configuration per service<span class="answers">The same five settings in every CFT's deployment</span></span></div>
@@ -115,11 +117,11 @@
 OTEL_RESOURCE_ATTRIBUTES=service.version=1.8.2,feature.experience=writing-assist,cft.owner=create,deployment.environment.name=prod
 OTEL_TRACES_SAMPLER=parentbased_traceidratio
 OTEL_TRACES_SAMPLER_ARG=0.25
-APPLICATIONINSIGHTS_CONNECTION_STRING=&lt;from Key Vault&gt;</code></pre>
+OTEL_EXPORTER_OTLP_ENDPOINT=https://otel-collector.nimbus.internal:4318</code></pre>
       </div>
       <div class="callout warn">
         <div class="callout-title">Resource attributes vs customDimensions</div>
-        <p>The Azure Monitor exporter maps <code>service.name</code> to <code>cloud_RoleName</code> and <code>service.version</code> to <code>application_Version</code>. Custom resource attributes such as <code>feature.experience</code> may not reach <code>customDimensions</code> on every row. The paved-road package should include a small span processor that copies them onto each span, so the queries in this guide can find them.</p>
+        <p>The Rust <code>opentelemetry</code> crates read these standard environment variables and export OTLP to the Collector. The Collector's Azure Monitor exporter maps <code>service.name</code> to <code>cloud_RoleName</code> and <code>service.version</code> to <code>application_Version</code>. Custom resource attributes such as <code>feature.experience</code> may not reach <code>customDimensions</code> on every row. Copy them onto each span, either in the shared Rust telemetry crate or with a Collector processor (for example <code>transform</code>), so the queries in this guide can find them.</p>
       </div>
 
       <h3 id="days-31-60-connect-the-dots">Days 31–60: Connect the dots <span class="badge intermediate">medium effort</span></h3>
@@ -129,6 +131,8 @@ APPLICATIONINSIGHTS_CONNECTION_STRING=&lt;from Key Vault&gt;</code></pre>
         <li><strong>A TTFT metric</strong> for every streaming feature, not only Writing Assist.</li>
         <li><strong>A Platform saturation dashboard:</strong> tokens per minute against quota per deployment, PTU utilization, and 429s by caller.</li>
         <li><strong>First SLOs in shadow mode</strong> for Writing Assist and Device Care. Measure for 4 weeks before alerting on them.</li>
+        <li><strong>Add P99</strong> to latency queries and dashboards, so the slowest 5% that P95 hides becomes visible.</li>
+        <li><strong>Runbooks for the top 5 alerts</strong> by frequency, each tested by a NOC engineer on a quiet shift.</li>
       </ul>
 
       <h3 id="days-61-90-slo-driven">Days 61–90: SLO-driven <span class="badge advanced">bigger lift</span></h3>
@@ -149,7 +153,7 @@ APPLICATIONINSIGHTS_CONNECTION_STRING=&lt;from Key Vault&gt;</code></pre>
             <tr><td><strong>Overview</strong></td><td>SLO attainment, budget remaining, current burn rate</td><td><a href="queries.html#q-burn-rate">Burn rate</a></td></tr>
             <tr><td><strong>Traffic</strong></td><td>Requests/min, tokens/min</td><td><a href="queries.html#q-token-share">Token consumption</a></td></tr>
             <tr><td><strong>Errors</strong></td><td>Error %, failures by result code, top exceptions</td><td><a href="queries.html#q-error-rate">Error rate</a>, <a href="queries.html#q-top-exceptions">exceptions</a></td></tr>
-            <tr><td><strong>Latency</strong></td><td>P50/P95/P99, TTFT, per-hop breakdown</td><td><a href="queries.html#q-latency-timechart">Latency timechart</a>, <a href="queries.html#q-ttft">TTFT</a></td></tr>
+            <tr><td><strong>Latency</strong></td><td>P50/P95 (P99 once added), TTFT, per-hop breakdown</td><td><a href="queries.html#q-latency-timechart">Latency timechart</a>, <a href="queries.html#q-ttft">TTFT</a></td></tr>
             <tr><td><strong>Saturation</strong></td><td>Deployment TPM % of quota, 429 rate, calls per operation</td><td><a href="queries.html#q-429">429s</a>, <a href="queries.html#q-retry">retries</a></td></tr>
             <tr><td><strong>Change</strong></td><td>Error % by version, client version mix</td><td><a href="queries.html#q-deploy-correlation">Deploy correlation</a></td></tr>
           </tbody>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Incident Response · Nimbus SRE</title>
+  <title>Incident Process · Nimbus SRE</title>
   <meta name="description" content="Incident lifecycle, severity levels, roles, and communication templates for a multi-CFT organization.">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/style.css">
@@ -16,10 +16,10 @@
   <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Foundations</div>
-      <div class="eyebrow">Foundations</div>
-      <h1>Incident response</h1>
-      <p class="lede">How we run incidents across five CFTs and a Platform team, from the first alert to the last action item.</p>
+      <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
+      <div class="eyebrow">Shared · all roles</div>
+      <h1>Incident process</h1>
+      <p class="lede">How we run incidents across the NOC, SRE on-call, five CFTs, a Platform team, and senior management, from the first alert to the last action item. For how this works with our actual tools (PagerDuty, Slack and Teams, a locked-down Jira), see <a href="ways-of-working.html">Ways of working</a>.</p>
 
       <div class="tldr">
         <ul>
@@ -84,6 +84,21 @@
             <tr><td><strong>Mitigate</strong></td><td>Reduce user impact as fast as possible</td><td>The user-facing metric is back near its baseline</td></tr>
             <tr><td><strong>Resolve</strong></td><td>Confirm a stable recovery and stand down</td><td>30 minutes stable, final update sent, follow-ups filed</td></tr>
             <tr><td><strong>Learn</strong></td><td>Understand what happened and prevent a repeat</td><td>Postmortem reviewed, action items have owners and dates</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="who-does-what-by-phase">Who does what, by phase</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Phase</th><th><span class="badge noc">NOC</span></th><th><span class="badge sre">SRE on-call</span></th><th><span class="badge lead">Senior manager</span></th></tr></thead>
+          <tbody>
+            <tr><td><strong>Detect</strong></td><td>Shift sweep, acknowledge alerts, take user reports</td><td>—</td><td>—</td></tr>
+            <tr><td><strong>Triage</strong></td><td>Confirm, find the layer, propose a severity</td><td>Joins if paged</td><td>—</td></tr>
+            <tr><td><strong>Declare</strong></td><td>Open the channel and pinned record, page through PagerDuty, bridge to Teams</td><td>Takes IC, confirms severity, assigns roles</td><td>Notified for Sev 1</td></tr>
+            <tr><td><strong>Mitigate</strong></td><td>Pre-approved actions, timers, bridging</td><td>Investigates, chooses mitigations, chases CFTs</td><td>Decisions (spend, failover, comms), escalates silent CFTs</td></tr>
+            <tr><td><strong>Resolve</strong></td><td>Undo temporary actions when told</td><td>Verifies, files the Jira ticket, assigns a runbook owner</td><td>Approves the external "resolved" message</td></tr>
+            <tr><td><strong>Learn</strong></td><td>Feeds noisy-alert notes into runbooks</td><td>Drives the postmortem</td><td>Keeps it blameless, funds action items</td></tr>
           </tbody>
         </table>
       </div>

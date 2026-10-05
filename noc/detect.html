@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NOC: Watch & Detect · Nimbus SRE</title>
+  <meta name="description" content="Signals the NOC watches for Nimbus, the shift health sweep queries, and how to tell noise from signal.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="noc-detect">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">NOC</a></div>
+      <div class="track-banner t-noc"><i class="track-dot"></i>NOC · First line of defense</div>
+      <h1>Watch &amp; detect</h1>
+      <p class="lede">Fewer than 10% of Nimbus services have a usable dashboard, so you can't detect problems by glancing at Grafana. Detection here combines alerts, user reports, and a <strong>regular health sweep</strong> you run yourself.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Seven signals cover most Nimbus incidents: <strong>error rate, P50/P95 latency, edge 5xx, 401s, 429s, telemetry volume, and client crashes</strong>.</li>
+          <li>Run the <strong>shift health sweep</strong> (six copy-ready queries) at the start of the shift and every 2 hours.</li>
+          <li>It's a signal, not noise, if it's <strong>above baseline, sustained for 10+ minutes, and either broad or matched by user reports</strong>.</li>
+        </ul>
+      </div>
+
+      <h2 id="how-problems-reach-us">How problems reach us</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Alerts</h3><p>Azure Monitor threshold alerts routed through PagerDuty. They're noisy, and not every service has them.</p></div>
+        <div class="card"><h3>Your sweep</h3><p>The queries below. They often catch slow-burning issues before any alert fires.</p></div>
+        <div class="card"><h3>Support &amp; users</h3><p>Ticket spikes or social posts. Take them seriously, because they may be a <a href="../playbooks.html#pb-dashboards-green">blind spot</a>.</p></div>
+        <div class="card"><h3>CFTs</h3><p>A CFT notices something in its own feature. Ask them to open an <code>#inc-</code> channel or open it for them.</p></div>
+      </div>
+
+      <h2 id="signals-to-watch">Signals to watch</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>Where</th><th>Normal</th><th>Act when</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Error rate</strong> per feature</td><td>App Insights <code>requests</code></td><td>&lt; 0.5–1%</td><td>&gt; 2× baseline for 10 min</td></tr>
+            <tr><td><strong>P50 / P95 latency</strong> per feature</td><td>App Insights <code>requests</code></td><td><a href="../environment.html#what-normal-looks-like">See baselines</a></td><td>P95 &gt; 1.5× same hour yesterday for 10 min</td></tr>
+            <tr><td><strong>Edge 5xx</strong> (CDN)</td><td>Log Analytics, Front Door logs</td><td>&lt; 0.1%</td><td>&gt; 0.5% for 5 min</td></tr>
+            <tr><td><strong>401s</strong> at the gateway</td><td>Log Analytics, APIM logs</td><td>&lt; 0.3%</td><td>&gt; 1% or a sudden step up</td></tr>
+            <tr><td><strong>429s</strong> from Foundry</td><td>App Insights <code>dependencies</code></td><td>&lt; 0.5%</td><td>&gt; 2% on any deployment</td></tr>
+            <tr><td><strong>Telemetry volume</strong></td><td>App Insights, all tables</td><td>Matches the daily pattern</td><td>Drops by more than 30%. Data loss looks "green".</td></tr>
+            <tr><td><strong>Client crashes</strong></td><td>App Insights <code>customEvents</code></td><td>Flat across versions</td><td>Spike tied to one <code>client.version</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="shift-health-sweep">Shift health sweep</h2>
+      <p>Run these in order. Each takes a few seconds. Values highlighted in <mark class="p-nimbus">amber</mark> are Nimbus-specific: replace them with your environment's names, or set them once on the <a href="../queries.html#make-it-yours">query page</a>.</p>
+      <ul class="checklist" data-key="noc-sweep">
+        <li>1. Error rate by feature, now vs yesterday</li>
+        <li>2. P50 / P95 by feature, now vs yesterday</li>
+        <li>3. Edge (Front Door) status codes</li>
+        <li>4. 401s at the gateway</li>
+        <li>5. 429s on Foundry deployments</li>
+        <li>6. Telemetry volume</li>
+      </ul>
+
+      <div class="code-card" id="sweep-1">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">1 · Error rate by feature, now vs yesterday<span class="answers">App Insights → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+let featureKey = "feature.experience";   // [NIMBUS] custom attribute holding the feature name
+// ── Query ──────────────────────────────────
+requests
+| where timestamp > ago(window) or timestamp between (ago(1d + window) .. ago(1d))
+| extend period = iff(timestamp > ago(window), "now", "yesterday")
+| extend feature = coalesce(tostring(customDimensions[featureKey]), cloud_RoleName)
+| summarize total = sum(itemCount), failed = sumif(itemCount, success == false) by feature, period
+| extend error_pct = round(100.0 * failed / total, 2)
+| project feature, period, error_pct, total
+| order by feature asc, period asc</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-2">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">2 · P50 / P95 by feature, now vs yesterday<span class="answers">App Insights → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+let featureKey = "feature.experience";   // [NIMBUS] custom attribute holding the feature name
+// ── Query ──────────────────────────────────
+requests
+| where timestamp > ago(window) or timestamp between (ago(1d + window) .. ago(1d))
+| extend period = iff(timestamp > ago(window), "now", "yesterday")
+| extend feature = coalesce(tostring(customDimensions[featureKey]), cloud_RoleName)
+| summarize p50_ms = percentile(duration, 50), p95_ms = percentile(duration, 95) by feature, period
+| order by feature asc, period asc</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-3">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">3 · Edge (Front Door) status codes<span class="answers">Log Analytics workspace → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+let fdCategory = "FrontDoorAccessLog";   // [AZURE] Front Door access log category
+// ── Query ──────────────────────────────────
+AzureDiagnostics
+| where TimeGenerated > ago(window) and Category == fdCategory
+| extend status = toint(column_ifexists("httpStatusCode_s", ""))
+| summarize requests = count(), edge_5xx = countif(status >= 500), blocked_403 = countif(status == 403)
+    by bin(TimeGenerated, 5m)
+| extend edge_5xx_pct = round(100.0 * edge_5xx / requests, 2)
+| render timechart</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-4">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">4 · 401s at the gateway, by API<span class="answers">Log Analytics workspace → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+// ── Query ──────────────────────────────────
+ApiManagementGatewayLogs
+| where TimeGenerated > ago(window)
+| summarize requests = count(), unauthorized = countif(ResponseCode == 401) by ApiId
+| extend pct_401 = round(100.0 * unauthorized / requests, 2)
+| order by pct_401 desc</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-5">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">5 · 429s on Foundry deployments<span class="answers">App Insights → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                                                          // [TUNE] how far back to look
+let modelHosts = dynamic(["openai.azure.com", "services.ai.azure.com"]);  // [AZURE] Foundry / Azure OpenAI hostnames
+// ── Query ──────────────────────────────────
+dependencies
+| where timestamp > ago(window) and target has_any (modelHosts)
+| extend deployment = coalesce(tostring(customDimensions["gen_ai.request.model"]), extract(@"deployments/([^/]+)/", 1, data))
+| summarize calls = sum(itemCount), throttled = sumif(itemCount, resultCode == "429") by deployment
+| extend throttle_pct = round(100.0 * throttled / calls, 2)
+| order by throttle_pct desc</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-6">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">6 · Telemetry volume<span class="answers">App Insights → Logs · a drop means data loss, not health</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 2d;                         // [TUNE] long enough to see yesterday's shape
+// ── Query ──────────────────────────────────
+union requests, dependencies, customEvents
+| where timestamp > ago(window)
+| summarize items = sum(itemCount) by itemType, bin(timestamp, 15m)
+| render timechart</code></pre>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">Save the sweep</div>
+        <p>Save these as <strong>shared queries</strong> in the Log Analytics workspace, or pin them to an Azure dashboard. Until Grafana coverage improves, that saved set <em>is</em> the NOC dashboard.</p>
+      </div>
+
+      <h2 id="noise-or-signal">Noise or signal?</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Question</th><th>Probably noise</th><th>Probably real</th></tr></thead>
+          <tbody>
+            <tr><td>Compared to the same hour yesterday?</td><td>Same shape (for example, the Proactive Tips morning burst)</td><td>Clearly above</td></tr>
+            <tr><td>How long?</td><td>One 5-minute spike</td><td>10+ minutes and continuing</td></tr>
+            <tr><td>How broad?</td><td>Tiny volume (a handful of requests)</td><td>A real share of traffic, or several features</td></tr>
+            <tr><td>User reports?</td><td>None</td><td>Support tickets or CFT reports match</td></tr>
+            <tr><td>Recent change?</td><td>None</td><td>A rollout or deploy lines up with the start</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout ok">
+        <div class="callout-title">When in doubt, open a channel</div>
+        <p>Opening an <code>#inc-</code> channel for something that turns out to be nothing costs a minute. Missing a real incident costs far more. Nobody will blame you for being careful.</p>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

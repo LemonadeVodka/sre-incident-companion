@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Investing in Reliability · Nimbus SRE</title>
+  <meta name="description" content="Reliability targets as business decisions, the maturity roadmap business case, and the tooling and process asks for Nimbus senior managers.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead-invest">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
+      <h1>Investing in reliability</h1>
+      <p class="lede">Incidents show where we're weak. This page turns that into decisions: what reliability targets to set, what to fund first, and which tooling and process fixes only leadership can unlock.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><strong>Reliability targets are business decisions.</strong> Set them with product, per feature, and back them when they bite.</li>
+          <li><strong>Fund in this order:</strong> people and process (on-call, runbooks), then visibility (dashboards, alerts), then targets (SLOs), then resilience (capacity, failover).</li>
+          <li>Five <strong>tooling asks</strong> only leadership can unlock: a Jira incident project, a Teams workflow, PagerDuty for every CFT, CFT response expectations, and dedicated observability capacity.</li>
+        </ul>
+      </div>
+
+      <h2 id="reliability-targets-are-business-decisions">Reliability targets are business decisions</h2>
+      <p>An <strong>SLO</strong> (service level objective) is a reliability target, such as "99.5% of Writing Assist requests succeed" or "95% of Smart Search results arrive within 3.5 seconds". Every extra "9" costs more engineering time and money, so targets should differ by feature:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>Who notices failure</th><th>Suggested starting target</th></tr></thead>
+          <tbody>
+            <tr><td>Writing Assist, Smart Search</td><td>Users immediately, many times a day</td><td>99.5% success, P95 within baseline</td></tr>
+            <tr><td>Device Care</td><td>Users with a problem, at a frustrating moment</td><td>99% task success</td></tr>
+            <tr><td>Meeting Recap</td><td>Users after meetings. A short delay is tolerable.</td><td>99% delivered within 5 minutes</td></tr>
+            <tr><td>Proactive Tips</td><td>Barely, because it runs in the background</td><td>98% delivered within 15 minutes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The <strong>error budget</strong> is the failure the target allows. Agree up front what happens when it runs out. Typically, that team pauses risky launches and works on reliability. If leadership won't honor that agreement, the targets mean nothing.</p>
+
+      <h2 id="what-to-fund-first">What to fund first</h2>
+      <ol class="steps">
+        <li><strong>People and process.</strong>An on-call rotation and a PagerDuty service for every CFT. Time for runbooks after every incident. These are cheap and have an immediate effect on our slowest delays.</li>
+        <li><strong>Visibility.</strong>Standard monitoring for every service, and one dashboard template applied to every feature. This takes us from under 10% coverage to all customer-facing features in about 90 days.</li>
+        <li><strong>Targets.</strong>SLOs for the top two features, and alerts based on them instead of noisy thresholds.</li>
+        <li><strong>Resilience.</strong>Separate AI capacity for customer-facing and background work, tested failover, and capacity planning for every launch.</li>
+      </ol>
+      <p>The engineering detail is on the <a href="../observability-maturity.html">observability maturity</a> page.</p>
+
+      <h2 id="the-business-case">The business case</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Shorter outages</h3><p>Most incident time is spent finding the problem and the owner, not fixing it. Better visibility and on-call coverage cut that directly.</p></div>
+        <div class="card"><h3>Fewer repeat incidents</h3><p>Runbooks and completed action items stop the same incident from happening again.</p></div>
+        <div class="card"><h3>Lower AI spend</h3><p>Knowing who uses capacity, and when, avoids over-buying reserved capacity and paying for emergency overflow.</p></div>
+        <div class="card"><h3>Less burnout</h3><p>Fewer noisy pages and a shared load mean people stay on the team. Losing one of our few experts is a reliability risk in itself.</p></div>
+      </div>
+
+      <h2 id="tooling-and-process-asks">Tooling and process asks</h2>
+      <p>These are blocked by permissions, budgets, or other teams, which makes them leadership work.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ask</th><th>Problem today</th><th>What good looks like</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Jira incident project</strong></td><td>The project is locked down, so incidents and follow-ups are tracked in Slack and get lost</td><td>An incident issue type with severity, impact, and timeline fields that SRE and NOC can create, plus linked action items</td></tr>
+            <tr><td><strong>Teams incident workflow</strong></td><td>Our workflows only exist in Slack, and two CFTs work in Teams</td><td>PagerDuty connected to both Slack and Teams, or a matching Teams workflow, so updates reach everyone automatically</td></tr>
+            <tr><td><strong>PagerDuty for every CFT</strong></td><td>Some CFTs have no service or rotation, so we page their managers instead</td><td>Each feature has a PagerDuty service, an escalation policy, and a named on-call</td></tr>
+            <tr><td><strong>CFT response expectations</strong></td><td>CFTs sometimes take 30+ minutes to respond</td><td>Agreed acknowledgement times per severity, reviewed monthly with real numbers</td></tr>
+            <tr><td><strong>Observability capacity</strong></td><td>Two people own monitoring for every team</td><td>Dedicated time to build the shared monitoring package and dashboard template</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="questions-for-planning-reviews">Questions for planning reviews</h2>
+      <ul>
+        <li>"Does this launch change how much AI capacity we use? Who checked?"</li>
+        <li>"Does this new feature have monitoring, an owner on PagerDuty, and a runbook <em>before</em> launch?"</li>
+        <li>"Which reliability action items from last quarter are still open, and why?"</li>
+        <li>"What would it cost to separate customer-facing AI capacity from background work?"</li>
+        <li>"When did we last test switching to the backup region?"</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NOC: First Line of Defense · Nimbus SRE</title>
+  <meta name="description" content="The NOC role for Nimbus: what you own, when to hand off to SRE, shift rhythm, and how to grow.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="noc">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / NOC</div>
+      <div class="track-banner t-noc"><i class="track-dot"></i>NOC · First line of defense</div>
+      <h1>NOC: first line of defense</h1>
+      <p class="lede">You usually see a problem first. Your job is to <strong>notice it, confirm it, scope it, communicate it, and get the right people moving fast</strong>. You can also take a few safe, pre-approved actions when owners are slow. You are <em>not</em> expected to find the root cause.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><strong>Detect:</strong> run the health sweep every shift. Most services have no dashboard, so the sweep <em>is</em> your dashboard.</li>
+          <li><strong>Triage in 15 minutes:</strong> is it real, which layer, which feature, how bad? Then page through PagerDuty.</li>
+          <li><strong>Escalate on a timer.</strong> If CFTs don't respond, climb the ladder and use <a href="safe-actions.html">pre-approved actions</a>.</li>
+          <li><strong>Hand off cleanly to SRE</strong> with what you saw, checked, and did.</li>
+        </ul>
+      </div>
+
+      <h2 id="what-you-own">What you own, and what you don't</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>NOC owns</th><th>NOC does not own</th></tr></thead>
+          <tbody>
+            <tr><td>Watching signals and running the shift sweep</td><td>Root-cause investigation</td></tr>
+            <tr><td>Confirming impact and proposing a severity</td><td>Final severity for Sev 1–2 (the IC decides)</td></tr>
+            <tr><td>Paging SRE, CFTs, and Platform through PagerDuty</td><td>Rolling back service deployments</td></tr>
+            <tr><td>Opening the Slack incident channel and the pinned record</td><td>Region failover, quota changes, WAF changes</td></tr>
+            <tr><td>Bridging to Teams-only CFTs (default)</td><td>Customer or public messaging</td></tr>
+            <tr><td>The <a href="safe-actions.html">pre-approved safe actions</a></td><td>Anything not on that list</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="when-to-hand-off-to-sre">When to hand off to SRE</h2>
+      <p>Page <strong>SRE on-call</strong> (PagerDuty "Nimbus SRE") when <em>any</em> of these is true:</p>
+      <ul>
+        <li>User impact is confirmed and above the <a href="../environment.html#what-normal-looks-like">normal baselines</a> for more than 10 minutes.</li>
+        <li>More than one feature is affected, or the problem is at a shared layer (Front Door, APIM, auth, Foundry).</li>
+        <li>You've spent 15 minutes and still can't tell which layer or owner is involved.</li>
+        <li>A CFT hasn't acknowledged within 15 minutes.</li>
+        <li>You've taken a pre-approved action. SRE should know, even if it worked.</li>
+      </ul>
+      <div class="leader sre" aria-label="What SRE needs from NOC">
+        <div class="leader-head">What SRE needs from you <small>· a good handoff saves 15 minutes</small></div>
+        <div class="leader-grid">
+          <div><h4>Include</h4><ul>
+            <li>What you saw, with numbers and the start time.</li>
+            <li>Scope: feature, region, client version, layer.</li>
+            <li>What you checked, with links to the queries.</li>
+            <li>What you did, and when.</li>
+          </ul></div>
+          <div><h4>Avoid</h4><ul>
+            <li>"Something's wrong with Nimbus." Be specific.</li>
+            <li>Paging without opening the channel and pinned record.</li>
+          </ul></div>
+        </div>
+      </div>
+
+      <h2 id="shift-rhythm">Shift rhythm</h2>
+      <h3 id="start-of-shift">Start of shift</h3>
+      <ul class="checklist" data-key="noc-shift-start">
+        <li>Read the previous shift's handoff note and any open <code>#inc-</code> channels.</li>
+        <li>Check that PagerDuty shows you on call and that your phone gets a test notification.</li>
+        <li>Run the <a href="detect.html#shift-health-sweep">shift health sweep</a> and note anything unusual.</li>
+        <li>Check scheduled changes: client rollouts in progress, CFT deploys, Azure maintenance.</li>
+        <li>Open the Teams channels for the Collab and Device CFTs, so you can bridge quickly.</li>
+      </ul>
+      <h3 id="during-the-shift">During the shift</h3>
+      <ul>
+        <li>Re-run the sweep every <strong>2 hours</strong>, and right after any rollout or deploy you hear about.</li>
+        <li>Acknowledge every page within <strong>5 minutes</strong>, even if it's only to say you're looking.</li>
+        <li>Keep notes as you go. They become the handoff.</li>
+      </ul>
+      <h3 id="end-of-shift">End of shift</h3>
+      <ul class="checklist" data-key="noc-shift-end">
+        <li>Open incidents: current status, IC, next update time.</li>
+        <li>Anything odd that didn't become an incident, and the queries you used.</li>
+        <li>Actions you took that are still in effect (for example, the Proactive Tips batch is still paused).</li>
+        <li>Alerts that were noisy or confusing, for the runbook backlog.</li>
+      </ul>
+
+      <h2 id="what-good-looks-like">What good looks like</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Fast acknowledgement</h3><p>Pages acknowledged within 5 minutes.</p></div>
+        <div class="card"><h3>Fast, specific escalation</h3><p>SRE or the owner paged within 15 minutes of a confirmed impact, with a complete handoff.</p></div>
+        <div class="card"><h3>Clean records</h3><p>Channel opened, pinned record started, and timeline kept from the first minute.</p></div>
+        <div class="card"><h3>Runbook feedback</h3><p>Every confusing alert is noted, so the next shift has an easier time.</p></div>
+      </div>
+
+      <h2 id="your-pages">Your pages</h2>
+      <div class="card-grid">
+        <a class="card" href="detect.html"><h3>Watch &amp; detect</h3><p>Signals to watch, the shift health sweep, and telling noise from signal.</p></a>
+        <a class="card" href="triage-and-escalate.html"><h3>Triage &amp; escalate</h3><p>The first 15 minutes, which layer, who to page, PagerDuty how-to, and bridging.</p></a>
+        <a class="card" href="safe-actions.html"><h3>Pre-approved actions</h3><p>What you're allowed to do, when, and how to undo it.</p></a>
+        <a class="card" href="../playbooks.html"><h3>Starter playbooks</h3><p>Every playbook has a "NOC does" row.</p></a>
+      </div>
+
+      <h2 id="growing-in-the-role">Growing in the role</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Timeframe</th><th>You can…</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Week 1</strong></td><td>Run the sweep, acknowledge pages, open channels, and page SRE with a complete handoff.</td></tr>
+            <tr><td><strong>Month 1</strong></td><td>Identify the layer (edge, gateway, service, model) from the queries, page the right owner directly, and bridge to Teams.</td></tr>
+            <tr><td><strong>Month 3</strong></td><td>Take pre-approved actions confidently, write runbooks from incidents, and suggest alert improvements. You're ready to shadow SRE on-call.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

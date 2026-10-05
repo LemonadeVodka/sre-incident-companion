@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Senior Manager Path · Nimbus SRE</title>
+  <meta name="description" content="A plain-language path for senior managers: Nimbus in two minutes, the business risks, and how to lead before, during, and after incidents.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Senior Manager</div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
+      <h1>The senior manager path</h1>
+      <p class="lede">This track is written for leaders, not engineers. It has no query language and explains every term. It covers how Nimbus works, where the business risk is, and what to do, ask, and decide before, during, and after incidents.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Your role in incidents: <strong>make sure someone is in charge, make the business decisions, unblock other teams, and protect responders.</strong></li>
+          <li>Between incidents: <strong>fund the fixes</strong> for our known gaps (monitoring, runbooks, tooling, CFT on-call).</li>
+          <li>Read in order. The whole path takes about 30 minutes.</li>
+        </ul>
+      </div>
+
+      <h2 id="reading-order">Reading order</h2>
+      <ol class="steps">
+        <li><strong>This page</strong>Nimbus in two minutes, and the business risks.</li>
+        <li><strong><a href="during-an-incident.html">During an incident</a></strong>Four questions, the decisions only you can make, and what to avoid.</li>
+        <li><strong><a href="scenarios.html">Scenarios in plain English</a></strong>Our eight most likely incidents: what's happening, what users feel, and what you may be asked to decide.</li>
+        <li><strong><a href="after-and-between.html">After &amp; between incidents</a></strong>Postmortems, the monthly health check, and red flags.</li>
+        <li><strong><a href="investing.html">Investing in reliability</a></strong>Reliability targets, the maturity roadmap, and the tooling asks.</li>
+        <li><strong><a href="jargon.html">Jargon decoder</a></strong>Keep it open during incidents.</li>
+      </ol>
+
+      <h2 id="nimbus-in-two-minutes">Nimbus in two minutes</h2>
+      <p><strong>Nimbus</strong> is an AI assistant that comes installed on Windows PCs. People use it to search their files, rewrite text, recap meetings, and fix device problems. The app on the PC talks to our cloud services, which call an AI model hosted on Microsoft Azure (<em>Azure AI Foundry</em>).</p>
+      <p>A request passes through several layers, and any of them can fail:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Layer</th><th>Plain-English job</th><th>When it fails, users see…</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr><td>Desktop app</td><td>What the user sees on their PC</td><td>Crashes, "can't connect"</td><td>Client team</td></tr>
+            <tr><td>Sign-in (Entra ID)</td><td>Proves the user or device is allowed in</td><td>"Please sign in again", features refusing to work</td><td>Platform</td></tr>
+            <tr><td>Front door / CDN</td><td>The internet-facing entrance that protects and speeds up traffic</td><td>Everything fails at once</td><td>Platform</td></tr>
+            <tr><td>Gateway (APIM)</td><td>Checks credentials and routes each request to the right team's service</td><td>Errors across many features</td><td>Platform</td></tr>
+            <tr><td>Feature services</td><td>Each team's code for its feature</td><td>One feature broken or slow</td><td>That feature's team (CFT)</td></tr>
+            <tr><td>AI model (Foundry)</td><td>Generates the answers. Capacity is shared by all teams.</td><td>Slow answers or "busy, try later" across features</td><td>Platform</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Five <strong>CFTs</strong> (cross-functional teams) each own one feature. A <strong>Platform</strong> team owns the shared layers. The <strong>NOC</strong> watches around the clock and raises the alarm, and <strong>SRE on-call</strong> investigates and runs incidents.</p>
+
+      <h2 id="where-the-business-risk-is">Where the business risk is</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Shared AI capacity</h3><p>Every feature draws on the same AI capacity. If one team's background job uses too much, customer-facing features slow down or fail.</p></div>
+        <div class="card"><h3>Many layers, few eyes</h3><p>Fewer than 10% of our services have monitoring dashboards. Diagnosis depends on a handful of people writing queries by hand.</p></div>
+        <div class="card"><h3>New team, few runbooks</h3><p>Most incidents are handled from scratch, so response depends on who's on call.</p></div>
+        <div class="card"><h3>Slow team response</h3><p>Some CFTs have no on-call rotation, and two work in Teams while our incident tooling is in Slack. Minutes are lost finding people.</p></div>
+        <div class="card"><h3>Weak record-keeping</h3><p>Jira is locked down, so incident history and follow-ups are hard to track and easy to lose.</p></div>
+        <div class="card"><h3>Sign-in and edge failures</h3><p>A single change to sign-in or the CDN can block every user at once. These layers need careful change control.</p></div>
+      </div>
+
+      <h2 id="how-the-three-roles-fit">How the three roles fit together</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Job in an incident</th><th>What they need from you</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge noc">NOC</span></td><td>Notice, confirm, raise the alarm, and take a few safe actions</td><td>Permission to escalate early without blame, and a clear list of approved actions</td></tr>
+            <tr><td><span class="badge sre">SRE on-call</span></td><td>Run the incident (IC), investigate, coordinate teams</td><td>Fast decisions, help when CFTs don't respond, protection from interruptions</td></tr>
+            <tr><td><span class="badge lead">You</span></td><td>Decide, unblock, communicate upward and outward, follow through</td><td>Clear options from the IC, and impact stated in numbers</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

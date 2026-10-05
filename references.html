@@ -16,8 +16,8 @@
   <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Reference</div>
-      <div class="eyebrow">Reference</div>
+      <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
+      <div class="eyebrow">Shared · all roles</div>
       <h1>Glossary &amp; references</h1>
       <p class="lede">Definitions of the terms used throughout this guide, plus the sources it draws on.</p>
 
@@ -26,10 +26,14 @@
         <table>
           <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
           <tbody>
+            <tr><td><strong>401 / 403</strong></td><td>HTTP "unauthorized" (credentials rejected) and "forbidden" (recognized but not allowed, often the WAF).</td></tr>
             <tr><td><strong>APIM</strong></td><td>Azure API Management, the gateway in front of every Nimbus feature.</td></tr>
+            <tr><td><strong>Azure Front Door</strong></td><td>Azure's global CDN and edge entry point, with a WAF. Nimbus's first hop in the cloud.</td></tr>
+            <tr><td><strong>Bridge person</strong></td><td>The person relaying incident updates between Slack and Teams.</td></tr>
             <tr><td><strong>Burn rate</strong></td><td>How fast error budget is being used compared with spending it evenly. 1× uses the whole budget exactly over the SLO window.</td></tr>
             <tr><td><strong>CFT</strong></td><td>Cross-functional team. Owns one or more feature experiences end to end.</td></tr>
             <tr><td><strong>cloud_RoleName</strong></td><td>The App Insights field holding the service name, mapped from OTel <code>service.name</code>.</td></tr>
+            <tr><td><strong>Entra ID</strong></td><td>Microsoft's identity service. It issues the tokens that APIM validates.</td></tr>
             <tr><td><strong>Error budget</strong></td><td>1 − SLO: the amount of unreliability you're allowed over the window.</td></tr>
             <tr><td><strong>Feature experience</strong></td><td>A user-facing Nimbus capability, such as Writing Assist or Device Care.</td></tr>
             <tr><td><strong>Foundry</strong></td><td>Azure AI Foundry, the platform hosting Nimbus's model deployments.</td></tr>
@@ -37,15 +41,20 @@
             <tr><td><strong>Golden signals</strong></td><td>Latency, traffic, errors, and saturation.</td></tr>
             <tr><td><strong>IC</strong></td><td>Incident Commander. Coordinates the response and doesn't debug.</td></tr>
             <tr><td><strong>itemCount</strong></td><td>The number of real events a sampled App Insights row stands for.</td></tr>
+            <tr><td><strong>NOC</strong></td><td>Network Operations Center: the first line of defense that detects, triages, and escalates.</td></tr>
             <tr><td><strong>Noisy neighbor</strong></td><td>One workload using up shared capacity and hurting others.</td></tr>
+            <tr><td><strong>OTel Collector</strong></td><td>The OpenTelemetry service that receives OTLP from Rust apps and exports it to Application Insights.</td></tr>
             <tr><td><strong>operation_Id</strong></td><td>The App Insights field holding the trace ID, which links all telemetry for one request.</td></tr>
+            <tr><td><strong>P50 / P95</strong></td><td>Latency percentiles. Half of requests are faster than P50, and 95% are faster than P95.</td></tr>
             <tr><td><strong>PTU</strong></td><td>Provisioned Throughput Units: reserved model capacity with predictable latency, up to its limit.</td></tr>
             <tr><td><strong>SLI / SLO</strong></td><td>Service level indicator (a measure of user experience) and objective (the target for it).</td></tr>
             <tr><td><strong>Spillover</strong></td><td>Sending requests that exceed PTU capacity to a pay-as-you-go deployment.</td></tr>
             <tr><td><strong>Tail-based sampling</strong></td><td>Deciding whether to keep a trace <em>after</em> it completes, so errors and slow traces can always be kept.</td></tr>
             <tr><td><strong>Toil</strong></td><td>Manual, repetitive, automatable operational work with no lasting value.</td></tr>
             <tr><td><strong>TPM</strong></td><td>Tokens per minute, the unit of Foundry quota.</td></tr>
+            <tr><td><strong>WAF</strong></td><td>Web Application Firewall. Blocks suspicious requests at Front Door, returning 403.</td></tr>
             <tr><td><strong>traceparent</strong></td><td>The W3C HTTP header that carries trace context between services.</td></tr>
+            <tr><td><strong>tokio</strong></td><td>The Rust async runtime our services use. Blocking work on it stalls every request on that instance.</td></tr>
             <tr><td><strong>TTFT</strong></td><td>Time to first token: delay before a streamed response starts.</td></tr>
           </tbody>
         </table>
@@ -106,6 +115,9 @@
         <li><a href="https://learn.microsoft.com/azure/ai-services/openai/concepts/provisioned-throughput">Provisioned throughput (PTU)</a></li>
         <li><a href="https://grafana.com/docs/grafana/latest/datasources/azure-monitor/">Grafana Azure Monitor data source</a></li>
       </ul>
+
+      <h2 id="kql-toolkit">KQL toolkit</h2>
+      <p>The <a href="https://github.com/LemonadeVodka/kql-toolkit">kql-toolkit repository</a> holds generic, parameterized KQL for any Azure environment, covering App Insights, Front Door, APIM, auth, Azure Activity, and reusable patterns. The <a href="queries.html">Nimbus KQL</a> page has the Nimbus-specific versions.</p>
 
       <h2 id="related-templates">Related templates</h2>
       <p>These come from the companion repository <a href="https://github.com/LemonadeVodka/noc-tools-templates">noc-tools-templates</a>:</p>

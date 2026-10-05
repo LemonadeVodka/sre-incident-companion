@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NOC: Pre-approved Actions · Nimbus SRE</title>
+  <meta name="description" content="Low-risk, reversible actions the NOC may take during Nimbus incidents when owners are slow to respond, with how to undo each.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="noc-actions">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">NOC</a></div>
+      <div class="track-banner t-noc"><i class="track-dot"></i>NOC · First line of defense</div>
+      <h1>Pre-approved actions</h1>
+      <p class="lede">CFTs don't always respond quickly. When users are affected and the owner hasn't responded, the NOC may take a <strong>short list of low-risk, reversible actions</strong> without waiting. This page lists them, with how to undo each one.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>An action is allowed only if it's <strong>on this list</strong>, user impact is <strong>confirmed</strong>, and the owner hasn't responded within the timer (or SRE asks you).</li>
+          <li><strong>Announce before you act, and record after.</strong> Take one action at a time.</li>
+          <li>Everything else (rollbacks, failover, quota, WAF, content filters) belongs to SRE or Platform.</li>
+        </ul>
+      </div>
+
+      <h2 id="the-rules">The rules</h2>
+      <ol class="steps">
+        <li><strong>Impact is confirmed.</strong>A query shows user impact above baseline, not just an alert.</li>
+        <li><strong>The owner hasn't responded</strong> within the timer (15 minutes for Sev 2, 5 minutes for Sev 1), <em>or</em> SRE or the owner asked you to act.</li>
+        <li><strong>The action is on this list,</strong> and the "use when" conditions match.</li>
+        <li><strong>Announce it</strong> in the incident channel (template below), then act.</li>
+        <li><strong>Record it</strong> in the pinned record, with the time and how to undo it, and tell SRE.</li>
+        <li><strong>Verify</strong> within 10 minutes. If it didn't help, or made things worse, undo it.</li>
+      </ol>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Before acting<span class="answers">Post in #inc-… channel</span></span></div>
+<pre><code>NOC action: [action name] at HH:MM.
+Why: [impact numbers]; [owner] paged HH:MM, no ack.
+Expected effect: [..] within ~10 min.  Undo: [how].
+Will report result by HH:MM.</code></pre>
+      </div>
+
+      <h2 id="approved-actions">Approved actions</h2>
+
+      <section class="playbook" id="act-pause-tips">
+        <div class="playbook-head"><h2>Pause the Proactive Tips background batch</h2>
+          <div class="meta"><span class="badge noc">NOC approved</span><span class="badge neutral">Risk: low (tips arrive late)</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Use when</div><div>429s or high latency on <code>chat-small</code> are hurting Device Care, and the Proactive Tips batch is running.</div></div>
+          <div class="pb-section"><div class="pb-label">How</div><div>Feature flag service: set <code>proactive_tips.batch_enabled</code> to <code>false</code>. This is a Nimbus-specific flag, so use your own equivalent.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>Set the flag back to <code>true</code>. The batch resumes from its queue.</div></div>
+          <div class="pb-section"><div class="pb-label">Notify</div><div>Insights CFT (Slack) and SRE.</div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="act-halt-rollout">
+        <div class="playbook-head"><h2>Halt a desktop client staged rollout</h2>
+          <div class="meta"><span class="badge noc">NOC approved</span><span class="badge neutral">Risk: low (delays a release)</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Use when</div><div>Errors, 401s, or crashes are concentrated in the client version that is currently ramping.</div></div>
+          <div class="pb-section"><div class="pb-label">How</div><div>Release dashboard: select the ramping version and click <strong>Pause ramp</strong>. Users who already have it keep it.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>Click <strong>Resume ramp</strong>. Only resume once the Client CFT confirms a fix.</div></div>
+          <div class="pb-section"><div class="pb-label">Notify</div><div>Client CFT, release manager, and SRE.</div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="act-restart-instance">
+        <div class="playbook-head"><h2>Restart one unhealthy service instance</h2>
+          <div class="meta"><span class="badge noc">NOC approved</span><span class="badge neutral">Risk: low, one at a time</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Use when</div><div>A single instance fails health checks or shows much higher latency than its peers (a typical Rust async runtime stall), and the others are healthy.</div></div>
+          <div class="pb-section"><div class="pb-label">How</div><div>Restart <strong>one</strong> instance from the hosting portal. Wait for it to report healthy before considering another.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>None needed. If <em>all</em> instances look unhealthy, stop: that's not an instance problem, so page SRE.</div></div>
+          <div class="pb-section"><div class="pb-label">Notify</div><div>The owning CFT and SRE. Save the instance name for the investigation.</div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="act-scale-out">
+        <div class="playbook-head"><h2>Scale out a service by a small step</h2>
+          <div class="meta"><span class="badge noc">NOC approved</span><span class="badge neutral">Risk: low (cost)</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Use when</div><div>A service's CPU or request queue is saturated on every instance, and its dependencies (model, retrieval) look healthy.</div></div>
+          <div class="pb-section"><div class="pb-label">How</div><div>Increase the instance count by up to <strong>+50%</strong>, staying within the documented maximum for that service.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>Return to the previous count once the incident is resolved.</div></div>
+          <div class="pb-section"><div class="pb-label">Notify</div><div>The owning CFT and SRE. <strong>Don't</strong> scale out if 429s are the problem, because more instances mean more model calls.</div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="act-status-message">
+        <div class="playbook-head"><h2>Turn on the in-app "degraded service" banner</h2>
+          <div class="meta"><span class="badge noc">NOC approved (Sev 1–2)</span><span class="badge neutral">Risk: low</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Use when</div><div>A Sev 1–2 is declared and users are visibly affected. Use the pre-written text only.</div></div>
+          <div class="pb-section"><div class="pb-label">How</div><div>Server-driven message config: enable <code>service_banner</code> with the approved "Some features are slower than usual" text for the affected feature.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>Disable the banner when the incident is resolved.</div></div>
+          <div class="pb-section"><div class="pb-label">Notify</div><div>The IC and the senior manager. Custom wording requires manager approval.</div></div>
+        </div>
+      </section>
+
+      <h2 id="not-pre-approved">Not pre-approved: ask SRE or Platform</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Action</th><th>Why it needs SRE or Platform</th></tr></thead>
+          <tbody>
+            <tr><td>Rolling back a service deployment</td><td>Can conflict with data or config changes, and needs the owner's context.</td></tr>
+            <tr><td>Region failover (Front Door origin or Foundry)</td><td>Capacity, data residency, and cost implications.</td></tr>
+            <tr><td>Quota, PTU, or spillover changes</td><td>Cost, and affects every CFT.</td></tr>
+            <tr><td>WAF rule changes</td><td>Security risk.</td></tr>
+            <tr><td>Rotating secrets or keys, or changing APIM auth policies</td><td>Can cause a wider 401 outage if done wrong.</td></tr>
+            <tr><td>Content filter changes</td><td>Responsible-AI policy owners must approve.</td></tr>
+            <tr><td>Purging the CDN cache</td><td>Can overload the origin.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <div class="callout-title">Adding to this list</div>
+        <p>New actions get added after an incident shows they're safe and useful. The SRE lead and the owning CFT both sign off, and each one is documented here with its undo steps.</p>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>
