@@ -18,7 +18,7 @@
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">NOC</a></div>
       <div class="track-banner t-noc"><i class="track-dot"></i>NOC · First line of defense</div>
-      <h1>Watch &amp; detect</h1>
+      <h1>Watch &amp; Detect</h1>
       <p class="lede">Fewer than 10% of Nimbus services have a usable dashboard, so you can't detect problems by glancing at Grafana. Detection here combines alerts, user reports, and a <strong>regular health sweep</strong> you run yourself.</p>
 
       <div class="tldr">
@@ -29,15 +29,15 @@
         </ul>
       </div>
 
-      <h2 id="how-problems-reach-us">How problems reach us</h2>
+      <h2 id="how-problems-reach-us">How Problems Reach Us</h2>
       <div class="card-grid">
         <div class="card"><h3>Alerts</h3><p>Azure Monitor threshold alerts routed through PagerDuty. They're noisy, and not every service has them.</p></div>
-        <div class="card"><h3>Your sweep</h3><p>The queries below. They often catch slow-burning issues before any alert fires.</p></div>
-        <div class="card"><h3>Support &amp; users</h3><p>Ticket spikes or social posts. Take them seriously, because they may be a <a href="../playbooks.html#pb-dashboards-green">blind spot</a>.</p></div>
+        <div class="card"><h3>Your Sweep</h3><p>The queries below. They often catch slow-burning issues before any alert fires.</p></div>
+        <div class="card"><h3>Support &amp; Users</h3><p>Ticket spikes or social posts. Take them seriously, because they may be a <a href="../playbooks.html#pb-dashboards-green">blind spot</a>.</p></div>
         <div class="card"><h3>CFTs</h3><p>A CFT notices something in its own feature. Ask them to open an <code>#inc-</code> channel or open it for them.</p></div>
       </div>
 
-      <h2 id="signals-to-watch">Signals to watch</h2>
+      <h2 id="signals-to-watch">Signals to Watch</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Signal</th><th>Where</th><th>Normal</th><th>Act when</th></tr></thead>
@@ -53,7 +53,7 @@
         </table>
       </div>
 
-      <h2 id="shift-health-sweep">Shift health sweep</h2>
+      <h2 id="shift-health-sweep">Shift Health Sweep</h2>
       <p>Run these in order. Each takes a few seconds. Values highlighted in <mark class="p-nimbus">amber</mark> are Nimbus-specific: replace them with your environment's names, or set them once on the <a href="../queries.html#make-it-yours">query page</a>.</p>
       <ul class="checklist" data-key="noc-sweep">
         <li>1. Error rate by feature, now vs yesterday</li>
@@ -62,6 +62,7 @@
         <li>4. 401s at the gateway</li>
         <li>5. 429s on Foundry deployments</li>
         <li>6. Telemetry volume</li>
+        <li>7. Local vs cloud routing (device orchestrator)</li>
       </ul>
 
       <div class="code-card" id="sweep-1">
@@ -146,12 +147,28 @@ union requests, dependencies, customEvents
 | render timechart</code></pre>
       </div>
 
+      <div class="code-card" id="sweep-7">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">7 · Local vs Cloud Routing by Client Version<span class="answers">App Insights → Logs · a drop in local answers means a cloud surge is coming</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 2h;                         // [TUNE] how far back to look
+let routingEvent = "routing.decision";   // [NIMBUS] client event emitted by the device orchestrator
+let routeKey = "route";                  // [NIMBUS] attribute: "local" or "cloud"
+let clientVersionKey = "client.version"; // [NIMBUS] attribute holding the desktop client version
+// ── Query ──────────────────────────────────
+customEvents
+| where timestamp > ago(window) and name == routingEvent
+| extend route = tostring(customDimensions[routeKey]), client = tostring(customDimensions[clientVersionKey])
+| summarize decisions = sum(itemCount), local = sumif(itemCount, route == "local") by client
+| extend local_pct = round(100.0 * local / decisions, 1)
+| order by decisions desc</code></pre>
+      </div>
+
       <div class="callout tip">
-        <div class="callout-title">Save the sweep</div>
+        <div class="callout-title">Save the Sweep</div>
         <p>Save these as <strong>shared queries</strong> in the Log Analytics workspace, or pin them to an Azure dashboard. Until Grafana coverage improves, that saved set <em>is</em> the NOC dashboard.</p>
       </div>
 
-      <h2 id="noise-or-signal">Noise or signal?</h2>
+      <h2 id="noise-or-signal">Noise or Signal?</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Question</th><th>Probably noise</th><th>Probably real</th></tr></thead>

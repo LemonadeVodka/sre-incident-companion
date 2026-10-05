@@ -30,7 +30,12 @@
         </ul>
       </div>
 
-      <h2 id="how-to-read-these-queries">How to read these queries</h2>
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>The parameter-block convention works in any query language: keep everything environment-specific at the top and the logic below. For vendor-neutral KQL, use the <a href="https://github.com/LemonadeVodka/kql-toolkit">KQL toolkit</a>.</p>
+      </div>
+
+      <h2 id="how-to-read-these-queries">How to Read These Queries</h2>
       <div class="code-card">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Anatomy of a query<span class="answers">Change the top block; leave the body alone</span></span></div>
 <pre><code>// ── Parameters ─────────────────────────────
@@ -54,7 +59,7 @@ requests
         </table>
       </div>
 
-      <h2 id="make-it-yours">Make it yours</h2>
+      <h2 id="make-it-yours">Make It Yours</h2>
       <div class="panel">
         <p style="margin-top:0">Type your environment's values. Every <mark class="p-nimbus">amber</mark> value on this site updates as you type, and copied queries include your values. Your values are saved in this browser only.</p>
         <form class="myq" id="myq" onsubmit="return false">
@@ -130,6 +135,41 @@ dependencies
 | render timechart</code></pre>
       </div>
 
+      <h2 id="device-and-routing">Device and Routing</h2>
+      <p>The device orchestrator answers some requests on-device and sends the rest to the cloud. These queries read client telemetry, which is the only place the local path shows up.</p>
+      <div class="code-card" id="q-routing-split">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Local vs Cloud Answers by Client Version<span class="answers">Is the device orchestrator sending more to the cloud than usual?</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 24h;                        // [TUNE] how far back to look
+let routingEvent = "routing.decision";   // [NIMBUS] client event emitted by the device orchestrator
+let routeKey = "route";                  // [NIMBUS] attribute: "local" or "cloud"
+let clientVersionKey = "client.version"; // [NIMBUS] attribute holding the desktop client version
+// ── Query ──────────────────────────────────
+customEvents
+| where timestamp > ago(window) and name == routingEvent
+| extend route = tostring(customDimensions[routeKey]), client = tostring(customDimensions[clientVersionKey])
+| summarize local_pct = round(100.0 * sumif(itemCount, route == "local") / sum(itemCount), 1)
+    by client, bin(timestamp, 1h)
+| render timechart</code></pre>
+      </div>
+
+      <div class="code-card" id="q-fallback-rate">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Local-to-Cloud Fallback Rate and Reasons<span class="answers">Is on-device inference failing and pushing load to the cloud?</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 24h;                          // [TUNE] how far back to look
+let routingEvent = "routing.decision";     // [NIMBUS] client event emitted by the device orchestrator
+let fallbackKey = "fallback.reason";       // [NIMBUS] attribute set when a local attempt fell back to cloud
+let localModelKey = "local_model.version"; // [NIMBUS] attribute holding the on-device model version
+// ── Query ──────────────────────────────────
+customEvents
+| where timestamp > ago(window) and name == routingEvent
+| extend reason = tostring(customDimensions[fallbackKey]), model = tostring(customDimensions[localModelKey])
+| summarize decisions = sum(itemCount), fallbacks = sumif(itemCount, isnotempty(reason)),
+            top_reasons = make_set_if(reason, isnotempty(reason), 5) by model, bin(timestamp, 1h)
+| extend fallback_pct = round(100.0 * fallbacks / decisions, 2)
+| order by timestamp desc, fallback_pct desc</code></pre>
+      </div>
+
       <h2 id="errors">Errors</h2>
       <div class="code-card" id="q-error-rate">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Error rate by feature and result code<span class="answers">Which feature is failing, and with what?</span></span></div>
@@ -175,7 +215,7 @@ dependencies
 | render timechart</code></pre>
       </div>
 
-      <h2 id="edge-and-auth">Edge (CDN) and auth</h2>
+      <h2 id="edge-and-auth">Edge (CDN) and Auth</h2>
       <div class="code-card" id="q-edge-status">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Front Door status codes over time<span class="answers">Log Analytics · is the edge failing?</span></span></div>
 <pre><code>// ── Parameters ─────────────────────────────
@@ -233,7 +273,7 @@ requests
       </div>
       <p>More auth checks (managed identity, token validation errors, clock skew) are on <a href="sre/investigate.html#401-investigation">SRE investigate</a>.</p>
 
-      <h2 id="foundry-quota-and-tokens">Foundry, quota, and tokens</h2>
+      <h2 id="foundry-quota-and-tokens">Foundry, Quota, and Tokens</h2>
       <div class="code-card" id="q-model-latency">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Model P50 / P95 and failures by deployment<span class="answers">One deployment or region, or all?</span></span></div>
 <pre><code>// ── Parameters ─────────────────────────────
@@ -341,7 +381,7 @@ union requests, dependencies, exceptions, traces
 | order by timestamp asc</code></pre>
       </div>
 
-      <h2 id="change-and-cohorts">Change and cohorts</h2>
+      <h2 id="change-and-cohorts">Change and Cohorts</h2>
       <div class="code-card" id="q-deploy-correlation">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Error rate by service version over time<span class="answers">Did it start when a new version went out?</span></span></div>
 <pre><code>// ── Parameters ─────────────────────────────
@@ -383,7 +423,7 @@ requests
 | order by total desc</code></pre>
       </div>
 
-      <h2 id="telemetry-health">Telemetry health</h2>
+      <h2 id="telemetry-health">Telemetry Health</h2>
       <div class="code-card" id="q-telemetry-volume">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Telemetry volume by type<span class="answers">Did data stop arriving (Collector problem)?</span></span></div>
 <pre><code>// ── Parameters ─────────────────────────────

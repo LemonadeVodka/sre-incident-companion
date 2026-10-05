@@ -18,7 +18,7 @@
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
       <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
-      <h1>Investing in reliability</h1>
+      <h1>Investing in Reliability</h1>
       <p class="lede">Incidents show where we're weak. This page turns that into decisions: what reliability targets to set, what to fund first, and which tooling and process fixes only leadership can unlock.</p>
 
       <div class="tldr">
@@ -29,7 +29,7 @@
         </ul>
       </div>
 
-      <h2 id="reliability-targets-are-business-decisions">Reliability targets are business decisions</h2>
+      <h2 id="reliability-targets-are-business-decisions">Reliability Targets Are Business Decisions</h2>
       <p>An <strong>SLO</strong> (service level objective) is a reliability target, such as "99.5% of Writing Assist requests succeed" or "95% of Smart Search results arrive within 3.5 seconds". Every extra "9" costs more engineering time and money, so targets should differ by feature:</p>
       <div class="table-wrap">
         <table>
@@ -44,7 +44,7 @@
       </div>
       <p>The <strong>error budget</strong> is the failure the target allows. Agree up front what happens when it runs out. Typically, that team pauses risky launches and works on reliability. If leadership won't honor that agreement, the targets mean nothing.</p>
 
-      <h2 id="what-to-fund-first">What to fund first</h2>
+      <h2 id="what-to-fund-first">What to Fund First</h2>
       <ol class="steps">
         <li><strong>People and process.</strong>An on-call rotation and a PagerDuty service for every CFT. Time for runbooks after every incident. These are cheap and have an immediate effect on our slowest delays.</li>
         <li><strong>Visibility.</strong>Standard monitoring for every service, and one dashboard template applied to every feature. This takes us from under 10% coverage to all customer-facing features in about 90 days.</li>
@@ -53,15 +53,15 @@
       </ol>
       <p>The engineering detail is on the <a href="../observability-maturity.html">observability maturity</a> page.</p>
 
-      <h2 id="the-business-case">The business case</h2>
+      <h2 id="the-business-case">The Business Case</h2>
       <div class="card-grid">
-        <div class="card"><h3>Shorter outages</h3><p>Most incident time is spent finding the problem and the owner, not fixing it. Better visibility and on-call coverage cut that directly.</p></div>
-        <div class="card"><h3>Fewer repeat incidents</h3><p>Runbooks and completed action items stop the same incident from happening again.</p></div>
-        <div class="card"><h3>Lower AI spend</h3><p>Knowing who uses capacity, and when, avoids over-buying reserved capacity and paying for emergency overflow.</p></div>
-        <div class="card"><h3>Less burnout</h3><p>Fewer noisy pages and a shared load mean people stay on the team. Losing one of our few experts is a reliability risk in itself.</p></div>
+        <div class="card"><h3>Shorter Outages</h3><p>Most incident time is spent finding the problem and the owner, not fixing it. Better visibility and on-call coverage cut that directly.</p></div>
+        <div class="card"><h3>Fewer Repeat Incidents</h3><p>Runbooks and completed action items stop the same incident from happening again.</p></div>
+        <div class="card"><h3>Lower AI Spend</h3><p>Knowing who uses capacity, and when, avoids over-buying reserved capacity and paying for emergency overflow.</p></div>
+        <div class="card"><h3>Less Burnout</h3><p>Fewer noisy pages and a shared load mean people stay on the team. Losing one of our few experts is a reliability risk in itself.</p></div>
       </div>
 
-      <h2 id="tooling-and-process-asks">Tooling and process asks</h2>
+      <h2 id="tooling-and-process-asks">Tooling and Process Asks</h2>
       <p>These are blocked by permissions, budgets, or other teams, which makes them leadership work.</p>
       <div class="table-wrap">
         <table>
@@ -72,11 +72,20 @@
             <tr><td><strong>PagerDuty for every CFT</strong></td><td>Some CFTs have no service or rotation, so we page their managers instead</td><td>Each feature has a PagerDuty service, an escalation policy, and a named on-call</td></tr>
             <tr><td><strong>CFT response expectations</strong></td><td>CFTs sometimes take 30+ minutes to respond</td><td>Agreed acknowledgement times per severity, reviewed monthly with real numbers</td></tr>
             <tr><td><strong>Observability capacity</strong></td><td>Two people own monitoring for every team</td><td>Dedicated time to build the shared monitoring package and dashboard template</td></tr>
+            <tr><td><strong>NOC action tooling</strong></td><td>The NOC coordinates but has to ask other teams for every change</td><td>Scoped, audited tooling for the pre-agreed requests, so the NOC can act within minutes</td></tr>
+            <tr><td><strong>Postmortem discipline</strong></td><td>Postmortems are skipped or unfinished, and actions are lost</td><td>Required reviews for Sev 1–2, a manager chairing them, and monthly action-item reviews (see <a href="../postmortems/index.html">Postmortems</a>)</td></tr>
+            <tr><td><strong>Executive incident etiquette</strong></td><td>Leaders diving in and DMing responders adds stress and time</td><td>An exec update format, a named comms buffer, and a short briefing for directors</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h2 id="questions-for-planning-reviews">Questions for planning reviews</h2>
+      <h2 id="centralized-sre-and-cloud-infrastructure">Centralized SRE and Cloud Infrastructure</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Centralized SRE Needs Leverage</h3><p>Our SREs serve every CFT but own none of their backlogs. Back the "SRE advises, CFT owns" agreement, give each CFT an SRE liaison, and make production readiness checks a launch requirement.</p></div>
+        <div class="card"><h3>Cloud Infrastructure Needs Accountability</h3><p>They own what everyone depends on. Agree change-announcement rules for shared layers, joint postmortems, and reliability targets for the cloud orchestrator and gateway.</p></div>
+      </div>
+
+      <h2 id="questions-for-planning-reviews">Questions for Planning Reviews</h2>
       <ul>
         <li>"Does this launch change how much AI capacity we use? Who checked?"</li>
         <li>"Does this new feature have monitoring, an owner on PagerDuty, and a runbook <em>before</em> launch?"</li>

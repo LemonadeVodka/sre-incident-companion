@@ -18,7 +18,7 @@
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / Senior Manager</div>
       <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
-      <h1>The senior manager path</h1>
+      <h1>The Senior Manager Path</h1>
       <p class="lede">This track is written for leaders, not engineers. It has no query language and explains every term. It covers how Nimbus works, where the business risk is, and what to do, ask, and decide before, during, and after incidents.</p>
 
       <div class="tldr">
@@ -29,7 +29,12 @@
         </ul>
       </div>
 
-      <h2 id="reading-order">Reading order</h2>
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>A senior leader's job in incidents is the same everywhere: make sure someone is coordinating, make the decisions only leaders can make, unblock other teams, and protect the responders, including from other leaders.</p>
+      </div>
+
+      <h2 id="reading-order">Reading Order</h2>
       <ol class="steps">
         <li><strong>This page</strong>Nimbus in two minutes, and the business risks.</li>
         <li><strong><a href="during-an-incident.html">During an incident</a></strong>Four questions, the decisions only you can make, and what to avoid.</li>
@@ -39,7 +44,7 @@
         <li><strong><a href="jargon.html">Jargon decoder</a></strong>Keep it open during incidents.</li>
       </ol>
 
-      <h2 id="nimbus-in-two-minutes">Nimbus in two minutes</h2>
+      <h2 id="nimbus-in-two-minutes">Nimbus in Two Minutes</h2>
       <p><strong>Nimbus</strong> is an AI assistant that comes installed on Windows PCs. People use it to search their files, rewrite text, recap meetings, and fix device problems. The app on the PC talks to our cloud services, which call an AI model hosted on Microsoft Azure (<em>Azure AI Foundry</em>).</p>
       <p>A request passes through several layers, and any of them can fail:</p>
       <div class="table-wrap">
@@ -47,34 +52,36 @@
           <thead><tr><th>Layer</th><th>Plain-English job</th><th>When it fails, users see…</th><th>Owner</th></tr></thead>
           <tbody>
             <tr><td>Desktop app</td><td>What the user sees on their PC</td><td>Crashes, "can't connect"</td><td>Client team</td></tr>
-            <tr><td>Sign-in (Entra ID)</td><td>Proves the user or device is allowed in</td><td>"Please sign in again", features refusing to work</td><td>Platform</td></tr>
-            <tr><td>Front door / CDN</td><td>The internet-facing entrance that protects and speeds up traffic</td><td>Everything fails at once</td><td>Platform</td></tr>
-            <tr><td>Gateway (APIM)</td><td>Checks credentials and routes each request to the right team's service</td><td>Errors across many features</td><td>Platform</td></tr>
+            <tr><td>Sign-in (Entra ID)</td><td>Proves the user or device is allowed in</td><td>"Please sign in again", features refusing to work</td><td>Cloud Infrastructure</td></tr>
+            <tr><td>Front door / CDN</td><td>The internet-facing entrance that protects and speeds up traffic</td><td>Everything fails at once</td><td>Cloud Infrastructure</td></tr>
+            <tr><td>Gateway (APIM)</td><td>Checks credentials and routes each request to the right team's service</td><td>Errors across many features</td><td>Cloud Infrastructure</td></tr>
             <tr><td>Feature services</td><td>Each team's code for its feature</td><td>One feature broken or slow</td><td>That feature's team (CFT)</td></tr>
-            <tr><td>AI model (Foundry)</td><td>Generates the answers. Capacity is shared by all teams.</td><td>Slow answers or "busy, try later" across features</td><td>Platform</td></tr>
+            <tr><td>AI model (Foundry)</td><td>Generates the answers. Capacity is shared by all teams.</td><td>Slow answers or "busy, try later" across features</td><td>Cloud Infrastructure</td></tr>
           </tbody>
         </table>
       </div>
-      <p>Five <strong>CFTs</strong> (cross-functional teams) each own one feature. A <strong>Platform</strong> team owns the shared layers. The <strong>NOC</strong> watches around the clock and raises the alarm, and <strong>SRE on-call</strong> investigates and runs incidents.</p>
+      <p>Five <strong>CFTs</strong> (cross-functional teams) each own one feature. The powerful <strong>Cloud Infrastructure CFT</strong> owns the shared cloud. The <strong>NOC</strong> watches around the clock and <strong>coordinates every incident</strong>, but can't change production yet. A <strong>centralized SRE team</strong> (not embedded in CFTs) provides the Technical Lead. Some requests are answered <strong>on the device</strong> without touching the cloud. When that local path fails, the cloud gets hit with extra load.</p>
 
-      <h2 id="where-the-business-risk-is">Where the business risk is</h2>
+      <h2 id="where-the-business-risk-is">Where the Business Risk Is</h2>
       <div class="card-grid">
-        <div class="card"><h3>Shared AI capacity</h3><p>Every feature draws on the same AI capacity. If one team's background job uses too much, customer-facing features slow down or fail.</p></div>
-        <div class="card"><h3>Many layers, few eyes</h3><p>Fewer than 10% of our services have monitoring dashboards. Diagnosis depends on a handful of people writing queries by hand.</p></div>
-        <div class="card"><h3>New team, few runbooks</h3><p>Most incidents are handled from scratch, so response depends on who's on call.</p></div>
-        <div class="card"><h3>Slow team response</h3><p>Some CFTs have no on-call rotation, and two work in Teams while our incident tooling is in Slack. Minutes are lost finding people.</p></div>
-        <div class="card"><h3>Weak record-keeping</h3><p>Jira is locked down, so incident history and follow-ups are hard to track and easy to lose.</p></div>
-        <div class="card"><h3>Sign-in and edge failures</h3><p>A single change to sign-in or the CDN can block every user at once. These layers need careful change control.</p></div>
+        <div class="card"><h3>Shared AI Capacity</h3><p>Every feature draws on the same AI capacity. If one team's background job uses too much, customer-facing features slow down or fail.</p></div>
+        <div class="card"><h3>Many Layers, Few Eyes</h3><p>Fewer than 10% of our services have monitoring dashboards. Diagnosis depends on a handful of people writing queries by hand.</p></div>
+        <div class="card"><h3>New Team, Few Runbooks</h3><p>Most incidents are handled from scratch, so response depends on who's on call.</p></div>
+        <div class="card"><h3>Slow Team Response</h3><p>Some CFTs have no on-call rotation, and two work in Teams while our incident tooling is in Slack. Minutes are lost finding people.</p></div>
+        <div class="card"><h3>Weak Record-Keeping</h3><p>Jira is locked down, so incident history and follow-ups are hard to track and easy to lose.</p></div>
+        <div class="card"><h3>Weak Postmortems</h3><p>Reviews get skipped or never finished, and action items are lost, so the same incidents come back. See <a href="../postmortems/index.html">Postmortems</a>.</p></div>
+        <div class="card"><h3>Coordination Without Tools</h3><p>The NOC runs incidents but has to ask others for every change. Each request adds minutes.</p></div>
+        <div class="card"><h3>Sign-In and Edge Failures</h3><p>A single change to sign-in or the CDN can block every user at once. These layers need careful change control.</p></div>
       </div>
 
-      <h2 id="how-the-three-roles-fit">How the three roles fit together</h2>
+      <h2 id="how-the-three-roles-fit">How the Three Roles Fit Together</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Role</th><th>Job in an incident</th><th>What they need from you</th></tr></thead>
           <tbody>
-            <tr><td><span class="badge noc">NOC</span></td><td>Notice, confirm, raise the alarm, and take a few safe actions</td><td>Permission to escalate early without blame, and a clear list of approved actions</td></tr>
-            <tr><td><span class="badge sre">SRE on-call</span></td><td>Run the incident (IC), investigate, coordinate teams</td><td>Fast decisions, help when CFTs don't respond, protection from interruptions</td></tr>
-            <tr><td><span class="badge lead">You</span></td><td>Decide, unblock, communicate upward and outward, follow through</td><td>Clear options from the IC, and impact stated in numbers</td></tr>
+            <tr><td><span class="badge noc">NOC</span></td><td>Detect, declare, and <strong>coordinate</strong> the incident (IC). Request actions from owners.</td><td>Backing for their coordination authority, tooling to act, and help when requests stall</td></tr>
+            <tr><td><span class="badge sre">SRE on-call</span></td><td><strong>Technical Lead</strong>: investigate, recommend mitigations, and give owners evidence</td><td>Protection from interruptions, and leverage with CFTs they don't manage</td></tr>
+            <tr><td><span class="badge lead">You</span></td><td>Decide, unblock, communicate upward and outward, follow through</td><td>Clear options from the IC and Technical Lead, with impact stated in numbers</td></tr>
           </tbody>
         </table>
       </div>

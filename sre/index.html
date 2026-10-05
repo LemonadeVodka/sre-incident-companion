@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SRE On-Call · Nimbus SRE</title>
-  <meta name="description" content="The SRE on-call role for Nimbus: taking handoff from the NOC, running incidents, investigating across layers, and coordinating CFTs.">
+  <title>SRE On-Call: Technical Lead · Nimbus SRE</title>
+  <meta name="description" content="The SRE on-call role for Nimbus: Technical Lead in incidents, working as a centralized team across CFTs and Cloud Infrastructure.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -17,87 +17,91 @@
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / SRE On-Call</div>
-      <div class="track-banner t-sre"><i class="track-dot"></i>SRE On-Call · Investigate &amp; command</div>
-      <h1>SRE on-call</h1>
-      <p class="lede">The NOC got the right people moving. Now you <strong>take command, find which layer is failing, drive mitigation, and pull in CFTs and Platform</strong>, many of whom are slow to respond or on another chat platform. Because we're a new team, there often won't be a runbook. You'll be writing it as you go.</p>
+      <div class="track-banner t-sre"><i class="track-dot"></i>SRE On-Call · Technical Lead</div>
+      <h1>SRE On-Call: Technical Lead</h1>
+      <p class="lede">In a Nimbus incident the <strong>NOC coordinates</strong> and <strong>you lead the technical response</strong>: find the failing layer, work out the options, recommend mitigations, and give owners the evidence to act. You're part of a <strong>centralized SRE team</strong>, not embedded in any CFT, so most of the systems you're debugging belong to someone else.</p>
 
       <div class="tldr">
         <ul>
-          <li>You are the <strong>default Incident Commander</strong> for Sev 1–2, unless you hand IC to someone else explicitly.</li>
-          <li>Start with the <strong>layer</strong> (edge, gateway, service, model). It tells you the owner and narrows the causes.</li>
-          <li><strong>Mitigate before you debug.</strong> Chase non-responding CFTs on a timer, not on hope.</li>
-          <li>Every incident ends with a <strong>Jira ticket, a runbook owner, and a postmortem date</strong>.</li>
+          <li>You're the <strong>Technical Lead</strong>. The NOC is the Incident Coordinator. Let them run the room while you keep your head in the problem.</li>
+          <li>Start with the <strong>layer</strong>: device, edge, gateway, cloud orchestrator, feature service, or model. It tells you the owner and narrows the causes.</li>
+          <li>You <strong>recommend</strong>, and owners (CFTs, Cloud Infrastructure) <strong>execute</strong>. Make your recommendations specific and backed by evidence.</li>
+          <li>After the incident you write the <strong>technical analysis</strong> for the <a href="../postmortems/index.html">postmortem</a>.</li>
         </ul>
       </div>
 
-      <h2 id="taking-the-handoff">Taking the handoff from the NOC</h2>
-      <ul class="checklist" data-key="sre-handoff">
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>A technical lead who isn't also coordinating thinks faster and makes fewer mistakes. If you find yourself writing status updates or answering executives, hand that work to the coordinator.</p>
+      </div>
+
+      <h2 id="joining-an-incident">Joining an Incident</h2>
+      <ul class="checklist" data-key="sre-join">
         <li>Acknowledge in PagerDuty and join the <code>#inc-</code> channel.</li>
-        <li>Read the pinned record and the NOC handoff. Ask about anything unclear <em>once</em>, in the channel.</li>
-        <li>Say <strong>"I have IC"</strong> in the channel, or name someone else as IC.</li>
-        <li>Confirm or change the severity, and say why.</li>
-        <li>Assign roles: <strong>bridge</strong> (Teams CFTs), <strong>scribe</strong>, and ops lead if it isn't you.</li>
-        <li>Check the NOC's actions: are they still in effect, and did they help?</li>
-        <li>Set the next update time, and stick to it.</li>
+        <li>Read the pinned record and the NOC's brief. Ask about anything unclear <em>once</em>, in the channel.</li>
+        <li>Confirm: "I'm Technical Lead. @NOC is IC."</li>
+        <li>Re-run the NOC's query to confirm the impact yourself.</li>
+        <li>Tell the IC your first hypothesis and what you'll check, so they can update stakeholders.</li>
       </ul>
 
-      <h2 id="what-you-own">What you own</h2>
+      <h2 id="what-you-own">What You Own</h2>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>SRE on-call owns</th><th>Shared with or owned by others</th></tr></thead>
+          <thead><tr><th>SRE Technical Lead owns</th><th>Others own</th></tr></thead>
           <tbody>
-            <tr><td>Incident command for Sev 1–2</td><td>Feature code fixes (owning CFT)</td></tr>
-            <tr><td>Cross-layer investigation: edge, gateway, services, model</td><td>Foundry quota, PTU, failover, WAF, APIM policies (Platform; you request and coordinate)</td></tr>
-            <tr><td>Choosing and driving mitigations</td><td>Spend, quality trade-offs, customer comms (senior manager decides)</td></tr>
-            <tr><td>Chasing CFTs up the escalation ladder</td><td>Managing CFT on-call rotations (CFT managers)</td></tr>
-            <tr><td>Ensuring the Jira ticket, runbook, and postmortem happen</td><td>Writing every runbook (assign to the best person)</td></tr>
+            <tr><td>Cross-layer diagnosis: device, edge, gateway, orchestrators, services, model</td><td>Coordination, comms, timers, and the record (NOC as IC)</td></tr>
+            <tr><td>Technical options and recommended mitigations</td><td>Executing changes on their systems (CFTs, Cloud Infrastructure)</td></tr>
+            <tr><td>Evidence for owners: queries, charts, traces</td><td>Spend, quality trade-offs, and customer messaging (senior manager)</td></tr>
+            <tr><td>The technical analysis in the postmortem</td><td>Fixing the code and owning action items (owning CFT)</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h2 id="first-10-minutes-after-handoff">Your first 10 minutes after handoff</h2>
+      <h2 id="centralized-sre">Centralized SRE: How We Work</h2>
+      <p>Nimbus SREs are one central team serving five feature CFTs, the Client CFT, and Cloud Infrastructure. That gives breadth, but it brings some real difficulties:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Challenge</th><th>What it causes</th><th>How we handle it</th></tr></thead>
+          <tbody>
+            <tr><td>Thin context on each feature</td><td>Slower diagnosis in unfamiliar code</td><td><strong>Service cards</strong> for each feature: owner, dashboards, runbooks, dependencies, normal numbers. One page each, kept by the CFT.</td></tr>
+            <tr><td>No control over CFT backlogs or deploys</td><td>Reliability fixes wait behind features</td><td><strong>"SRE advises, CFT owns"</strong>: agreed in writing, with postmortem actions tracked to the CFT and reviewed by managers</td></tr>
+            <tr><td>Spread across many teams</td><td>Relationships are weak when an incident hits</td><td><strong>One SRE liaison per CFT</strong>, who attends their planning monthly and knows their on-call</td></tr>
+            <tr><td>Cloud Infrastructure's influence</td><td>Hard to push changes to shared layers</td><td>Evidence-first requests, and shared postmortem actions with their management in the room</td></tr>
+            <tr><td>Being seen as "the people who get paged"</td><td>CFTs disengage from reliability</td><td><strong>Production readiness checks</strong> before launches: monitoring, PagerDuty service, runbook, capacity</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="first-10-minutes">Your First 10 Minutes</h2>
       <ol class="steps">
-        <li><strong>Confirm impact yourself.</strong>Re-run the NOC's query. Numbers drift, so confirm they still hold.</li>
-        <li><strong>Find the layer.</strong>Run the <a href="investigate.html#which-layer-returned-the-error">layer comparison query</a>. Edge, gateway, service, or model?</li>
-        <li><strong>Check for a change.</strong>Deploys, client rollout, config or policy changes in <code>AzureActivity</code>, prompt or model version changes.</li>
-        <li><strong>Pick a mitigation if one is obvious.</strong>Roll back, pause, shift, or degrade. Announce it, then do it.</li>
-        <li><strong>Make sure the owner is engaged.</strong>If not, climb the <a href="incident-command.html#chasing-non-responding-cfts">ladder</a>.</li>
+        <li><strong>Confirm impact yourself.</strong>Numbers drift, so check the NOC's query still holds.</li>
+        <li><strong>Find the layer.</strong>Run the <a href="investigate.html#which-layer-returned-the-error">layer comparison</a>, and check the <a href="../queries.html#q-routing-split">local vs cloud split</a> for device-side causes.</li>
+        <li><strong>Check for a change.</strong>Deploys, client or local model rollouts, routing policy, <code>AzureActivity</code>, prompt or model versions.</li>
+        <li><strong>Recommend a mitigation if one is obvious.</strong>Tell the IC which owner should do it, so they can send the request.</li>
+        <li><strong>Keep going.</strong>Write hypotheses in the channel, and test the cheapest one first.</li>
       </ol>
 
-      <h2 id="your-pages">Your pages</h2>
-      <div class="card-grid">
-        <a class="card" href="investigate.html"><h3>Investigate</h3><p>Which layer, P50/P95 decomposition, error types, CDN and 401 deep checks, Rust failure modes.</p></a>
-        <a class="card" href="deep-dives.html"><h3>Deep dives</h3><p>Noisy neighbors, retry storms, sampling gaps, failover, model regressions, capacity.</p></a>
-        <a class="card" href="incident-command.html"><h3>Incident command</h3><p>Running the incident across Slack, Teams, PagerDuty, and slow CFTs, without Jira.</p></a>
-        <a class="card" href="../queries.html"><h3>Nimbus KQL</h3><p>Copy-ready queries with Nimbus-specific values highlighted.</p></a>
-      </div>
-
-      <div class="leader noc" aria-label="Working with the NOC">
-        <div class="leader-head">Working with the NOC <small>· they're your eyes and your bridge</small></div>
-        <div class="leader-grid">
-          <div><h4>Do</h4><ul>
-            <li>Thank them for good handoffs, and tell them what was missing when a handoff was weak.</li>
-            <li>Keep them as bridge or scribe, because they already have context.</li>
-            <li>Tell them when a pre-approved action can be undone.</li>
-          </ul></div>
-          <div><h4>Grow them</h4><ul>
-            <li>Explain your reasoning out loud in the channel.</li>
-            <li>Invite NOC engineers to shadow your on-call shifts.</li>
-            <li>Turn their noisy-alert notes into runbook work.</li>
-          </ul></div>
+      <h2 id="what-good-looks-like">What Good Looks Like</h2>
+      <details>
+        <summary>Weak / Good / Best in Class: SRE as Technical Lead</summary>
+        <div class="details-body">
+          <div class="wgb">
+            <div><span class="q-level q-weak">Weak</span><p>Disappears into a query alone, answers executive DMs, argues with owners without data, and the root cause comes before mitigation.</p></div>
+            <div><span class="q-level q-good">Good</span><p>Finds the layer quickly, posts hypotheses, recommends specific reversible mitigations, and gives owners the evidence.</p></div>
+            <div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus explains reasoning so the NOC learns, protects their focus through the IC, and writes a postmortem analysis that leads to real system changes.</p></div>
+          </div>
+          <p>Compare every dimension on <a href="../response-quality.html">What Good Looks Like</a>.</p>
         </div>
-      </div>
+      </details>
 
-      <h2 id="growing-in-the-role">Growing in the role</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Stage</th><th>You can…</th></tr></thead>
-          <tbody>
-            <tr><td><strong>Shadow</strong></td><td>Follow an SRE through two incidents, and run the investigation queries with them.</td></tr>
-            <tr><td><strong>Primary, with backup</strong></td><td>Take IC for Sev 3, and investigate Sev 2 with a secondary on standby.</td></tr>
-            <tr><td><strong>Primary</strong></td><td>Run Sev 1–2 as IC, coordinate several CFTs and Platform, and run game days.</td></tr>
-          </tbody>
-        </table>
+      <h2 id="your-pages">Your Pages</h2>
+      <div class="card-grid">
+        <a class="card" href="investigate.html"><h3>Investigate</h3><p>Which layer, P50/P95 by hop, orchestrators, CDN and 401 checks, and Rust failure modes.</p></a>
+        <a class="card" href="deep-dives.html"><h3>Deep Dives</h3><p>Noisy neighbors, fallback surges, retry storms, sampling gaps, failover, and model regressions.</p></a>
+        <a class="card" href="technical-lead.html"><h3>Leading the Technical Response</h3><p>Workstreams, recommendations, working with owners, and protecting your focus.</p></a>
+        <a class="card" href="../queries.html"><h3>Nimbus KQL</h3><p>Copy-ready queries with Nimbus-specific values highlighted.</p></a>
+        <a class="card" href="../onboarding.html#sre-path"><h3>SRE Onboarding Path</h3><p>Shadow, primary with backup, then primary.</p></a>
+        <a class="card" href="../cards/sre.html"><h3>SRE Role Card</h3><p>A printable one-pager.</p></a>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>

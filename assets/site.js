@@ -6,41 +6,57 @@
   /* Each group is a track. Prev/next paging stays inside the track. */
   var NAV = [
     { group: "Start", track: "shared", items: [
-      { id: "index", href: "index.html", title: "Home & triage" },
-      { id: "environment", href: "environment.html", title: "Background: Nimbus" }
+      { id: "index", href: "index.html", title: "Home & Triage" },
+      { id: "environment", href: "environment.html", title: "Background: Nimbus" },
+      { id: "how-to-use", href: "how-to-use.html", title: "How to Use This Guide" },
+      { id: "response-quality", href: "response-quality.html", title: "What Good Looks Like" },
+      { id: "onboarding", href: "onboarding.html", title: "Onboarding Paths" },
+      { id: "adapt", href: "adapt.html", title: "Using This Guide Anywhere" }
     ]},
-    { group: "NOC · First line", track: "noc", items: [
-      { id: "noc", href: "noc/index.html", title: "NOC role" },
-      { id: "noc-detect", href: "noc/detect.html", title: "Watch & detect" },
-      { id: "noc-triage", href: "noc/triage-and-escalate.html", title: "Triage & escalate" },
-      { id: "noc-actions", href: "noc/safe-actions.html", title: "Pre-approved actions" }
+    { group: "NOC · Incident Coordinator", track: "noc", items: [
+      { id: "noc", href: "noc/index.html", title: "NOC Role" },
+      { id: "noc-detect", href: "noc/detect.html", title: "Watch & Detect" },
+      { id: "noc-triage", href: "noc/triage-and-escalate.html", title: "Triage & Escalate" },
+      { id: "noc-coordinate", href: "noc/coordinate.html", title: "Coordinate the Incident" },
+      { id: "noc-requests", href: "noc/action-requests.html", title: "Requesting Actions" }
     ]},
-    { group: "SRE On-Call", track: "sre", items: [
-      { id: "sre", href: "sre/index.html", title: "SRE on-call role" },
+    { group: "SRE On-Call · Technical Lead", track: "sre", items: [
+      { id: "sre", href: "sre/index.html", title: "SRE Role" },
       { id: "sre-investigate", href: "sre/investigate.html", title: "Investigate" },
-      { id: "sre-deep", href: "sre/deep-dives.html", title: "Deep dives" },
-      { id: "sre-ic", href: "sre/incident-command.html", title: "Incident command" }
+      { id: "sre-deep", href: "sre/deep-dives.html", title: "Deep Dives" },
+      { id: "sre-tl", href: "sre/technical-lead.html", title: "Leading the Technical Response" }
     ]},
     { group: "Senior Manager", track: "lead", items: [
-      { id: "lead", href: "leaders/index.html", title: "Manager path" },
-      { id: "lead-during", href: "leaders/during-an-incident.html", title: "During an incident" },
-      { id: "lead-scenarios", href: "leaders/scenarios.html", title: "Scenarios in plain English" },
-      { id: "lead-after", href: "leaders/after-and-between.html", title: "After & between incidents" },
-      { id: "lead-invest", href: "leaders/investing.html", title: "Investing in reliability" },
-      { id: "lead-jargon", href: "leaders/jargon.html", title: "Jargon decoder" }
+      { id: "lead", href: "leaders/index.html", title: "Manager Path" },
+      { id: "lead-during", href: "leaders/during-an-incident.html", title: "During an Incident" },
+      { id: "lead-scenarios", href: "leaders/scenarios.html", title: "Scenarios in Plain English" },
+      { id: "lead-after", href: "leaders/after-and-between.html", title: "After & Between Incidents" },
+      { id: "lead-invest", href: "leaders/investing.html", title: "Investing in Reliability" },
+      { id: "lead-jargon", href: "leaders/jargon.html", title: "Jargon Decoder" }
     ]},
-    { group: "Shared toolkit", track: "shared", items: [
-      { id: "fundamentals", href: "fundamentals.html", title: "SRE fundamentals" },
-      { id: "incident-response", href: "incident-response.html", title: "Incident process" },
-      { id: "ways-of-working", href: "ways-of-working.html", title: "Ways of working" },
-      { id: "playbooks", href: "playbooks.html", title: "Starter playbooks" },
+    { group: "Post-Incident", track: "pm", items: [
+      { id: "pm", href: "postmortems/index.html", title: "Postmortems" },
+      { id: "pm-template", href: "postmortems/template.html", title: "Template & Writer" },
+      { id: "pm-review", href: "postmortems/review-meeting.html", title: "Running the Review" },
+      { id: "pm-example", href: "postmortems/example.html", title: "Worked Example" },
+      { id: "pm-actions", href: "postmortems/action-items.html", title: "Action Items" }
+    ]},
+    { group: "Practice", track: "practice", items: [
+      { id: "tabletop", href: "tabletop.html", title: "Tabletop Exercise Kit" },
+      { id: "cards", href: "cards/index.html", title: "Printable Role Cards" }
+    ]},
+    { group: "Shared Toolkit", track: "shared", items: [
+      { id: "fundamentals", href: "fundamentals.html", title: "SRE Fundamentals" },
+      { id: "incident-response", href: "incident-response.html", title: "Incident Process" },
+      { id: "ways-of-working", href: "ways-of-working.html", title: "Ways of Working" },
+      { id: "playbooks", href: "playbooks.html", title: "Starter Playbooks" },
       { id: "queries", href: "queries.html", title: "Nimbus KQL" },
-      { id: "observability-maturity", href: "observability-maturity.html", title: "Observability maturity" },
-      { id: "references", href: "references.html", title: "Glossary & references" }
+      { id: "observability-maturity", href: "observability-maturity.html", title: "Observability Maturity" },
+      { id: "references", href: "references.html", title: "Glossary & References" }
     ]}
   ];
   var TRACK_HOME = { noc: "noc/index.html", sre: "sre/index.html", lead: "leaders/index.html" };
-  var TRACK_LABEL = { noc: "NOC track", sre: "SRE track", lead: "Manager guide" };
+  var TRACK_LABEL = { noc: "NOC Track", sre: "SRE Track", lead: "Manager Guide" };
 
   var body = document.body;
   var root = body.getAttribute("data-root") || "./";
@@ -57,7 +73,7 @@
 
   var current = null, currentTrack = "shared";
   NAV.forEach(function (g) { g.items.forEach(function (i) { if (i.id === page) { current = i; currentTrack = g.track; } }); });
-  if (currentTrack !== "shared") store("nimbus-role", currentTrack);
+  if (TRACK_HOME[currentTrack]) store("nimbus-role", currentTrack);
   var myRole = store("nimbus-role");
   body.setAttribute("data-track", currentTrack);
 
@@ -80,18 +96,17 @@
       '<button class="icon-btn menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">' + MENU + '</button>' +
       '<a class="brand" href="' + root + 'index.html">' + CLOUD + '<span>Nimbus SRE<small>Incident Companion</small></span></a>' +
       '<div class="header-spacer"></div>' +
-      '<a class="incident-cta" href="' + root + 'index.html#triage"><i class="pulse"></i><span>In an incident<span class="cta-long">? Start triage</span></span></a>' +
+      '<a class="incident-cta" href="' + root + 'index.html#triage"><i class="pulse"></i><span>In an Incident<span class="cta-long">? Start Triage</span></span></a>' +
       '<button class="icon-btn theme-btn" type="button" aria-label="Toggle dark mode"></button>';
 
     var themeBtn = header.querySelector(".theme-btn");
     var isDark = function () {
       var t = document.documentElement.getAttribute("data-theme");
-      if (t) return t === "dark";
-      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      return t === "dark";
     };
     var paintTheme = function () {
       themeBtn.innerHTML = isDark() ? SUN : MOON;
-      themeBtn.setAttribute("aria-label", isDark() ? "Switch to light mode" : "Switch to dark mode");
+      themeBtn.setAttribute("aria-label", isDark() ? "Switch to newsprint edition" : "Switch to night edition"); themeBtn.title = isDark() ? "Newsprint edition" : "Night edition";
     };
     paintTheme();
     themeBtn.addEventListener("click", function () {
@@ -112,7 +127,7 @@
   var sidebar = document.getElementById("sidebar");
   if (sidebar) {
     sidebar.innerHTML = NAV.map(function (g) {
-      var role = g.track !== "shared";
+      var role = !!TRACK_HOME[g.track];
       var cls = "nav-group" + (role ? " t-" + g.track : "") + (role && g.track === myRole ? " mine" : "");
       return '<div class="' + cls + '"><h4>' + (role ? '<i class="track-dot"></i>' : "") + esc(g.group) + '</h4>' + g.items.map(function (i) {
         var cur = i.id === page ? ' aria-current="page"' : "";
@@ -239,7 +254,16 @@
       if (!h.querySelector(".anchor")) {
         var a = document.createElement("a");
         a.className = "anchor"; a.href = "#" + h.id; a.textContent = "#";
-        a.setAttribute("aria-label", "Link to this section");
+        a.setAttribute("aria-label", "Copy link to this section");
+        a.title = "Copy link to this section";
+        a.addEventListener("click", function (ev) {
+          var url = location.href.split("#")[0] + "#" + h.id;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            ev.preventDefault();
+            history.replaceState(null, "", "#" + h.id);
+            navigator.clipboard.writeText(url).then(function () { toast("Link copied"); }, function () { location.hash = h.id; });
+          }
+        });
         h.appendChild(a);
       }
       if (h.hasAttribute("data-notoc")) return;
@@ -271,6 +295,14 @@
       }
     }
   }
+
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    if (!t) { t = document.createElement("div"); t.id = "toast"; t.className = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 1500);
+  }
+  window.nimbusToast = toast;
 
   /* ---------- Copy buttons ---------- */
   Array.prototype.forEach.call(document.querySelectorAll(".code-card"), function (card) {
@@ -319,7 +351,7 @@
     });
     var tools = document.createElement("div");
     tools.className = "checklist-tools";
-    tools.innerHTML = '<span class="progress"></span><button type="button" class="link-btn">Reset checklist</button>';
+    tools.innerHTML = '<span class="progress"></span><button type="button" class="link-btn">Reset Checklist</button>';
     ul.parentNode.insertBefore(tools, ul.nextSibling);
     function count() {
       var boxes = ul.querySelectorAll("input"), c = 0;

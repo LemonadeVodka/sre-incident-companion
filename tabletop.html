@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tabletop Exercise Kit · Nimbus SRE</title>
+  <meta name="description" content="Run tabletop incident exercises: pick a scenario, reveal timed injects (including a deep-diving director), and score the debrief Weak / Good / Best.">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="tabletop">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Practice</div>
+      <div class="eyebrow">Practice · All Roles · General Purpose</div>
+      <h1>Tabletop Exercise Kit</h1>
+      <p class="lede">The cheapest way to get better at incidents is to practice them. Gather a coordinator, a technical lead, a manager, and a facilitator. Pick a scenario, reveal what happens next on a timer, and score how it went.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><strong>45–60 minutes:</strong> 5 minutes of setup, 25–30 of play, and 15 of debrief.</li>
+          <li>The <strong>facilitator</strong> reads the injects and plays the CFTs, Cloud Infrastructure, and <strong>Morgan the director</strong>.</li>
+          <li>The debrief is scored with <strong>Weak / Good / Best</strong>. Copy the summary into the team channel or a ticket.</li>
+        </ul>
+      </div>
+
+      <div class="persona">
+        <div><b>Morgan appears in every scenario.</b> The deep-diving director DMs responders, asks for raw queries, starts side calls, and demands root cause mid-mitigation. Handling Morgan is part of the exercise, and it's scored as <em>Managing Stakeholder Pressure</em>.</div>
+      </div>
+
+      <div id="tabletop-app" aria-live="polite">
+        <noscript>
+          <p><strong>JavaScript is off.</strong> Run a tabletop on paper using any <a href="playbooks.html">playbook</a> as the scenario, with the facilitator inventing injects. Score with <a href="response-quality.html">What Good Looks Like</a>.</p>
+        </noscript>
+      </div>
+
+      <h2 id="facilitator-tips">Facilitator Tips</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Stay in Character</h3><p>Play the slow CFT and the defensive platform team realistically. That's where the learning is.</p></div>
+        <div class="card"><h3>Don't Rescue</h3><p>Let the group struggle a little. Hints come only when they're truly stuck.</p></div>
+        <div class="card"><h3>Make Morgan Real</h3><p>Be persistent but well-meaning. See whether the coordinator names a comms buffer.</p></div>
+        <div class="card"><h3>Blameless Debrief</h3><p>Score the system and the process, not the people. Turn every Weak into one action item.</p></div>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="./assets/site.js"></script>
+<script src="./assets/quality.js"></script>
+<script src="./assets/tabletop.js"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Starter Playbooks · Nimbus SRE</title>
-  <meta name="description" content="Eight starter playbooks for the most likely Nimbus incidents, each with NOC, SRE, and manager actions.">
+  <meta name="description" content="Nine starter playbooks for the most likely Nimbus incidents, each with NOC, SRE, and manager actions.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -18,33 +18,38 @@
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
       <div class="eyebrow">Shared · all roles</div>
-      <h1>Starter playbooks</h1>
-      <p class="lede">We're a new team without many runbooks yet. These eight <strong>starter playbooks</strong> cover the incidents we expect most. They aren't battle-tested: improve them after every incident, and copy one as the starting point for a new runbook.</p>
+      <h1>Starter Playbooks</h1>
+      <p class="lede">We're a new team without many runbooks yet. These nine <strong>starter playbooks</strong> cover the incidents we expect most. They aren't battle-tested: improve them after every incident, and copy one as the starting point for a new runbook.</p>
       <div class="tldr">
         <ul>
-          <li>Every playbook has the same shape: <strong>Symptoms → Check first → Likely causes → Verify</strong>, then <strong>NOC does → SRE does → Manager lens</strong>.</li>
+          <li>Every playbook has the same shape: <strong>Symptoms → Check First → Likely Causes → Verify</strong>, then <strong>NOC Coordinates → SRE Leads → Manager Lens</strong>, then <strong>Weak / Good / Best</strong> and <strong>Postmortem Focus</strong>.</li>
           <li>Not sure which applies? Use the <a href="index.html#triage">triage tool</a>. No match? Follow the <a href="sre/investigate.html#method-when-there-is-no-runbook">no-runbook method</a> and write a new one afterwards.</li>
           <li>Managers: the same scenarios are in plain English in <a href="leaders/scenarios.html">Scenarios</a>.</li>
         </ul>
       </div>
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>The playbook <em>shape</em> works for any service: symptoms, checks, causes, verify, who does what, what good looks like, and what to ask in the postmortem. Swap the Nimbus specifics for your own.</p>
+      </div>
       <div class="callout tip">
-        <div class="callout-title">Make them yours</div>
+        <div class="callout-title">Make Them Yours</div>
         <p>After each incident, update the playbook you used: what was missing, what was wrong, what worked. Use the <a href="ways-of-working.html#building-runbooks-as-a-new-team">runbook template</a> for incidents that didn't fit any playbook.</p>
       </div>
       <div class="card-grid">
-        <a class="card" href="#pb-latency-one-feature"><span class="badge neutral">Latency</span><h3>Latency spike on one feature</h3><p>Owner: Feature CFT</p></a>
-        <a class="card" href="#pb-429-surge"><span class="badge neutral">Errors</span><h3>429 throttling surge</h3><p>Owner: Platform + noisy CFT</p></a>
-        <a class="card" href="#pb-foundry-5xx"><span class="badge neutral">Errors</span><h3>Foundry 5xx / platform degradation</h3><p>Owner: Platform</p></a>
-        <a class="card" href="#pb-slow-first-token"><span class="badge neutral">Latency</span><h3>Slow first token</h3><p>Owner: Feature CFT → Platform</p></a>
-        <a class="card" href="#pb-client-rollout"><span class="badge neutral">Errors</span><h3>Errors after a desktop client rollout</h3><p>Owner: Client CFT</p></a>
-        <a class="card" href="#pb-dashboards-green"><span class="badge neutral">Blind spot</span><h3>Dashboards green, users complaining</h3><p>Owner: SRE → Platform</p></a>
-        <a class="card" href="#pb-cdn-edge"><span class="badge neutral">Edge</span><h3>CDN / Front Door errors</h3><p>Owner: Platform</p></a>
-        <a class="card" href="#pb-401-surge"><span class="badge neutral">Auth</span><h3>401 surge</h3><p>Owner: Platform / Client CFT</p></a>
+        <a class="card" href="#pb-latency-one-feature"><span class="badge neutral">Latency</span><h3>Latency Spike on One Feature</h3><p>Owner: Feature CFT</p></a>
+        <a class="card" href="#pb-429-surge"><span class="badge neutral">Errors</span><h3>429 Throttling Surge</h3><p>Owner: Cloud Infrastructure + noisy CFT</p></a>
+        <a class="card" href="#pb-foundry-5xx"><span class="badge neutral">Errors</span><h3>Foundry 5xx / Platform Degradation</h3><p>Owner: Cloud Infrastructure</p></a>
+        <a class="card" href="#pb-slow-first-token"><span class="badge neutral">Latency</span><h3>Slow First Token</h3><p>Owner: Feature CFT → Cloud Infrastructure</p></a>
+        <a class="card" href="#pb-client-rollout"><span class="badge neutral">Errors</span><h3>Errors After a Desktop Client Rollout</h3><p>Owner: Client CFT</p></a>
+        <a class="card" href="#pb-dashboards-green"><span class="badge neutral">Blind spot</span><h3>Dashboards Green, Users Complaining</h3><p>Owner: SRE → Cloud Infrastructure</p></a>
+        <a class="card" href="#pb-cdn-edge"><span class="badge neutral">Edge</span><h3>CDN / Front Door Errors</h3><p>Owner: Cloud Infrastructure</p></a>
+        <a class="card" href="#pb-401-surge"><span class="badge neutral">Auth</span><h3>401 Surge</h3><p>Owner: Cloud Infrastructure / Client CFT</p></a>
+        <a class="card" href="#pb-fallback-surge"><span class="badge neutral">Device</span><h3>Local-to-Cloud Fallback Surge</h3><p>Owner: Client CFT + Cloud Infrastructure</p></a>
       </div>
 
       <section class="playbook" id="pb-latency-one-feature">
         <div class="playbook-head">
-          <h2>Latency spike on one feature</h2>
+          <h2>Latency Spike on One Feature</h2>
           <div class="meta"><span class="badge sev2">Usually Sev 2–3</span><span class="badge neutral">Owner: Feature CFT</span><span class="badge neutral">Starter · improve after use</span></div>
         </div>
         <div class="playbook-body">
@@ -52,63 +57,71 @@
           <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-latency-by-feature">Latency by feature, now vs yesterday</a>: confirm only one feature is affected.</li><li><a href="sre/investigate.html#q-hops">P50/P95 per hop</a>: model, retrieval, or our own code?</li><li><a href="queries.html#q-deploy-correlation">Errors by service version</a>: did a deploy line up with the start?</li><li><a href="queries.html#q-token-growth">Token growth</a>: did prompts get bigger?</li></ol></div></div>
           <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>A service deploy, or a prompt template change that added context.</li><li>A Rust service stalling (async runtime starvation, pool exhaustion). Check <a href="sre/investigate.html#q-by-instance">by instance</a>.</li><li>A retrieval dependency (AI Search, Graph) slowed down.</li><li>The feature's deployment is saturated.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Verify</div><div>P50 and P95 back within 20% of baseline for 30 minutes.</div></div>
-          <div class="pb-section role-row noc"><div class="pb-label">NOC does</div><div>Run sweep queries 1–2, open the channel, and page the CFT plus SRE if it's Sev 2. If one instance is clearly stalled, <a href="noc/safe-actions.html#act-restart-instance">restart that instance</a>.</div></div>
-          <div class="pb-section role-row sre"><div class="pb-label">SRE does</div><div>Split latency by hop and by instance. Roll back the deploy or prompt flag if it lines up. Tighten the retrieval timeout and degrade gracefully.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Declare and coordinate. Page the CFT, plus SRE for Sev 2. If one instance looks stalled, send the <a href="noc/action-requests.html#req-restart-instance">restart-one-instance request</a> to its owner.</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Split latency by hop and by instance. Roll back the deploy or prompt flag if it lines up. Tighten the retrieval timeout and degrade gracefully.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "Did something change, and can we roll it back?" Decide: approve the rollback even if it delays a launch.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>Waits for a dashboard that doesn't exist, debugs in DMs, and nobody owns the rollback decision.</p></div><div><span class="q-level q-good">Good</span><p>Confirms with the per-feature query, declares, and the Tech Lead finds the hop. The owner rolls back within 30 minutes.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus the change that caused it is identified, the feature gets a latency SLO, and a deploy check is added.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>Why didn't our deploy process catch the latency cost? Is there a dashboard for this feature now? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
         </div>
       </section>
 
       <section class="playbook" id="pb-429-surge">
         <div class="playbook-head">
-          <h2>429 throttling surge</h2>
-          <div class="meta"><span class="badge sev2">Sev 2 if interactive</span><span class="badge neutral">Owner: Platform + noisy CFT</span><span class="badge neutral">Starter · improve after use</span></div>
+          <h2>429 Throttling Surge</h2>
+          <div class="meta"><span class="badge sev2">Sev 2 if interactive</span><span class="badge neutral">Owner: Cloud Infrastructure + noisy CFT</span><span class="badge neutral">Starter · improve after use</span></div>
         </div>
         <div class="playbook-body">
           <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>Spike in 429 on Foundry dependencies.</li><li>"Nimbus is busy, try again." Latency also rises because of retries.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-429">429 by deployment and caller</a></li><li><a href="queries.html#q-token-share">Token consumption by caller</a>: who is using the quota?</li><li><a href="queries.html#q-retry">Retry detector</a>: is it a retry storm?</li><li>Azure Monitor: the deployment's PTU utilization and its tokens-per-minute limit.</li></ol></div></div>
           <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>A background burst (Proactive Tips batch) on a shared deployment.</li><li>An organic peak above capacity.</li><li>Prompt growth.</li><li>Retries without backoff, or unbounded concurrency in a Rust service.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Verify</div><div>Throttle rate under 1% for interactive callers for 30 minutes.</div></div>
-          <div class="pb-section role-row noc"><div class="pb-label">NOC does</div><div>Run sweep query 5 and page Platform plus SRE. If Proactive Tips is running and Device Care is affected, <a href="noc/safe-actions.html#act-pause-tips">pause the batch</a>. <strong>Don't</strong> scale out.</div></div>
-          <div class="pb-section role-row sre"><div class="pb-label">SRE does</div><div>Prove who the noisy neighbor is, then shed background load, enable spillover with Platform, and check retry and concurrency settings.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Declare and coordinate. Page Cloud Infrastructure plus SRE. If Proactive Tips is running and Device Care is affected, send the <a href="noc/action-requests.html#req-pause-tips">pause-batch request</a> to the Insights CFT. Never request a scale-out for 429s.</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Prove who the noisy neighbor is, then shed background load, enable spillover with Cloud Infrastructure, and check retry and concurrency settings.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "Whose traffic, can it pause, and what does overflow cost?" Decide: which feature gets priority, and whether to approve the overflow spend.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>Teams argue about whose traffic it is while users get errors, and retries make it worse.</p></div><div><span class="q-level q-good">Good</span><p>The noisy neighbor is proven with tokens by caller, background load is paused on request, and spillover is approved.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus interactive and background traffic get separate capacity, and an alert on quota share fires before the 429s do.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>Who decides capacity priority between CFTs? Why was background work sharing interactive capacity? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
         </div>
       </section>
 
       <section class="playbook" id="pb-foundry-5xx">
         <div class="playbook-head">
-          <h2>Foundry 5xx / platform degradation</h2>
-          <div class="meta"><span class="badge sev1">Sev 1–2</span><span class="badge neutral">Owner: Platform</span><span class="badge neutral">Starter · improve after use</span></div>
+          <h2>Foundry 5xx / Platform Degradation</h2>
+          <div class="meta"><span class="badge sev1">Sev 1–2</span><span class="badge neutral">Owner: Cloud Infrastructure</span><span class="badge neutral">Starter · improve after use</span></div>
         </div>
         <div class="playbook-body">
           <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>500/502/503 on Foundry dependencies across features.</li><li>Model latency up across deployments, sometimes in one region.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-model-latency">Model latency and failures by deployment</a>, grouped by target (region).</li><li>Azure status, Service Health, Foundry resource health.</li><li><a href="sre/investigate.html#q-layers">Errors by layer</a>: confirm it's the model layer, not ours.</li></ol></div></div>
           <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>An Azure platform incident in the region.</li><li>A provider-side model version problem.</li><li>Network or private endpoint problems.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Verify</div><div>Error rate back to baseline. Track failback as its own change.</div></div>
-          <div class="pb-section role-row noc"><div class="pb-label">NOC does</div><div>Page Platform plus SRE at high urgency. Turn on the <a href="noc/safe-actions.html#act-status-message">in-app banner</a> if Sev 1–2 is declared.</div></div>
-          <div class="pb-section role-row sre"><div class="pb-label">SRE does</div><div>Confirm scope by region and deployment. Coordinate failover with Platform. Open an Azure support case early. Shed background load.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Declare at high urgency, page Cloud Infrastructure plus SRE, and send the <a href="noc/action-requests.html#req-status-banner">in-app banner request</a> to the Client CFT for Sev 1–2. Open the exec comms buffer early.</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Confirm scope by region and deployment. Coordinate failover with Cloud Infrastructure. Open an Azure support case early. Shed background load.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "Is it Microsoft's side, is a case open, can we fail over?" Decide: approve failover (data residency, cost), executive notice, and customer messaging.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>Everyone waits on Microsoft and nobody tells users.</p></div><div><span class="q-level q-good">Good</span><p>The scope is confirmed, an Azure case is opened early, failover is evaluated, and the banner is turned on.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus failover was tested in a game day, and there's a pre-approved decision tree for the senior manager.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>How long did failover take compared with our target? What did we depend on that we couldn't control? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
         </div>
       </section>
 
       <section class="playbook" id="pb-slow-first-token">
         <div class="playbook-head">
-          <h2>Slow first token</h2>
-          <div class="meta"><span class="badge sev3">Sev 2–3</span><span class="badge neutral">Owner: Feature CFT → Platform</span><span class="badge neutral">Starter · improve after use</span></div>
+          <h2>Slow First Token</h2>
+          <div class="meta"><span class="badge sev3">Sev 2–3</span><span class="badge neutral">Owner: Feature CFT → Cloud Infrastructure</span><span class="badge neutral">Starter · improve after use</span></div>
         </div>
         <div class="playbook-body">
           <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>Streaming features feel slow to start, even when total time looks normal.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-ttft">Time to first token vs total</a></li><li><a href="queries.html#q-token-growth">Input token growth</a></li><li>PTU utilization: is traffic queueing or spilling to pay-as-you-go?</li><li>Is streaming still on? A config change or APIM buffering can turn it off.</li></ol></div></div>
           <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>PTU saturation and queueing.</li><li>Prompt or context growth.</li><li>Retrieval added before the model call.</li><li>Streaming disabled or buffered.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Verify</div><div>Writing Assist first-token P95 back under 1.5 s for 30 minutes.</div></div>
-          <div class="pb-section role-row noc"><div class="pb-label">NOC does</div><div>Page the feature CFT, and SRE if it's broad. Note whether other features on the same deployment are affected.</div></div>
-          <div class="pb-section role-row sre"><div class="pb-label">SRE does</div><div>Separate capacity from prompt-size causes. Shed background load, trim context or revert the prompt, and restore streaming.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Coordinate and page the feature CFT. Ask the Tech Lead whether other features on the same deployment are affected, and page Cloud Infrastructure if so.</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Separate capacity from prompt-size causes. Shed background load, trim context or revert the prompt, and restore streaming.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "Capacity or how we build the request?" Decide: accept a temporary quality trade-off (smaller model, less context) for speed.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>Treated as a vague 'Nimbus is slow' complaint and closed without a measurement.</p></div><div><span class="q-level q-good">Good</span><p>First-token time is measured, the cause is split between capacity and prompt size, and the prompt or capacity is fixed.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus first-token time is an SLO for every streaming feature, and prompt changes are tested for latency before release.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>Do we measure time to first token for every streaming feature? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
         </div>
       </section>
 
       <section class="playbook" id="pb-client-rollout">
         <div class="playbook-head">
-          <h2>Errors after a desktop client rollout</h2>
+          <h2>Errors After a Desktop Client Rollout</h2>
           <div class="meta"><span class="badge sev2">Sev 2 while ramping</span><span class="badge neutral">Owner: Client CFT</span><span class="badge neutral">Starter · improve after use</span></div>
         </div>
         <div class="playbook-body">
@@ -116,57 +129,83 @@
           <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-client-version">By client version</a>: compare the new build with the previous one.</li><li>The rollout percentage and how fast it's ramping.</li><li>What changed in the build: API version, retry or timeout config, token refresh, telemetry.</li></ol></div></div>
           <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>A new build calls a changed API.</li><li>Aggressive retries.</li><li>A token refresh bug, which shows up as 401s about an hour in.</li><li>A Rust panic on an unexpected response.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Verify</div><div>The new version's error rate matches the previous version's.</div></div>
-          <div class="pb-section role-row noc"><div class="pb-label">NOC does</div><div><a href="noc/safe-actions.html#act-halt-rollout">Halt the rollout</a> straight away, then page the Client CFT plus SRE.</div></div>
-          <div class="pb-section role-row sre"><div class="pb-label">SRE does</div><div>Confirm it's the cohort. Use a server-side flag to disable the new code path if one exists. Make sure the rollout stays paused until a fix is verified.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Send the <a href="noc/action-requests.html#req-halt-rollout">halt-rollout request</a> to the Client CFT straight away, then declare and page SRE.</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Confirm it's the cohort. Use a server-side flag to disable the new code path if one exists. Make sure the rollout stays paused until a fix is verified.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "Has the rollout been halted? What share of users have the new version?" Decide: hold the release, and coordinate messaging.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>The rollout keeps ramping while people debate.</p></div><div><span class="q-level q-good">Good</span><p>The halt is requested within minutes, the cohort is confirmed, and the rollout stays paused until a fix is verified.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus rollouts halt automatically on error, crash, 401, or fallback thresholds.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>Why didn't the staged rollout stop itself? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
         </div>
       </section>
 
       <section class="playbook" id="pb-dashboards-green">
         <div class="playbook-head">
-          <h2>Dashboards green, users complaining</h2>
-          <div class="meta"><span class="badge sev3">Sev 3 until measured</span><span class="badge neutral">Owner: SRE → Platform</span><span class="badge neutral">Starter · improve after use</span></div>
+          <h2>Dashboards Green, Users Complaining</h2>
+          <div class="meta"><span class="badge sev3">Sev 3 until measured</span><span class="badge neutral">Owner: SRE → Cloud Infrastructure</span><span class="badge neutral">Starter · improve after use</span></div>
         </div>
         <div class="playbook-body">
           <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>Support tickets or social posts say Nimbus is broken. Signals look normal, or quiet.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-telemetry-volume">Telemetry volume</a>: did data drop? Is the OTel Collector healthy?</li><li><a href="sre/investigate.html#q-edge-errors">Edge errors</a>: a failure before our code runs won't show in App Insights.</li><li><a href="queries.html#q-client-version">By client version</a> and by region.</li><li>Get 3–5 concrete user reports (time, feature, version) and look for their traces.</li></ol></div></div>
           <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>Client-side failures (TLS, proxy, clock, crash).</li><li>The Collector dropping data.</li><li>A feature with no instrumentation.</li><li>Quality problems: responses succeed but are wrong.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Verify</div><div>You have a metric that shows the problem and its recovery. Add it to a dashboard as a follow-up.</div></div>
-          <div class="pb-section role-row noc"><div class="pb-label">NOC does</div><div>Take user reports seriously. Open a channel, page SRE, and collect concrete examples.</div></div>
-          <div class="pb-section role-row sre"><div class="pb-label">SRE does</div><div>Get a measurement first (an ad-hoc Grafana panel), then follow the evidence. File the monitoring gap.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Take user reports seriously. Declare at Sev 3, page SRE, and collect 3–5 concrete reports (time, feature, version).</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Get a measurement first (an ad-hoc Grafana panel), then follow the evidence. File the monitoring gap.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "How do we know how many users are affected?" Decide: treat "customers told us first" as a serious finding, and fund the monitoring fix.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>"Dashboards are green", so the ticket is closed.</p></div><div><span class="q-level q-good">Good</span><p>Concrete reports are collected, telemetry volume and edge logs are checked, and a measurement is built.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus the blind spot is fixed (an alert on telemetry volume, client-side metrics) and the gap is tracked to closure.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>Why did customers tell us before our monitoring did? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
         </div>
       </section>
 
       <section class="playbook" id="pb-cdn-edge">
         <div class="playbook-head">
-          <h2>CDN / Front Door errors</h2>
-          <div class="meta"><span class="badge sev1">Often Sev 1–2 (broad)</span><span class="badge neutral">Owner: Platform</span><span class="badge neutral">Starter · improve after use</span></div>
+          <h2>CDN / Front Door Errors</h2>
+          <div class="meta"><span class="badge sev1">Often Sev 1–2 (broad)</span><span class="badge neutral">Owner: Cloud Infrastructure</span><span class="badge neutral">Starter · improve after use</span></div>
         </div>
         <div class="playbook-body">
           <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>502/503/504 at the edge, often across every feature at once.</li><li>Or 403s for a group of users (WAF).</li><li>App Insights may look <em>quiet</em>, because requests never reach our services.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-edge-status">Edge status codes</a> over time.</li><li><a href="sre/investigate.html#q-edge-errors">Edge errors by error info and route</a>: OriginConnectionError, OriginTimeout, health probes?</li><li><a href="queries.html#q-waf">WAF blocks by rule</a> if you're seeing 403s.</li><li><a href="sre/investigate.html#q-activity">Who changed what</a>: Front Door, WAF, DNS, certificates.</li><li>Azure status for Front Door. Is it one POP or region?</li></ol></div></div>
           <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>APIM unreachable or unhealthy (origin connection, private link, DNS).</li><li>Origin too slow, so timeouts. Often model latency underneath.</li><li>Health probes failing, so every origin is marked down.</li><li>A new or changed WAF rule blocking real traffic.</li><li>An expired or misconfigured origin certificate.</li><li>An Azure edge incident.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Verify</div><div>Edge 5xx under 0.1% and 403s back to baseline for 30 minutes.</div></div>
-          <div class="pb-section role-row noc"><div class="pb-label">NOC does</div><div>Run sweep query 3 and page Platform plus SRE at high urgency. Purging the cache and changing WAF rules are <strong>not</strong> pre-approved.</div></div>
-          <div class="pb-section role-row sre"><div class="pb-label">SRE does</div><div>Use the layer query to separate edge from origin. Work with Platform on origin health, reverting the WAF rule, or rerouting. Communicate early, because impact is usually broad.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Declare at high urgency and page Cloud Infrastructure plus SRE. Purging the cache and changing WAF rules are Cloud Infrastructure decisions, so don't request them without the Tech Lead.</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Use the layer query to separate edge from origin. Work with Cloud Infrastructure on origin health, reverting the WAF rule, or rerouting. Communicate early, because impact is usually broad.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "All users or some regions? Did anyone change a CDN or firewall setting?" Decide: approve the WAF rollback (with security sign-off) and customer messaging.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>"Our services look fine", so the problem bounces between teams.</p></div><div><span class="q-level q-good">Good</span><p>The layer query proves it's the edge, Cloud Infrastructure gets the evidence, and the WAF rule is reverted or traffic rerouted.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus WAF and CDN changes go through canary rollouts, with alerts on edge 5xx and 403.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>How are changes to shared edge configuration reviewed and announced? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
         </div>
       </section>
 
       <section class="playbook" id="pb-401-surge">
         <div class="playbook-head">
-          <h2>401 surge</h2>
-          <div class="meta"><span class="badge sev2">Sev 1–2 if widespread</span><span class="badge neutral">Owner: Platform / Client CFT</span><span class="badge neutral">Starter · improve after use</span></div>
+          <h2>401 Surge</h2>
+          <div class="meta"><span class="badge sev2">Sev 1–2 if widespread</span><span class="badge neutral">Owner: Cloud Infrastructure / Client CFT</span><span class="badge neutral">Starter · improve after use</span></div>
         </div>
         <div class="playbook-body">
           <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>401s rising at APIM, or on our services' calls to Foundry.</li><li>"Please sign in again" loops, or features refusing to work.</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-apim-401">401s at the gateway by API</a>: every API, or one?</li><li><a href="queries.html#q-401-by-client">401s by client version</a>: one build, or everyone?</li><li><a href="sre/investigate.html#q-401-identity">401/403 from our services to dependencies</a>: managed identity?</li><li><a href="sre/investigate.html#q-401-auth-errors">Token validation errors</a>: expired, not yet valid (clock skew), or wrong audience?</li><li><a href="sre/investigate.html#q-activity">Who changed what</a>: APIM policies, app registrations, secrets, role assignments.</li></ol></div></div>
           <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>APIM <code>validate-jwt</code> policy change (audience, issuer).</li><li>Entra ID incident or signing key rollover.</li><li>An expired client secret or certificate.</li><li>A token refresh bug in a new client build.</li><li>A managed identity role assignment removed (401 or 403 to Foundry).</li><li>Device clock skew (a small, scattered cohort).</li></ul></div></div>
           <div class="pb-section"><div class="pb-label">Verify</div><div>401 rate back under 0.3% at APIM, and no auth failures on dependencies, for 30 minutes.</div></div>
-          <div class="pb-section role-row noc"><div class="pb-label">NOC does</div><div>Run sweep query 4. One client version: halt the rollout and page the Client CFT plus SRE. All versions: page Platform plus SRE. Rotating secrets and changing policies are <strong>not</strong> pre-approved.</div></div>
-          <div class="pb-section role-row sre"><div class="pb-label">SRE does</div><div>Find the rejecting layer, then the cohort, then the change. Revert the policy or config, or renew the secret with Platform. Watch for a token refresh stampede during recovery.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Declare and coordinate. One client version: send the <a href="noc/action-requests.html#req-halt-rollout">halt-rollout request</a> and page the Client CFT plus SRE. All versions: page Cloud Infrastructure plus SRE.</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Find the rejecting layer, then the cohort, then the change. Revert the policy or config, or renew the secret with Cloud Infrastructure. Watch for a token refresh stampede during recovery.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "Everyone or one app version? What changed in sign-in, keys, or certificates?" Decide: approve emergency sign-in changes, and ask for a secret-expiry calendar afterwards.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>Users are told to sign in again while secrets quietly expire.</p></div><div><span class="q-level q-good">Good</span><p>The rejecting layer, cohort, and change are found, and the policy is reverted or the secret renewed.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus there's a secret and certificate expiry calendar with alerts, and auth policy changes are canaried.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>Did we know this secret or policy was about to change or expire? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="pb-fallback-surge">
+        <div class="playbook-head">
+          <h2>Local-to-Cloud Fallback Surge</h2>
+          <div class="meta"><span class="badge sev2">Sev 2, Sev 1 if broad</span><span class="badge neutral">Owner: Client CFT + Cloud Infrastructure</span><span class="badge neutral">Starter · improve after use</span></div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>Cloud requests, tokens per minute, and 429s climb with no server-side deploy.</li><li>The rise follows a client or on-device model rollout curve, not the time of day.</li><li>Quick tasks feel slower for users on the new version.</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-fallback-rate">Fallback rate and reasons</a> by local model version.</li><li><a href="queries.html#q-routing-split">Local vs cloud split</a> by client version.</li><li><a href="queries.html#q-token-share">Tokens per minute by caller</a>: which features are absorbing the extra load?</li><li>Release dashboard: what client or local model version is ramping?</li></ol></div></div>
+          <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>A buggy on-device model update.</li><li>An NPU or GPU driver update breaking local inference.</li><li>Memory pressure on devices causing local attempts to fail.</li><li>A routing policy change sending more work to the cloud.</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Verify</div><div>Fallback rate and local share back to baseline. Cloud 429s under 1% for 30 minutes.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Declare and coordinate. Send the <a href="noc/action-requests.html#req-halt-rollout">halt-rollout request</a> to the Client CFT, page Cloud Infrastructure and SRE, and get both teams into one channel.</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Correlate the fallback rate with the rollout. Recommend halting the rollout (Client CFT) <em>and</em> adding capacity or shedding background load (Cloud Infrastructure). Keep both teams on the same call.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "Did a device or model update go out, and are both teams on it?" Decide: hold the device release, and approve temporary cloud spend.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>The cloud teams fight 429s while nobody looks at devices.</p></div><div><span class="q-level q-good">Good</span><p>The fallback rate is correlated with the rollout, the rollout is halted, and capacity is added. Both teams work together.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus the fallback rate is a rollout health gate, and the cloud caps fallback traffic per version.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>Why wasn't fallback rate a release gate? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
         </div>
       </section>
     </article>

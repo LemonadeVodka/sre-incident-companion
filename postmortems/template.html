@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Postmortem Template & Writer · Nimbus SRE</title>
+  <meta name="description" content="A blameless postmortem template with a built-in writer that turns your answers into Markdown you can paste into Jira or a doc.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pm-template">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Post-Incident</a></div>
+      <div class="eyebrow">Post-Incident · General Purpose</div>
+      <h1>Postmortem Template &amp; Writer</h1>
+      <p class="lede">Fill in the form and the postmortem writes itself as Markdown, ready to paste into a Jira ticket, a wiki, or a doc. The draft is saved in <strong>this browser only</strong>, so you can close the tab and come back.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Write for a reader who wasn't there, such as a senior manager or a new hire.</li>
+          <li>Use <strong>blameless language</strong>: "the deploy was approved because the check didn't cover X", not "Sam broke it".</li>
+          <li>Contributing factors come in the <strong>plural</strong>. Incidents rarely have one cause.</li>
+          <li>Action items: <strong>owner | action | due date | type</strong>, one per line.</li>
+        </ul>
+      </div>
+
+      <h2 id="write-it-here">Write It Here</h2>
+      <form id="pm-form" class="pm-form" onsubmit="return false">
+        <div class="myq">
+          <label>Title<input name="title" placeholder="Device Care 429s from batch + fallback surge"></label>
+          <label>Severity<select name="sev"><option value="">—</option><option>Sev 1</option><option>Sev 2</option><option>Sev 3</option></select></label>
+          <label>Date<input name="date" type="date"></label>
+          <label>Duration<input name="duration" placeholder="1 h 25 m"></label>
+          <label>Coordinator (NOC)<input name="ic"></label>
+          <label>Technical Lead (SRE)<input name="tl"></label>
+          <label>Authors<input name="authors"></label>
+          <label>Review date<input name="review" type="date"></label>
+        </div>
+        <label>Summary<textarea name="summary" rows="3" placeholder="Two or three sentences a senior manager can read."></textarea></label>
+        <label>User impact<textarea name="impact" rows="2" placeholder="Who, how badly, how long — in numbers."></textarea></label>
+        <label>Detection<textarea name="detection" rows="2" placeholder="How we found out, and how long after it started."></textarea></label>
+        <label>Timeline (one event per line: HH:MM — what happened)<textarea name="timeline" rows="6" placeholder="14:05 — 429s begin on chat-small&#10;14:12 — NOC sweep flags Device Care errors"></textarea></label>
+        <label>Contributing factors (one per line)<textarea name="factors" rows="4"></textarea></label>
+        <div class="myq">
+          <label>What went well<textarea name="well" rows="3"></textarea></label>
+          <label>What was hard<textarea name="hard" rows="3"></textarea></label>
+          <label>Where we got lucky<textarea name="lucky" rows="3"></textarea></label>
+        </div>
+        <fieldset class="pm-ratings">
+          <legend>Response quality: rate each dimension (see <a href="../response-quality.html">What Good Looks Like</a>)</legend>
+          <div class="myq">
+            <label>Detection<select name="r_detection"><option value="">—</option><option>Weak</option><option>Good</option><option>Best in Class</option></select></label>
+            <label>Triage<select name="r_triage"><option value="">—</option><option>Weak</option><option>Good</option><option>Best in Class</option></select></label>
+            <label>Coordination<select name="r_coordination"><option value="">—</option><option>Weak</option><option>Good</option><option>Best in Class</option></select></label>
+            <label>Communication<select name="r_communication"><option value="">—</option><option>Weak</option><option>Good</option><option>Best in Class</option></select></label>
+            <label>Escalation<select name="r_escalation"><option value="">—</option><option>Weak</option><option>Good</option><option>Best in Class</option></select></label>
+            <label>Mitigation<select name="r_mitigation"><option value="">—</option><option>Weak</option><option>Good</option><option>Best in Class</option></select></label>
+            <label>Post-mortem<select name="r_postmortem"><option value="">—</option><option>Weak</option><option>Good</option><option>Best in Class</option></select></label>
+          </div>
+        </fieldset>
+        <label>Action items (one per line: owner | action | due | type)<textarea name="actions" rows="5" placeholder="Insights CFT | Move Proactive Tips batch to its own deployment | 2026-11-15 | prevent"></textarea></label>
+      </form>
+
+      <h2 id="your-postmortem">Your Postmortem</h2>
+      <div class="hero-actions no-print">
+        <button type="button" class="btn primary" id="pm-copy">Copy Markdown</button>
+        <button type="button" class="btn" id="pm-download">Download .md</button>
+        <button type="button" class="btn" id="pm-clear">Clear Draft</button>
+      </div>
+      <div class="code-card"><div class="code-head"><span class="lang">Markdown</span><span class="title">Preview<span class="answers">Updates as you type</span></span></div><pre><code id="pm-output"></code></pre></div>
+      <noscript><p>JavaScript is off. Copy the blank template below instead.</p></noscript>
+
+      <h2 id="blank-template">Blank Template</h2>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Markdown</span><span class="title">Blameless Postmortem Template<span class="answers">For any team, any incident</span></span></div>
+<pre><code># Postmortem: [Title]
+**Severity:** [ ]  ·  **Date:** [ ]  ·  **Duration:** [ ]
+**Coordinator:** [ ]  ·  **Technical Lead:** [ ]  ·  **Authors:** [ ]
+
+## Summary
+## User Impact
+## Detection
+## Timeline
+## Contributing Factors
+## What Went Well
+## What Was Hard
+## Where We Got Lucky
+## Response Quality (Weak / Good / Best in Class)
+## Action Items
+| Owner | Action | Due | Type |
+|---|---|---|---|
+## Follow-Up</code></pre>
+      </div>
+
+      <h2 id="blameless-language">Blameless Language</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Instead of</th><th>Write</th></tr></thead>
+          <tbody>
+            <tr><td>"Alex pushed a bad config."</td><td>"A config change reached production. The review step didn't check X, and there was no canary."</td></tr>
+            <tr><td>"The CFT ignored the page."</td><td>"The page went to a channel the CFT doesn't watch, and they had no PagerDuty service."</td></tr>
+            <tr><td>"Cloud Infrastructure caused it."</td><td>"A change to the shared gateway wasn't announced to the teams that depend on it."</td></tr>
+            <tr><td>"The director slowed us down."</td><td>"With no exec update format and no comms buffer, leadership questions went straight to responders."</td></tr>
+            <tr><td>"Root cause: human error."</td><td>"Contributing factors: [the conditions that made the mistake easy and its impact large]."</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+<script src="../assets/postmortem.js"></script>
+</body>
+</html>

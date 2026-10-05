@@ -18,7 +18,7 @@
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
       <div class="eyebrow">Shared · all roles</div>
-      <h1>SRE fundamentals</h1>
+      <h1>SRE Fundamentals</h1>
       <p class="lede">The core ideas from Google's <em>Site Reliability Engineering</em> book and <em>The Site Reliability Workbook</em>, updated with modern practice and applied to an LLM-backed product.</p>
 
       <div class="tldr">
@@ -28,16 +28,20 @@
           <li>Alert on <strong>error-budget burn rate</strong>, not raw thresholds. Learn from incidents with <strong>blameless</strong> postmortems.</li>
         </ul>
       </div>
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>These ideas come from Google's SRE books and are used across the industry. Nothing here is specific to Nimbus except the examples.</p>
+      </div>
 
       <aside class="leader" aria-label="For senior managers">
         <div class="leader-head">For senior managers <small>· reliability is a business decision</small></div>
         <div class="leader-grid">
-          <div><h4>Your role</h4><ul>
+          <div><h4>Your Role</h4><ul>
             <li>Set reliability targets (SLOs) together with product. Engineering shouldn't guess.</li>
             <li>Back the error budget policy, even when it means pausing a launch.</li>
             <li>Keep toil visible, and fund the work to automate it away.</li>
           </ul></div>
-          <div class="ask"><h4>Questions to ask</h4><ul>
+          <div class="ask"><h4>Questions to Ask</h4><ul>
             <li>What's our SLO for each key feature, and are we meeting it?</li>
             <li>How much error budget is left this month?</li>
             <li>What happens when the budget runs out, and will we actually do it?</li>
@@ -50,18 +54,18 @@
         </div>
       </aside>
 
-      <h2>100% is the wrong target</h2>
+      <h2>100% Is the Wrong Target</h2>
       <p>Google's SRE book argues that aiming for perfect reliability is a mistake. Users can't tell 99.99% from 100% because their Wi-Fi, laptop, and the model itself are less reliable than that. Every extra nine costs a lot and slows feature work. The job is to pick the <em>right</em> level of reliability for each feature, then spend whatever is left over deliberately.</p>
       <div class="callout tip">
         <div class="callout-title">Applied to Nimbus</div>
         <p>Writing Assist is interactive and used constantly, so it deserves a tight target. Proactive Tips runs in the background and retries quietly, so a looser target is fine. Giving them the same target wastes effort on one and short-changes the other.</p>
       </div>
 
-      <h2 id="slis-slos-and-error-budgets">SLIs, SLOs, and error budgets</h2>
+      <h2 id="slis-slos-and-error-budgets">SLIs, SLOs, and Error Budgets</h2>
       <div class="card-grid">
-        <div class="card"><h3>SLI: indicator</h3><p>A measurement of user experience, expressed as <em>good events ÷ valid events</em>. Example: the share of Writing Assist requests that succeed.</p></div>
-        <div class="card"><h3>SLO: objective</h3><p>A target for an SLI over a window. Example: 99.5% of requests succeed over 28 days.</p></div>
-        <div class="card"><h3>Error budget</h3><p>The allowed unreliability, 1 − SLO. At 99.5%, 0.5% of requests may fail. Spend it on launches and experiments, not on surprises.</p></div>
+        <div class="card"><h3>SLI: Indicator</h3><p>A measurement of user experience, expressed as <em>good events ÷ valid events</em>. Example: the share of Writing Assist requests that succeed.</p></div>
+        <div class="card"><h3>SLO: Objective</h3><p>A target for an SLI over a window. Example: 99.5% of requests succeed over 28 days.</p></div>
+        <div class="card"><h3>Error Budget</h3><p>The allowed unreliability, 1 − SLO. At 99.5%, 0.5% of requests may fail. Spend it on launches and experiments, not on surprises.</p></div>
       </div>
 
       <h3>Good SLIs for Nimbus</h3>
@@ -78,7 +82,7 @@
         </table>
       </div>
 
-      <h3>What an error budget buys you</h3>
+      <h3>What an Error Budget Buys You</h3>
       <div class="table-wrap">
         <table>
           <thead><tr><th>SLO</th><th>Budget</th><th>Full outage allowed per 30 days</th></tr></thead>
@@ -92,7 +96,7 @@
       </div>
       <p>An <strong>error budget policy</strong> spells out what happens when the budget runs out. A typical policy freezes risky launches for that feature and moves the CFT onto reliability work until the budget recovers. Without a written policy, an SLO is just a number on a slide.</p>
 
-      <h2 id="the-four-golden-signals">The four golden signals</h2>
+      <h2 id="the-four-golden-signals">The Four Golden Signals</h2>
       <p>If you can only monitor four things, the SRE book says to monitor these. Here's what each one means for Nimbus:</p>
       <div class="table-wrap">
         <table>
@@ -110,18 +114,18 @@
         <p>If the average latency is 2 s, the P95 could still be 12 s. LLM latency is long-tailed because it depends on output length. Nimbus tracks <strong>P50</strong> (typical) and <strong>P95</strong> (bad day), never averages. Remember that P95 still hides the slowest 5%, which is why adding P99 is on the <a href="observability-maturity.html">roadmap</a>. Also remember sampling: weight counts by <code>itemCount</code>.</p>
       </div>
 
-      <h2 id="llm-specific-signals">LLM-specific signals</h2>
+      <h2 id="llm-specific-signals">LLM-Specific Signals</h2>
       <p>Generative AI adds failure modes that classic web metrics miss:</p>
       <div class="card-grid">
-        <div class="card"><h3>Time to first token (TTFT)</h3><p>How long until the first streamed token arrives. This shapes how fast the product feels. High TTFT usually means queueing or capacity trouble.</p></div>
-        <div class="card"><h3>Tokens per second</h3><p>Generation speed once streaming has started. If it drops, the model or deployment is under pressure.</p></div>
-        <div class="card"><h3>Throttle rate (429)</h3><p>The share of calls rejected for quota. On shared deployments one CFT can exhaust quota for everyone.</p></div>
-        <div class="card"><h3>Token usage</h3><p>Input and output tokens per request. When prompts quietly grow, latency and cost rise and quota runs out sooner.</p></div>
-        <div class="card"><h3>Content-filter rate</h3><p>Responses blocked by safety filters. A spike can follow a prompt change or a policy change.</p></div>
+        <div class="card"><h3>Time to First Token (TTFT)</h3><p>How long until the first streamed token arrives. This shapes how fast the product feels. High TTFT usually means queueing or capacity trouble.</p></div>
+        <div class="card"><h3>Tokens per Second</h3><p>Generation speed once streaming has started. If it drops, the model or deployment is under pressure.</p></div>
+        <div class="card"><h3>Throttle Rate (429)</h3><p>The share of calls rejected for quota. On shared deployments one CFT can exhaust quota for everyone.</p></div>
+        <div class="card"><h3>Token Usage</h3><p>Input and output tokens per request. When prompts quietly grow, latency and cost rise and quota runs out sooner.</p></div>
+        <div class="card"><h3>Content-Filter Rate</h3><p>Responses blocked by safety filters. A spike can follow a prompt change or a policy change.</p></div>
         <div class="card"><h3>Quality</h3><p>Groundedness and task success, measured with offline evaluations and user feedback. A fast, wrong answer still counts as an incident.</p></div>
       </div>
 
-      <h2 id="alert-on-burn-rate">Alert on burn rate, not thresholds</h2>
+      <h2 id="alert-on-burn-rate">Alert on Burn Rate, Not Thresholds</h2>
       <p>"Error count &gt; 50" pages you at 3am for a blip and stays quiet during a slow leak. <em>The Site Reliability Workbook</em> recommends <strong>multi-window, multi-burn-rate</strong> alerts. <strong>Burn rate</strong> is how fast you're using the error budget compared with spending it evenly: <code>burn rate = observed error rate ÷ (1 − SLO)</code>.</p>
       <div class="table-wrap">
         <table>
@@ -135,9 +139,9 @@
       </div>
       <p>An alert fires only when <strong>both</strong> windows are over the threshold. The long window shows the problem is significant, and the short window shows it's still happening. With a 99.5% SLO, a 14.4× burn means an error rate of about 7.2%. The query library has a <a href="queries.html#q-burn-rate">burn-rate query</a> you can adapt.</p>
 
-      <h2 id="monitoring-vs-observability">Monitoring vs observability</h2>
+      <h2 id="monitoring-vs-observability">Monitoring vs Observability</h2>
       <p><strong>Monitoring</strong> answers questions you predicted ("is the error rate above X?"). <strong>Observability</strong> lets you answer questions you didn't predict ("why are only 4.12 clients in Sweden slow on Device Care?"). You need high-cardinality, correlated telemetry for that: traces with rich attributes, not just pre-aggregated counters.</p>
-      <h3>OpenTelemetry in one minute</h3>
+      <h3>OpenTelemetry in One Minute</h3>
       <ul>
         <li><strong>Traces</strong> follow one request across services. Each hop is a <em>span</em>, and spans share a <em>trace ID</em>, which App Insights calls <code>operation_Id</code>.</li>
         <li><strong>Context propagation</strong> passes the trace ID between processes in the W3C <code>traceparent</code> header. If one hop drops it, the trace breaks.</li>
@@ -149,14 +153,14 @@
       <h2 id="toil">Toil</h2>
       <p>The SRE book defines toil as work that is manual, repetitive, automatable, reactive, and without lasting value, and that grows as the service grows. Google caps toil at 50% of an SRE's time. In Nimbus, typical toil includes hand-running the same KQL at every incident, restarting stuck pods, and manually mapping alerts to owners. Each of these is a candidate for a saved query, a dashboard, or an automation.</p>
 
-      <h2 id="blameless-postmortems">Blameless postmortems</h2>
+      <h2 id="blameless-postmortems">Blameless Postmortems</h2>
       <p>Write a postmortem for every Sev 1 and Sev 2, and for any incident that taught you something. <strong>Blameless</strong> means assuming everyone acted reasonably given what they knew at the time, and asking how the system made the failure possible rather than who caused it. The output is a set of <strong>owned, tracked action items</strong>, not a document that sits in a folder.</p>
       <div class="callout tip">
         <div class="callout-title">Template</div>
-        <p>Use the incident postmortem template in <a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/incident-postmortem-template.md">noc-tools-templates</a>.</p>
+        <p>Postmortems have their own <a href="postmortems/index.html">Post-Incident track</a>: process, a <a href="postmortems/template.html">template with a built-in writer</a>, <a href="postmortems/review-meeting.html">how to run the review</a>, and <a href="postmortems/action-items.html">action items</a>.</p>
       </div>
 
-      <h2 id="safe-change">Safe change</h2>
+      <h2 id="safe-change">Safe Change</h2>
       <p>Most incidents start with a change. The SRE book's advice still holds: use progressive rollouts, detect problems quickly, and roll back safely. For Nimbus that means:</p>
       <ul>
         <li><strong>Staged client rollouts</strong> (1% → 10% → 50% → 100%) with automatic halts on crash or error spikes for the new version.</li>
@@ -164,14 +168,14 @@
         <li><strong>Shadow or canary deployments</strong> when changing the model version behind a deployment.</li>
       </ul>
 
-      <h2 id="modern-practice">Modern practice worth adopting</h2>
+      <h2 id="modern-practice">Modern Practice Worth Adopting</h2>
       <div class="card-grid">
-        <div class="card"><h3>SLOs as code</h3><p>Keep SLO definitions in version control (for example, the OpenSLO format) and generate alerts and dashboards from them.</p></div>
-        <div class="card"><h3>Dashboards as code</h3><p>Provision Grafana dashboards from templates, so every new service gets golden signals automatically.</p></div>
-        <div class="card"><h3>Game days</h3><p>Practice failures on purpose: throttle a deployment or fail a region, and see whether alerts and runbooks hold up.</p></div>
-        <div class="card"><h3>Learning reviews</h3><p>Go beyond root cause and study how responders actually made sense of the incident. Find what helped, not just what broke.</p></div>
-        <div class="card"><h3>AI-assisted response</h3><p>LLMs can summarize timelines and draft queries, but people stay accountable for decisions. Verify anything an AI suggests.</p></div>
-        <div class="card"><h3>Platform engineering</h3><p>Give CFTs paved roads (instrumentation libraries, deployment templates) so reliability is the default, not extra work.</p></div>
+        <div class="card"><h3>SLOs as Code</h3><p>Keep SLO definitions in version control (for example, the OpenSLO format) and generate alerts and dashboards from them.</p></div>
+        <div class="card"><h3>Dashboards as Code</h3><p>Provision Grafana dashboards from templates, so every new service gets golden signals automatically.</p></div>
+        <div class="card"><h3>Game Days</h3><p>Practice failures on purpose: throttle a deployment or fail a region, and see whether alerts and runbooks hold up.</p></div>
+        <div class="card"><h3>Learning Reviews</h3><p>Go beyond root cause and study how responders actually made sense of the incident. Find what helped, not just what broke.</p></div>
+        <div class="card"><h3>AI-Assisted Response</h3><p>LLMs can summarize timelines and draft queries, but people stay accountable for decisions. Verify anything an AI suggests.</p></div>
+        <div class="card"><h3>Platform Engineering</h3><p>Give CFTs paved roads (instrumentation libraries, deployment templates) so reliability is the default, not extra work.</p></div>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>

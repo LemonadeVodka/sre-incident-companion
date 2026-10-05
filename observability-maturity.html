@@ -18,7 +18,7 @@
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
       <div class="eyebrow">Shared · all roles</div>
-      <h1>Observability maturity</h1>
+      <h1>Observability Maturity</h1>
       <p class="lede">Nimbus has telemetry, but very little of it is usable during an incident. This page covers where we are, where we're going, and a practical order for getting there.</p>
 
       <div class="tldr">
@@ -28,22 +28,26 @@
           <li>Then move to <strong>SLOs and burn-rate alerts</strong>, starting with the two most-used interactive features.</li>
         </ul>
       </div>
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>Most organizations start at Level 1. The order of the roadmap (standard attributes, then a dashboard template, then SLOs, then automation) works for any stack and any vendor.</p>
+      </div>
 
       <aside class="leader" aria-label="For senior managers" data-guide="leaders/investing.html">
         <div class="leader-head">For senior managers <small>· where leadership matters most</small></div>
         <div class="leader-grid">
-          <div><h4>Your role</h4><ul>
-            <li>Make the roadmap a funded priority, not a side project for two Platform engineers.</li>
+          <div><h4>Your Role</h4><ul>
+            <li>Make the roadmap a funded priority, not a side project for two Cloud Infrastructure engineers.</li>
             <li>Require the shared standards from every CFT. Optional standards won't be adopted.</li>
             <li>Set targets and review them monthly, for example 100% dashboard coverage for customer-facing features in 90 days.</li>
           </ul></div>
-          <div class="ask"><h4>Questions to ask</h4><ul>
+          <div class="ask"><h4>Questions to Ask</h4><ul>
             <li>What share of our customer-facing features have a dashboard and a reliability target?</li>
             <li>How were our last five incidents detected: alerts or customers?</li>
             <li>How long does it take to work out which team owns a problem?</li>
             <li>What's blocking the next roadmap item?</li>
           </ul></div>
-          <div><h4>The business case</h4><ul>
+          <div><h4>The Business Case</h4><ul>
             <li>Faster diagnosis means shorter outages and fewer affected users.</li>
             <li>Less dependence on a few experts, and less on-call burnout.</li>
             <li>Better capacity data means less AI spend wasted on over-provisioning.</li>
@@ -51,7 +55,7 @@
         </div>
       </aside>
 
-      <h2 id="maturity-levels">Maturity levels</h2>
+      <h2 id="maturity-levels">Maturity Levels</h2>
       <figure class="diagram">
         <svg viewBox="0 0 900 230" role="img" aria-labelledby="ml-title ml-desc">
           <title id="ml-title">Observability maturity ladder</title>
@@ -76,7 +80,7 @@
         </table>
       </div>
 
-      <h2 id="self-assessment-scorecard">Self-assessment scorecard</h2>
+      <h2 id="self-assessment-scorecard">Self-Assessment Scorecard</h2>
       <p>Tick what's true for <strong>your service or feature</strong> today. Your answers stay in your browser.</p>
       <ul class="checklist" data-key="scorecard" id="scorecard">
         <li><code>service.name</code> is set and meaningful (not <code>unknown_service</code>)</li>
@@ -98,18 +102,19 @@
         <span id="score-level">Level 1 · Reactive</span>
       </div>
 
-      <h2 id="roadmap">Roadmap: from under 10% to Standardized</h2>
+      <h2 id="roadmap">Roadmap: From Under 10% to Standardized</h2>
       <p>The order matters. Each phase makes the next one cheaper.</p>
 
-      <h3 id="days-0-30-foundations">Days 0–30: Foundations <span class="badge beginner">quick wins</span></h3>
+      <h3 id="days-0-30-foundations">Days 0–30: Foundations <span class="badge beginner">Quick Wins</span></h3>
       <ul class="checklist" data-key="roadmap-30">
-        <li><strong>Paved-road OTel package.</strong> Platform ships a small shared library or config that sets resource attributes, the exporter, and sampling the same way for every service.</li>
+        <li><strong>Paved-road OTel package.</strong> Cloud Infrastructure ships a small shared library or config that sets resource attributes, the exporter, and sampling the same way for every service.</li>
         <li><strong>Standard attributes everywhere:</strong> <code>service.name</code>, <code>service.version</code>, <code>feature.experience</code>, <code>cft.owner</code>, <code>deployment.environment.name</code>.</li>
         <li><strong>Every alert has an owner.</strong> Delete or reroute alerts that nobody acts on.</li>
         <li><strong>A golden-signals dashboard template</strong>, provisioned as code with a <code>$feature</code> variable, so one template covers every feature.</li>
         <li><strong>A telemetry-volume alert</strong>, so silence is never mistaken for health.</li>
         <li><strong>Run at least two OpenTelemetry Collector replicas</strong> and alert on their dropped or refused spans. Every Rust service's telemetry goes through them.</li>
         <li><strong>Save the NOC shift sweep</strong> as shared queries. It's the NOC's dashboard until Grafana coverage catches up.</li>
+        <li><strong>Client routing telemetry:</strong> the device orchestrator emits local vs cloud and fallback events, so fallback surges are visible.</li>
       </ul>
       <div class="code-card">
         <div class="code-head"><span class="lang">Env</span><span class="title">Standard OpenTelemetry configuration per service<span class="answers">The same five settings in every CFT's deployment</span></span></div>
@@ -124,18 +129,19 @@ OTEL_EXPORTER_OTLP_ENDPOINT=https://otel-collector.nimbus.internal:4318</code></
         <p>The Rust <code>opentelemetry</code> crates read these standard environment variables and export OTLP to the Collector. The Collector's Azure Monitor exporter maps <code>service.name</code> to <code>cloud_RoleName</code> and <code>service.version</code> to <code>application_Version</code>. Custom resource attributes such as <code>feature.experience</code> may not reach <code>customDimensions</code> on every row. Copy them onto each span, either in the shared Rust telemetry crate or with a Collector processor (for example <code>transform</code>), so the queries in this guide can find them.</p>
       </div>
 
-      <h3 id="days-31-60-connect-the-dots">Days 31–60: Connect the dots <span class="badge intermediate">medium effort</span></h3>
+      <h3 id="days-31-60-connect-the-dots">Days 31–60: Connect the Dots <span class="badge intermediate">Medium Effort</span></h3>
       <ul class="checklist" data-key="roadmap-60">
         <li><strong>Client trace propagation:</strong> the desktop client sends <code>traceparent</code>, and APIM forwards it.</li>
         <li><strong>GenAI semantic conventions</strong> on every Foundry call, including token usage and finish reasons.</li>
         <li><strong>A TTFT metric</strong> for every streaming feature, not only Writing Assist.</li>
-        <li><strong>A Platform saturation dashboard:</strong> tokens per minute against quota per deployment, PTU utilization, and 429s by caller.</li>
+        <li><strong>A Cloud Infrastructure saturation dashboard:</strong> tokens per minute against quota per deployment, PTU utilization, and 429s by caller.</li>
         <li><strong>First SLOs in shadow mode</strong> for Writing Assist and Device Care. Measure for 4 weeks before alerting on them.</li>
         <li><strong>Add P99</strong> to latency queries and dashboards, so the slowest 5% that P95 hides becomes visible.</li>
         <li><strong>Runbooks for the top 5 alerts</strong> by frequency, each tested by a NOC engineer on a quiet shift.</li>
+        <li><strong>NOC tooling for pre-agreed requests</strong> (scoped and audited), so the coordinator can act without a handoff.</li>
       </ul>
 
-      <h3 id="days-61-90-slo-driven">Days 61–90: SLO-driven <span class="badge advanced">bigger lift</span></h3>
+      <h3 id="days-61-90-slo-driven">Days 61–90: SLO-Driven <span class="badge advanced">Bigger Lift</span></h3>
       <ul class="checklist" data-key="roadmap-90">
         <li><strong>Burn-rate alerts</strong> replace raw threshold alerts for features with SLOs.</li>
         <li><strong>Tail-based sampling</strong> in an OpenTelemetry Collector, keeping 100% of errors and slow traces.</li>
@@ -144,7 +150,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=https://otel-collector.nimbus.internal:4318</code></
         <li><strong>First game day</strong> (throttle <code>chat-small</code> in staging).</li>
       </ul>
 
-      <h2 id="golden-signals-dashboard-template">Golden-signals dashboard template</h2>
+      <h2 id="golden-signals-dashboard-template">Golden-Signals Dashboard Template</h2>
       <p>One Grafana dashboard, provisioned as code, with variables for <code>$feature</code> and <code>$role</code>. Each panel is a query from the <a href="queries.html">library</a>.</p>
       <div class="table-wrap">
         <table>
@@ -160,7 +166,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=https://otel-collector.nimbus.internal:4318</code></
         </table>
       </div>
 
-      <h2 id="measuring-progress">Measuring progress</h2>
+      <h2 id="measuring-progress">Measuring Progress</h2>
       <ul>
         <li><strong>Attribute coverage:</strong> the share of services with standard attributes (<a href="queries.html#q-role-inventory">service inventory query</a>).</li>
         <li><strong>Dashboard coverage:</strong> the share of feature experiences with a template-based dashboard. Today it's under 10%.</li>

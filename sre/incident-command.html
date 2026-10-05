@@ -3,119 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SRE: Incident Command · Nimbus SRE</title>
-  <meta name="description" content="Running Nimbus incidents as Incident Commander across Slack, Teams, PagerDuty, a locked-down Jira, and slow-responding CFTs.">
-  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../assets/style.css">
-  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <title>Moved · Nimbus SRE</title>
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="technical-lead.html">
+  <meta http-equiv="refresh" content="0; url=technical-lead.html">
+  <style>body{font:17px/1.6 Georgia,serif;margin:0;padding:48px 16px;background:#f5f1e8;color:#2b2b2b}</style>
+  <script>location.replace("technical-lead.html" + location.hash);</script>
 </head>
-<body data-root="../" data-page="sre-ic">
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
-<div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
-  <main class="content" id="main">
-    <article class="prose">
-      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">SRE On-Call</a></div>
-      <div class="track-banner t-sre"><i class="track-dot"></i>SRE On-Call · Investigate &amp; command</div>
-      <h1>Incident command</h1>
-      <p class="lede">Being IC in a mature organization is hard enough. Here you also bridge two chat platforms, chase CFTs without on-call rotations, and keep records outside Jira. This page is the IC's operating manual for that reality.</p>
-
-      <div class="tldr">
-        <ul>
-          <li>The IC <strong>coordinates and decides</strong>. Delegate the debugging as soon as there's anyone to delegate to.</li>
-          <li>Assign <strong>bridge</strong> and <strong>scribe</strong> early, and keep the <strong>pinned record</strong> current.</li>
-          <li>Chase CFTs on the <strong>ladder timers</strong>, and bring in the senior manager for decisions and stuck escalations.</li>
-          <li>Close with a <strong>Jira ticket, a runbook owner, and a postmortem date</strong>, every time.</li>
-        </ul>
-      </div>
-
-      <h2 id="the-ic-loop">The IC loop</h2>
-      <p>Repeat this loop every 10 to 15 minutes until the incident is resolved:</p>
-      <ol class="steps">
-        <li><strong>What's the impact now?</strong>Re-check the user-facing number.</li>
-        <li><strong>What are we trying, and who's on it?</strong>Each workstream has one name next to it.</li>
-        <li><strong>Who haven't we heard from?</strong>Check the ladder timers for every paged team.</li>
-        <li><strong>Is any decision waiting?</strong>Make it, or escalate it to the senior manager.</li>
-        <li><strong>Update.</strong>Slack update, Teams mirror (through the bridge), and pinned record.</li>
-      </ol>
-
-      <h2 id="assigning-roles">Assigning roles</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Role</th><th>Default</th><th>Notes</th></tr></thead>
-          <tbody>
-            <tr><td><strong>IC</strong></td><td>SRE on-call</td><td>Hand it over explicitly if you need to go deep on a problem yourself.</td></tr>
-            <tr><td><strong>Ops lead</strong></td><td>SRE on-call or a CFT engineer</td><td>The only person who makes production changes.</td></tr>
-            <tr><td><strong>Bridge</strong></td><td>NOC</td><td>Mandatory whenever the Collab or Device CFT (Teams) is involved.</td></tr>
-            <tr><td><strong>Scribe</strong></td><td>NOC or a second SRE</td><td>Owns the pinned record and timeline.</td></tr>
-            <tr><td><strong>Comms</strong></td><td>IC for Sev 2, senior manager for Sev 1</td><td>Handles executive and customer-facing updates.</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h2 id="running-across-slack-and-teams">Running across Slack and Teams</h2>
-      <ul>
-        <li><strong>Decisions only count in Slack.</strong> If something is agreed in a Teams call, the bridge posts it in Slack with <code>[from Teams]</code>, and only then does it count.</li>
-        <li><strong>Join the Teams call yourself</strong> if a Teams-only CFT is the main investigator. The bridge keeps Slack in sync.</li>
-        <li><strong>Use the Slack workflows</strong> (declare, timeline). They don't exist in Teams, so the Slack channel remains the record.</li>
-        <li><strong>Update templates</strong> are on <a href="../incident-response.html#communication-templates">Incident process</a>. The Teams mirror message is on <a href="../ways-of-working.html#slack-and-teams">Ways of working</a>.</li>
-      </ul>
-
-      <h2 id="chasing-non-responding-cfts">Chasing non-responding CFTs</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>After first page</th><th>IC action</th></tr></thead>
-          <tbody>
-            <tr><td><strong>15 min</strong></td><td>Confirm the NOC re-paged. Ask in the CFT's own channel (Slack or Teams) for <em>anyone</em> from the team.</td></tr>
-            <tr><td><strong>30 min</strong></td><td>Page the <strong>CFT engineering manager</strong> ("Nimbus CFT leads" policy). Tell the senior manager in the channel.</td></tr>
-            <tr><td><strong>45 min</strong></td><td>Ask the senior manager to escalate to CFT leadership.</td></tr>
-            <tr><td><strong>Meanwhile</strong></td><td>Mitigate within your authority: pre-approved actions, and Platform-level levers such as traffic shifts and spillover. Don't let the absence of a CFT block mitigation.</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="callout reality">
-        <div class="callout-title">Keep it factual</div>
-        <p>Record page and acknowledgement times in the pinned record without commentary, for example "Collab CFT paged 14:12, acked 14:51". Those numbers are what leadership uses to fix CFT on-call coverage.</p>
-      </div>
-
-      <h2 id="bringing-in-the-senior-manager">Bringing in the senior manager</h2>
-      <p>Bring them in for <strong>decisions and unblocking</strong>, not status. Be specific about what you need:</p>
-      <div class="code-card">
-        <div class="code-head"><span class="lang">Text</span><span class="title">Decision request<span class="answers">Post in the channel and @ the senior manager</span></span></div>
-<pre><code>@[manager] decision needed by HH:MM:
-Option A: [e.g. enable paygo spillover] — fixes [X], costs ~[$/h]
-Option B: [e.g. pause Proactive Tips for the day] — fixes [X], impact [Y]
-Recommendation: [A/B] because [..]</code></pre>
-      </div>
-      <p>Typical decisions: extra spend, quality-for-availability trade-offs, failover with data-residency implications, customer or partner messaging, and pulling in people from other teams. See <a href="../leaders/during-an-incident.html#decisions-only-you-can-make">what managers decide</a>.</p>
-
-      <h2 id="handing-over-ic">Handing over IC (shift change or fatigue)</h2>
-      <div class="code-card">
-        <div class="code-head"><span class="lang">Text</span><span class="title">IC handover<span class="answers">Post in the channel; the new IC replies "I have IC"</span></span></div>
-<pre><code>IC handover to @[name] at HH:MM.
-Impact now: [..]   Severity: [..]
-Workstreams: [who — what]
-Waiting on: [CFT/Platform — since HH:MM]
-Actions in effect: [.. + how to undo]
-Next update due: HH:MM</code></pre>
-      </div>
-
-      <h2 id="closing-the-incident">Closing the incident</h2>
-      <ul class="checklist" data-key="sre-close">
-        <li>Impact at baseline for <strong>30 minutes</strong>. Post the resolution update in Slack, mirror it to Teams, and notify PagerDuty.</li>
-        <li>Temporary actions still in effect (paused batch, halted rollout, scale-out) have an owner and an undo time.</li>
-        <li><strong>File the Jira ticket</strong> within 24 hours, using the pinned record (<a href="../ways-of-working.html#keeping-a-record-without-jira">how</a>).</li>
-        <li><strong>Assign a runbook owner</strong> and a due date (3 business days). New team: a rough runbook beats none.</li>
-        <li>Schedule the <strong>postmortem</strong> (required for Sev 1–2) and invite every CFT involved, Teams users included.</li>
-        <li>Note the CFT response times and any tooling gaps for the monthly review.</li>
-      </ul>
-    </article>
-    <nav class="pager" id="pager"></nav>
-  </main>
-  <aside class="toc" id="toc"></aside>
-</div>
-<footer class="site-footer" id="footer"></footer>
-<script src="../assets/site.js"></script>
+<body>
+  <p>This page moved to <a href="technical-lead.html">SRE: Leading the Technical Response</a>.</p>
 </body>
 </html>

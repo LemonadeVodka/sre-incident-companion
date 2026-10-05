@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Onboarding Paths · Nimbus SRE</title>
+  <meta name="description" content="Week 1, month 1, and month 3 onboarding paths for NOC coordinators, SRE technical leads, and senior managers, with progress tracking.">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="onboarding">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Start</div>
+      <div class="eyebrow">Start · Onboarding</div>
+      <h1>Onboarding Paths</h1>
+      <p class="lede">A structured path for each role, from first-week reading to running real incidents. Tick items off as you go. Progress is saved in this browser only.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Each path mixes <strong>reading</strong>, <strong>practice</strong> (tabletops, shadowing), and <strong>doing</strong>.</li>
+          <li>Pair every new person with a buddy from the same role.</li>
+          <li>Managers: check in at the end of week 1, month 1, and month 3.</li>
+        </ul>
+      </div>
+
+      <h2 id="noc-path">NOC: Incident Coordinator</h2>
+      <h3 id="noc-week-1">Week 1</h3>
+      <ul class="checklist" data-key="onb-noc-1">
+        <li>Read <a href="environment.html">Background: Nimbus</a>. Draw the request path from memory, including both orchestrators.</li>
+        <li>Read the <a href="noc/index.html">NOC role</a> and the Good column for your role on <a href="response-quality.html">What Good Looks Like</a>.</li>
+        <li>Run the <a href="noc/detect.html#shift-health-sweep">shift health sweep</a> alongside your buddy on three shifts.</li>
+        <li>Check that PagerDuty, Slack, and Teams access all work. Join the Collab and Device CFT Teams channels.</li>
+        <li>Print the <a href="cards/noc.html">NOC role card</a>.</li>
+      </ul>
+      <h3 id="noc-month-1">Month 1</h3>
+      <ul class="checklist" data-key="onb-noc-2">
+        <li>Read <a href="noc/triage-and-escalate.html">Triage &amp; Escalate</a>, <a href="noc/coordinate.html">Coordinate</a>, and <a href="noc/action-requests.html">Requesting Actions</a>.</li>
+        <li>Play the Coordinator in a <a href="tabletop.html">tabletop exercise</a> that includes Morgan.</li>
+        <li>Shadow a real incident as scribe or bridge.</li>
+        <li>Write up one confusing alert as a runbook draft.</li>
+      </ul>
+      <h3 id="noc-month-3">Month 3</h3>
+      <ul class="checklist" data-key="onb-noc-3">
+        <li>Coordinate a Sev 3 as IC, with your buddy as backup.</li>
+        <li>Hand over a postmortem-ready timeline, and attend the review.</li>
+        <li>Coordinate a Sev 2 tabletop scoring "Good" or better on Coordination and Stakeholder Pressure.</li>
+      </ul>
+
+      <h2 id="sre-path">SRE: Technical Lead</h2>
+      <h3 id="sre-week-1">Week 1</h3>
+      <ul class="checklist" data-key="onb-sre-1">
+        <li>Read <a href="environment.html">Background</a>, <a href="sre/index.html">SRE role</a>, and <a href="ways-of-working.html">Ways of Working</a>.</li>
+        <li>Run every query on <a href="queries.html">Nimbus KQL</a> once, and note which ones return nothing (telemetry gaps).</li>
+        <li>Meet your CFT liaison counterparts, and read their service cards.</li>
+      </ul>
+      <h3 id="sre-month-1">Month 1</h3>
+      <ul class="checklist" data-key="onb-sre-2">
+        <li>Read <a href="sre/investigate.html">Investigate</a> and <a href="sre/technical-lead.html">Leading the Technical Response</a>.</li>
+        <li>Shadow two incidents as a second investigator.</li>
+        <li>Play Technical Lead in a tabletop, including the fallback-surge scenario.</li>
+        <li>Write the technical analysis for one postmortem.</li>
+      </ul>
+      <h3 id="sre-month-3">Month 3</h3>
+      <ul class="checklist" data-key="onb-sre-3">
+        <li>Primary on-call with a backup. Be Technical Lead for a Sev 2.</li>
+        <li>Read <a href="sre/deep-dives.html">Deep Dives</a>, and run a game day with one CFT.</li>
+        <li>Close one postmortem action item that changes the system.</li>
+      </ul>
+
+      <h2 id="manager-path">Senior Manager</h2>
+      <h3 id="manager-week-1">Week 1</h3>
+      <ul class="checklist" data-key="onb-lead-1">
+        <li>Read the <a href="leaders/index.html">manager path</a>, <a href="leaders/during-an-incident.html">During an Incident</a>, and the <a href="leaders/jargon.html">jargon decoder</a>.</li>
+        <li>Read <a href="leaders/during-an-incident.html#when-a-leader-dives-too-deep">When a Leader Dives Too Deep</a>.</li>
+        <li>Print the <a href="cards/manager.html">manager role card</a>.</li>
+      </ul>
+      <h3 id="manager-month-1">Month 1</h3>
+      <ul class="checklist" data-key="onb-lead-2">
+        <li>Join a tabletop as the manager, and practice being the comms buffer for Morgan.</li>
+        <li>Chair one postmortem review using the <a href="postmortems/review-meeting.html">agenda</a>.</li>
+        <li>Meet the Cloud Infrastructure and CFT leads about response expectations.</li>
+      </ul>
+      <h3 id="manager-month-3">Month 3</h3>
+      <ul class="checklist" data-key="onb-lead-3">
+        <li>Run the first monthly <a href="postmortems/action-items.html#the-monthly-review">action-item review</a>.</li>
+        <li>Pick one <a href="leaders/investing.html#tooling-and-process-asks">tooling ask</a> (for example, NOC tooling) and get it funded.</li>
+        <li>Score the team on <a href="response-quality.html">What Good Looks Like</a>, and set one dimension to improve this quarter.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="./assets/site.js"></script>
+</body>
+</html>

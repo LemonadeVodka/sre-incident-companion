@@ -18,7 +18,7 @@
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
       <div class="eyebrow">Shared · all roles</div>
-      <h1>Ways of working</h1>
+      <h1>Ways of Working</h1>
       <p class="lede">Our tools aren't ideal yet. Jira is locked down, our workflows are Slack-only while some CFTs live in Teams, not every CFT is in PagerDuty, and we're a new team with few runbooks. This page describes how we run incidents well anyway.</p>
 
       <div class="tldr">
@@ -26,30 +26,31 @@
           <li><strong>PagerDuty pages people. Chat is only for coordination.</strong> Never rely on a Slack or Teams message to wake someone up.</li>
           <li>The <strong>Slack incident channel is the source of truth</strong>. A named <strong>bridge person</strong> mirrors it into Teams for Teams-only CFTs.</li>
           <li><strong>While Jira is locked down,</strong> keep the record in the channel plus a pinned record, and file one Jira ticket afterwards.</li>
-          <li><strong>Slow CFT?</strong> Follow the escalation ladder with timers, and use <a href="noc/safe-actions.html">pre-approved actions</a> in the meantime.</li>
+          <li><strong>Slow CFT?</strong> Follow the escalation ladder with timers, and send <a href="noc/action-requests.html">pre-agreed requests</a> to whoever can act.</li>
+          <li><strong>Cloud Infrastructure</strong> owns the shared cloud and has a lot of influence. Bring evidence, use their process, and escalate through management.</li>
           <li><strong>New team:</strong> every incident leaves behind a runbook, even a rough one.</li>
         </ul>
       </div>
 
-      <h2 id="what-this-means-for-each-role">What this means for each role</h2>
+      <h2 id="what-this-means-for-each-role">What This Means for Each Role</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Role</th><th>Your responsibilities here</th></tr></thead>
           <tbody>
-            <tr><td><span class="badge noc">NOC</span></td><td>Page through PagerDuty, open the Slack incident channel, start the pinned record, act as the default <strong>bridge person</strong> until SRE assigns one, and start the escalation timers.</td></tr>
-            <tr><td><span class="badge sre">SRE on-call</span></td><td>Own the incident as IC, assign the bridge role, chase non-responding CFTs up the ladder, and make sure the Jira ticket and runbook get written.</td></tr>
+            <tr><td><span class="badge noc">NOC (Incident Coordinator)</span></td><td>Declare, page through PagerDuty, open the Slack channel and pinned record, act as <strong>bridge</strong> (or assign one), run the escalation timers, send action requests, file the Jira ticket, and schedule the postmortem. The NOC can't change production.</td></tr>
+            <tr><td><span class="badge sre">SRE on-call (Technical Lead)</span></td><td>Investigate, recommend mitigations, give owners the evidence to act, and write the technical analysis for the postmortem.</td></tr>
             <tr><td><span class="badge lead">Manager</span></td><td>Be the top rung of the escalation ladder, unblock CFTs that don't respond, and push for the tooling fixes listed at the bottom of this page.</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h2 id="paging-with-pagerduty">Paging with PagerDuty</h2>
+      <h2 id="paging-with-pagerduty">Paging With PagerDuty</h2>
       <p>PagerDuty is the only tool that reliably reaches people whatever chat app they use. Use it for every page.</p>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Severity</th><th>PagerDuty urgency</th><th>Who gets paged</th><th>Expected acknowledgement</th></tr></thead>
           <tbody>
-            <tr><td><span class="badge sev1">Sev 1</span></td><td>High</td><td>SRE on-call + Platform + affected CFT(s) + senior manager notified</td><td>5 minutes</td></tr>
+            <tr><td><span class="badge sev1">Sev 1</span></td><td>High</td><td>SRE on-call + Cloud Infrastructure + affected CFT(s) + senior manager notified</td><td>5 minutes</td></tr>
             <tr><td><span class="badge sev2">Sev 2</span></td><td>High</td><td>SRE on-call + affected CFT</td><td>15 minutes</td></tr>
             <tr><td><span class="badge sev3">Sev 3</span></td><td>Low</td><td>Affected CFT (business hours); SRE informed</td><td>Next business hour</td></tr>
             <tr><td><span class="badge sev4">Sev 4</span></td><td>None (ticket only)</td><td>—</td><td>—</td></tr>
@@ -61,7 +62,7 @@
         <p>Not every CFT has its own PagerDuty service yet. For those, page the <strong>"Nimbus CFT leads"</strong> escalation policy, which reaches the CFT's engineering manager. Write down which CFTs lack a service. That list is one of the manager asks below.</p>
       </div>
 
-      <h2 id="slack-and-teams">Slack and Teams: one source of truth</h2>
+      <h2 id="slack-and-teams">Slack and Teams: One Source of Truth</h2>
       <figure class="diagram">
         <svg viewBox="0 0 900 200" role="img" aria-labelledby="br-title br-desc">
           <title id="br-title">Slack and Teams bridging</title>
@@ -93,7 +94,7 @@ Latest: [one line]
 Source of truth: Slack #inc-… (IC: [name]). I'm bridging; reply here and I'll relay.</code></pre>
       </div>
 
-      <h2 id="keeping-a-record-without-jira">Keeping a record without Jira</h2>
+      <h2 id="keeping-a-record-without-jira">Keeping a Record Without Jira</h2>
       <p>Our Jira project is locked down: no incident issue type, limited fields, slow permission changes. Don't fight it during an incident.</p>
       <ul class="checklist" data-key="record">
         <li><strong>During:</strong> pin the incident record (template below) at the top of the Slack channel and keep it updated. The scribe (or IC) owns it.</li>
@@ -116,7 +117,7 @@ Timeline: see channel / key moments: [..]
 Follow-ups: [owner — item]   Runbook to write: [title, owner]</code></pre>
       </div>
 
-      <h2 id="when-cfts-dont-respond">When CFTs don't respond</h2>
+      <h2 id="when-cfts-dont-respond">When CFTs Don't Respond</h2>
       <p>Slow responses are a known problem. Treat them as a process issue, not a personal one, and keep the clock running. <strong>Don't wait idle:</strong> mitigate within your authority while you escalate.</p>
       <div class="table-wrap">
         <table>
@@ -126,13 +127,26 @@ Follow-ups: [owner — item]   Runbook to write: [title, owner]</code></pre>
             <tr><td><strong>T+15 min</strong></td><td>PagerDuty escalates to the CFT secondary. Re-page if needed, and call them if you have a phone number.</td><td>NOC / SRE</td></tr>
             <tr><td><strong>T+30 min</strong></td><td>SRE pages the <strong>CFT engineering manager</strong> and notifies the senior manager in the channel.</td><td>SRE</td></tr>
             <tr><td><strong>T+45 min</strong></td><td>The senior manager contacts the CFT's director or leadership directly.</td><td>Senior manager</td></tr>
-            <tr><td><strong>Meanwhile</strong></td><td>Use <a href="noc/safe-actions.html">pre-approved actions</a> (pause background jobs, halt a client rollout, shift traffic with Platform) that don't require the CFT.</td><td>NOC / SRE</td></tr>
+            <tr><td><strong>Meanwhile</strong></td><td>Send <a href="noc/action-requests.html">pre-agreed requests</a> to owners who <em>are</em> responding. Cloud Infrastructure can often shift traffic or add capacity even when a feature CFT is silent.</td><td>NOC (IC) + SRE</td></tr>
           </tbody>
         </table>
       </div>
       <p>Timers run at Sev 1 pace (halve them) or Sev 3 pace (business hours only). Record every page and acknowledgement time in the pinned record, because leadership needs those numbers to fix response expectations.</p>
 
-      <h2 id="building-runbooks-as-a-new-team">Building runbooks as a new team</h2>
+      <h2 id="working-with-cloud-infrastructure">Working With Cloud Infrastructure</h2>
+      <p>The <strong>Cloud Infrastructure CFT</strong> owns Front Door, APIM and auth policies, the cloud orchestrator, Foundry capacity and quota, and the telemetry pipeline. Every other team depends on them, they run their own change process, and they're used to getting their way. Working well with them is a core incident skill.</p>
+      <div class="card-grid">
+        <div class="card"><h3>Bring Evidence</h3><p>A query, a chart, and a time window. "Edge 5xx 4% since 14:05, OriginConnectionError" gets action. "Your CDN is broken" gets defensiveness.</p></div>
+        <div class="card"><h3>Use Their Front Door</h3><p>Page their PagerDuty and follow their change process, even under pressure. Ask: "What do you need from us to move faster?"</p></div>
+        <div class="card"><h3>"Not Us" Isn't the End</h3><p>Ask what evidence would change their view, and have the Technical Lead produce it. Disagreements escalate through managers, never around them.</p></div>
+        <div class="card"><h3>When Their Change Caused It</h3><p>Stay blameless and factual. In the postmortem, focus on how changes to shared layers are reviewed and announced, not on who pushed the button.</p></div>
+      </div>
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>Every organization has a powerful platform or infrastructure team. The same rules apply: evidence over opinion, their process over shortcuts, and managers for disagreements.</p>
+      </div>
+
+      <h2 id="building-runbooks-as-a-new-team">Building Runbooks as a New Team</h2>
       <p>We don't have many runbooks yet, and that's fine. The goal is to <strong>never handle the same incident from scratch twice</strong>.</p>
       <ol class="steps">
         <li><strong>Every incident leaves a runbook.</strong>The IC assigns one person to write it within 3 business days. A rough one is far better than none.</li>
@@ -144,7 +158,7 @@ Follow-ups: [owner — item]   Runbook to write: [title, owner]</code></pre>
       <div class="code-card">
         <div class="code-head"><span class="lang">Markdown</span><span class="title">Minimal runbook template<span class="answers">Enough to be useful; expand later</span></span></div>
 <pre><code># [Alert or symptom name]
-Owner: [CFT / Platform]   Last tested: [date]   Severity guide: [..]
+Owner: [CFT / Cloud Infrastructure]   Last tested: [date]   Severity guide: [..]
 
 ## What this means
 [1–2 sentences, plain language]
@@ -153,8 +167,8 @@ Owner: [CFT / Platform]   Last tested: [date]   Severity guide: [..]
 1. [query link] — normal is [X]; incident if [Y]
 2. Is it one feature / region / client version?
 
-## Do (NOC, pre-approved)
-- [safe action, how to undo it]
+## Request (NOC → owner)
+- [pre-agreed request, who executes it, how to undo it]
 
 ## Escalate
 - Page [PagerDuty service] — if no ack in 15 min: [next rung]
@@ -167,12 +181,12 @@ Owner: [CFT / Platform]   Last tested: [date]   Severity guide: [..]
       </div>
       <p>For a fuller format, see the <a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/on-call-runbook-template.md">on-call runbook template</a> in noc-tools-templates.</p>
 
-      <h2 id="tooling-asks">Tooling asks (for managers to drive)</h2>
+      <h2 id="tooling-asks">Tooling Asks (For Managers to Drive)</h2>
       <div class="card-grid">
-        <div class="card t-lead" style="border-top:4px solid var(--lead)"><h3>Jira incident project</h3><p>An incident issue type with severity, impact, and timeline fields, plus permission for SRE and NOC to create issues.</p></div>
-        <div class="card t-lead" style="border-top:4px solid var(--lead)"><h3>Teams incident workflow</h3><p>Mirror the Slack workflow in Teams, or connect PagerDuty to both so incident updates post automatically.</p></div>
-        <div class="card t-lead" style="border-top:4px solid var(--lead)"><h3>PagerDuty for every CFT</h3><p>A service and escalation policy for each feature experience, with a named on-call.</p></div>
-        <div class="card t-lead" style="border-top:4px solid var(--lead)"><h3>Response expectations</h3><p>Agreed acknowledgement times per severity, reviewed monthly using the numbers from pinned records.</p></div>
+        <div class="card t-lead" style="border-top:4px solid var(--lead)"><h3>Jira Incident Project</h3><p>An incident issue type with severity, impact, and timeline fields, plus permission for SRE and NOC to create issues.</p></div>
+        <div class="card t-lead" style="border-top:4px solid var(--lead)"><h3>Teams Incident Workflow</h3><p>Mirror the Slack workflow in Teams, or connect PagerDuty to both so incident updates post automatically.</p></div>
+        <div class="card t-lead" style="border-top:4px solid var(--lead)"><h3>PagerDuty for Every CFT</h3><p>A service and escalation policy for each feature experience, with a named on-call.</p></div>
+        <div class="card t-lead" style="border-top:4px solid var(--lead)"><h3>Response Expectations</h3><p>Agreed acknowledgement times per severity, reviewed monthly using the numbers from pinned records.</p></div>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>

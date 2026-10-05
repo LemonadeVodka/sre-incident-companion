@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SRE: Leading the Technical Response · Nimbus SRE</title>
+  <meta name="description" content="How the SRE Technical Lead runs the technical side of a Nimbus incident: workstreams, recommendations, working with owners, and protecting focus.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="sre-tl">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">SRE On-Call</a></div>
+      <div class="track-banner t-sre"><i class="track-dot"></i>SRE On-Call · Technical Lead</div>
+      <h1>Leading the Technical Response</h1>
+      <p class="lede">The NOC runs the incident, and you run the <em>problem</em>. That means organizing the technical work, turning findings into clear recommendations for the people who own the systems, and protecting your own focus from the noise around you.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Split the work into <strong>named workstreams</strong>, and tell the IC who's on each.</li>
+          <li>Give owners <strong>recommendations, not orders</strong>: what to do, why, the evidence, and how to undo it.</li>
+          <li><strong>Protect your focus.</strong> Send status questions and executive DMs to the IC.</li>
+          <li>Mitigate first. Save the root-cause hunt for after recovery and the <a href="../postmortems/index.html">postmortem</a>.</li>
+        </ul>
+      </div>
+
+      <h2 id="workstreams">Workstreams</h2>
+      <p>As soon as more than one person is investigating, split the work and tell the IC:</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Workstream Post<span class="answers">Post in #inc-…; the IC copies it into the pinned record</span></span></div>
+<pre><code>Technical workstreams as of HH:MM:
+1. Mitigation — [name] — evaluating [pause batch / failover]
+2. Diagnosis — [name] — checking [edge vs origin / fallback rate]
+3. Change review — [name] — deploys, rollouts, AzureActivity last 24h
+Next technical summary to IC at HH:MM.</code></pre>
+      </div>
+
+      <h2 id="recommending-mitigations">Recommending Mitigations</h2>
+      <p>You don't execute changes, and neither does the NOC. Owners do. Make it easy for them to say yes:</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Mitigation Recommendation<span class="answers">To the IC, who turns it into an action request</span></span></div>
+<pre><code>Recommend: [action] by [owner team]
+Why: [evidence — query link + numbers]
+Expected effect: [..] within ~[N] min
+Risk: [low/medium — what could go wrong]
+Undo: [how]
+If declined: [next best option]</code></pre>
+      </div>
+      <ul>
+        <li><strong>Prefer reversible actions:</strong> pause, halt, shift, or degrade before you redeploy.</li>
+        <li><strong>One change at a time,</strong> so you can tell what worked.</li>
+        <li><strong>Decisions that cost money or quality</strong> go to the senior manager through the IC.</li>
+      </ul>
+
+      <h2 id="working-with-owners">Working With Owners</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Owner</th><th>What works</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Feature CFTs</strong></td><td>They know their code and you know the system. Ask what changed, share the per-hop query, and suggest the rollback. Respect that they make the call on their service.</td></tr>
+            <tr><td><strong>Client CFT</strong></td><td>Device orchestrator, on-device model, and releases. Bring the <a href="../queries.html#q-routing-split">routing split</a> and <a href="../queries.html#q-fallback-rate">fallback</a> data by client version.</td></tr>
+            <tr><td><strong>Cloud Infrastructure</strong></td><td>Evidence first, through their PagerDuty and process. If they push back, ask what evidence they need. Escalate disagreements through the IC to the senior manager. See <a href="../ways-of-working.html#working-with-cloud-infrastructure">Working With Cloud Infrastructure</a>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="protecting-focus">Protecting Focus</h2>
+      <div class="persona">
+        <div><b>Morgan, the deep-diving director, has DMed you.</b> "What query are you running? Why isn't this fixed? Have you checked the database?" Every answer costs you minutes and your train of thought, and Morgan will have a follow-up question.</div>
+      </div>
+      <ul>
+        <li><strong>Don't answer DMs mid-investigation.</strong> Reply once and move on: "I'm heads-down; @IC has the latest and I'll update them at HH:MM."</li>
+        <li><strong>Share one chart, not raw queries.</strong> When leaders need to see something, post a single chart in the channel through the IC.</li>
+        <li><strong>Don't debate hypotheses with spectators.</strong> Write them in the channel. Anyone with evidence can add to them.</li>
+        <li><strong>Ask the IC for cover.</strong> "@IC can you take questions for a while? I need 15 minutes." That's a normal request.</li>
+      </ul>
+      <p class="script">"I'm heads-down on the fix. @IC has the latest status and I'll brief them at 14:30. Thanks for understanding."</p>
+
+      <h2 id="technical-handover">Technical Handover</h2>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Technical Lead Handover<span class="answers">Shift change or fatigue</span></span></div>
+<pre><code>Technical Lead handover to @[name] at HH:MM.
+Current theory: [..] (confidence: low/med/high)
+Ruled out: [..]
+Mitigations in effect: [action — owner — undo]
+Open recommendations: [..]
+Key queries: [links]</code></pre>
+      </div>
+
+      <h2 id="after-recovery">After Recovery</h2>
+      <ul class="checklist" data-key="sre-after">
+        <li>Confirm impact has been at baseline for 30 minutes, and tell the IC.</li>
+        <li>Make sure temporary mitigations have an owner and an undo time.</li>
+        <li>Save the queries and charts you used, because they're postmortem evidence.</li>
+        <li>Draft the <strong>technical analysis</strong> within 2 business days (<a href="../postmortems/template.html">template</a>).</li>
+        <li>Turn what you learned into a runbook, or improve the playbook you used.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

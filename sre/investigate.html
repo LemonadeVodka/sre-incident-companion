@@ -30,7 +30,7 @@
         </ul>
       </div>
 
-      <h2 id="method-when-there-is-no-runbook">Method when there's no runbook</h2>
+      <h2 id="method-when-there-is-no-runbook">Method When There's No Runbook</h2>
       <ol class="steps">
         <li><strong>Write the symptom down precisely.</strong>"Device Care errors 9% since 14:05, 429 on chat-small." Precision rules out half the causes.</li>
         <li><strong>Find the layer</strong> (next section).</li>
@@ -40,7 +40,7 @@
         <li><strong>Write down what worked.</strong> That's the start of the runbook.</li>
       </ol>
 
-      <h2 id="which-layer-returned-the-error">Which layer returned the error?</h2>
+      <h2 id="which-layer-returned-the-error">Which Layer Returned the Error?</h2>
       <p>The same status code can come from different layers. This query counts errors at each layer for the same time window. Run it in the <strong>Log Analytics workspace</strong> that holds the Front Door and APIM logs and the workspace-based App Insights tables.</p>
       <div class="code-card" id="q-layers">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Errors by layer<span class="answers">Edge vs gateway vs backend vs services, side by side</span></span></div>
@@ -79,33 +79,39 @@ union
         </table>
       </div>
 
-      <h2 id="decomposing-latency">Decomposing latency (P50 and P95)</h2>
-      <p>Here is an illustrative <strong>P95 budget</strong> for Writing Assist. Learn the shape so you can spot which segment grew.</p>
+      <h2 id="decomposing-latency">Decomposing Latency (P50 and P95)</h2>
+      <p>Here is an illustrative <strong>P95 budget</strong> for a cloud-answered Writing Assist request. Learn the shape so you can spot which segment grew. On-device answers stop after the first segment, usually under a second.</p>
       <figure class="diagram">
-        <svg viewBox="0 0 900 190" role="img" aria-labelledby="lb-title lb-desc">
-          <title id="lb-title">Writing Assist P95 latency budget</title>
-          <desc id="lb-desc">A stacked bar of about 6 seconds: client and edge 0.3 seconds, APIM 0.1, orchestration 0.4, retrieval 0.6, model first token 1.2, generation about 3, and return path 0.4.</desc>
-          <rect class="d-box" x="20" y="50" width="45" height="56"/>
-          <rect class="d-box-accent" x="65" y="50" width="15" height="56"/>
-          <rect class="d-box" x="80" y="50" width="60" height="56"/>
-          <rect class="d-box" x="140" y="50" width="90" height="56"/>
-          <rect class="d-box-warn" x="230" y="50" width="180" height="56"/>
-          <rect class="d-box-accent" x="410" y="50" width="410" height="56"/>
-          <rect class="d-box" x="820" y="50" width="60" height="56"/>
-          <text class="d-sub" x="42" y="40" text-anchor="middle">edge</text>
-          <text class="d-sub" x="74" y="128" text-anchor="middle">APIM</text>
-          <text class="d-sub" x="110" y="40" text-anchor="middle">service</text>
-          <text class="d-sub" x="185" y="128" text-anchor="middle">retrieval</text>
-          <text class="d-text" x="320" y="83" text-anchor="middle">first token 1.2 s</text>
-          <text class="d-text" x="615" y="83" text-anchor="middle">generation ~3 s (output tokens)</text>
-          <text class="d-sub" x="850" y="40" text-anchor="middle">return</text>
-          <path class="d-line" d="M20 150 H880"/>
-          <text class="d-sub" x="20" y="170">0 s</text>
-          <text class="d-sub" x="230" y="170" text-anchor="middle">1.4 s</text>
-          <text class="d-sub" x="410" y="170" text-anchor="middle">2.6 s ← user sees first words</text>
-          <text class="d-sub" x="880" y="170" text-anchor="end">~6 s</text>
+        <svg viewBox="0 0 900 200" role="img" aria-labelledby="lb-title lb-desc">
+          <title id="lb-title">Writing Assist P95 Latency Budget</title>
+          <desc id="lb-desc">A stacked bar of about 6 seconds: device orchestration 0.05 seconds, edge 0.3, APIM 0.1, cloud orchestrator 0.15, feature service 0.25, retrieval 0.6, model first token 1.2, generation about 3, and return path 0.4.</desc>
+          <rect class="d-box-warn" x="20" y="60" width="7" height="56"/>
+          <rect class="d-box" x="27" y="60" width="43" height="56"/>
+          <rect class="d-box-accent" x="70" y="60" width="14" height="56"/>
+          <rect class="d-box-warn" x="84" y="60" width="21" height="56"/>
+          <rect class="d-box" x="105" y="60" width="36" height="56"/>
+          <rect class="d-box" x="141" y="60" width="86" height="56"/>
+          <rect class="d-box-warn" x="227" y="60" width="172" height="56"/>
+          <rect class="d-box-accent" x="399" y="60" width="421" height="56"/>
+          <rect class="d-box" x="820" y="60" width="60" height="56"/>
+          <text class="d-sub" x="18" y="34">device orch.</text>
+          <path class="d-line" d="M23 40 V58"/>
+          <text class="d-sub" x="48" y="138" text-anchor="middle">edge</text>
+          <text class="d-sub" x="77" y="52" text-anchor="middle">APIM</text>
+          <text class="d-sub" x="94" y="156" text-anchor="middle">cloud orch.</text>
+          <path class="d-line" d="M94 118 V142"/>
+          <text class="d-sub" x="128" y="52" text-anchor="middle">service</text>
+          <text class="d-sub" x="184" y="138" text-anchor="middle">retrieval</text>
+          <text class="d-text" x="313" y="93" text-anchor="middle">first token 1.2 s</text>
+          <text class="d-text" x="610" y="93" text-anchor="middle">generation ~3 s (output tokens)</text>
+          <text class="d-sub" x="850" y="52" text-anchor="middle">return</text>
+          <path class="d-line" d="M20 170 H880"/>
+          <text class="d-sub" x="20" y="190">0 s</text>
+          <text class="d-sub" x="227" y="190" text-anchor="middle">1.45 s</text>
+          <text class="d-sub" x="399" y="190" text-anchor="middle">2.65 s ← first words</text>
+          <text class="d-sub" x="880" y="190" text-anchor="end">~6 s</text>
         </svg>
-        <figcaption>The model takes about 70% of the time. When it grows, look first at the amber segment (queueing, capacity, prompt size) or the blue one (output length).</figcaption>
+        <figcaption>Amber segments are shared or capacity-bound (orchestrators, model queueing). The model takes about 70% of the time, and the two orchestrators are small but sit in front of everything.</figcaption>
       </figure>
       <div class="code-card" id="q-hops">
         <div class="code-head"><span class="lang">KQL</span><span class="title">P50 / P95 per hop for one service<span class="answers">Model vs retrieval vs our own code</span></span></div>
@@ -144,7 +150,21 @@ requests
         </table>
       </div>
 
-      <h2 id="error-types">Error types: 429, 5xx, timeouts</h2>
+      <h2 id="device-and-cloud-orchestrators">Device and Cloud Orchestrators</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Symptom</th><th>Suspect</th><th>Confirm</th></tr></thead>
+          <tbody>
+            <tr><td>Cloud requests and 429s up, with no server deploy</td><td>Device orchestrator falling back from a failing local model</td><td><a href="../queries.html#q-fallback-rate">Fallback rate</a> by local model version, and <a href="../queries.html#q-routing-split">local vs cloud split</a> by client version</td></tr>
+            <tr><td>Local share dropped in one client version only</td><td>Routing policy or local model shipped in that version</td><td>Routing split by version, plus the release notes</td></tr>
+            <tr><td>Users complain about "quick" tasks, and server metrics are perfect</td><td>The local path (on-device model) failing or slow</td><td>Client <code>customEvents</code>, crash and fallback reasons</td></tr>
+            <tr><td>Every feature slow or erroring together, Foundry and dependencies normal</td><td>Cloud orchestrator</td><td><a href="#q-by-instance">P50/P95 by instance</a> with the orchestrator's <code>cloud_RoleName</code>, and the layer query</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Fallback surges are tricky because <strong>nothing on the server is broken</strong>. The cloud is just doing the device's work too. Mitigation usually means halting the local model rollout (Client CFT) <em>and</em> adding cloud capacity (Cloud Infrastructure).</p>
+
+      <h2 id="error-types">Error Types: 429, 5xx, Timeouts</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th></th><th>429 Throttled</th><th>5xx from Foundry</th><th>Timeouts</th></tr></thead>
@@ -157,7 +177,7 @@ requests
       </div>
       <p><strong>Timeout budgets</strong> should shrink as you go deeper: client 30 s → APIM 28 s → service-to-model 25 s → service-to-retrieval 2 s. If the client gives up before the service does, the server is doing wasted work.</p>
 
-      <h2 id="cdn-and-edge-errors">CDN and edge errors (Front Door)</h2>
+      <h2 id="cdn-and-edge-errors">CDN and Edge Errors (Front Door)</h2>
       <p>Edge errors happen before our code runs, so App Insights may show nothing at all. Use the Front Door logs.</p>
       <div class="code-card" id="q-edge-errors">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Edge errors by error type and route<span class="answers">Why is Front Door failing?</span></span></div>
@@ -192,7 +212,7 @@ AzureDiagnostics
         <p>Front Door log columns differ by tier and by diagnostic mode (<code>AzureDiagnostics</code> or resource-specific tables). The queries use <code>column_ifexists()</code> so they don't break, but check your own column names once and update the query. They're tagged <code>[AZURE]</code>.</p>
       </div>
 
-      <h2 id="401-investigation">401 investigation</h2>
+      <h2 id="401-investigation">401 Investigation</h2>
       <ol class="steps">
         <li><strong>Which layer rejected the token?</strong>Use the layer query. A 401 at APIM means the client token was rejected. A 401 on the <strong>Foundry dependency</strong> means our service's managed identity was rejected.</li>
         <li><strong>Which cohort?</strong>All clients point to the server side: Entra, APIM policy, or signing keys. One client version points to a client bug. A scattered small set of devices suggests <strong>clock skew</strong>.</li>
@@ -238,7 +258,7 @@ traces
 | render timechart</code></pre>
       </div>
 
-      <h2 id="rust-service-failure-modes">Rust service failure modes</h2>
+      <h2 id="rust-service-failure-modes">Rust Service Failure Modes</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Failure</th><th>Signature</th><th>Confirm</th><th>Mitigate</th></tr></thead>
@@ -276,7 +296,7 @@ union traces, exceptions
 | order by timestamp desc</code></pre>
       </div>
 
-      <h2 id="what-changed">What changed?</h2>
+      <h2 id="what-changed">What Changed?</h2>
       <div class="code-card" id="q-activity">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Who changed what in Azure<span class="answers">APIM policies, Front Door, role assignments, deployments</span></span></div>
 <pre><code>// ── Parameters ─────────────────────────────

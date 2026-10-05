@@ -23,21 +23,27 @@
 
       <div class="tldr">
         <ul>
-          <li><strong>Nimbus</strong> is a desktop AI companion. The <strong>desktop client, the local Agent, and the backend services are all written in Rust</strong>.</li>
-          <li>Requests go <strong>Client → Azure Front Door (CDN) → APIM → Rust orchestration services → Azure AI Foundry</strong>, authenticated with <strong>Entra ID</strong> tokens.</li>
-          <li>Most incidents involve <strong>AI latency</strong>, <strong>error rates</strong>, <strong>CDN/edge errors</strong>, and <strong>401 auth failures</strong>. We measure latency at <strong>P50 and P95</strong> only.</li>
-          <li>We're a <strong>new, immature team</strong>: fewer than 10% of services have dashboards, there are few runbooks, Jira is locked down, PagerDuty is our only reliable paging tool, and CFTs are split between Slack and Teams.</li>
+          <li><strong>Nimbus</strong> is a desktop AI companion. The <strong>desktop client, the local Agent, and the cloud services are all written in Rust</strong>.</li>
+          <li>A <strong>device orchestrator</strong> decides whether each request is answered <strong>on the device</strong> by a small local model, or sent to the cloud: <strong>Front Door (CDN) → APIM → cloud orchestrator → feature services → Azure AI Foundry</strong>.</li>
+          <li>Most incidents involve <strong>AI latency</strong>, <strong>error rates</strong>, <strong>CDN/edge errors</strong>, and <strong>401s</strong>. Latency is measured at <strong>P50 and P95</strong> only.</li>
+          <li>People: the <strong>NOC coordinates</strong> incidents but can't take actions yet, <strong>SRE is centralized</strong>, five feature CFTs own features, and the powerful <strong>Cloud Infrastructure CFT</strong> owns the shared cloud.</li>
+          <li>We're a <strong>new, immature team</strong>: under 10% dashboard coverage, few runbooks, weak postmortems, a locked-down Jira, PagerDuty for paging, and CFTs split between Slack and Teams.</li>
         </ul>
       </div>
 
-      <div class="card-grid">
-        <a class="card t-noc" href="noc/index.html" style="border-top:4px solid var(--noc)"><h3>NOC: focus on</h3><p>The request path (so you can tell where errors come from), who owns what, and what normal looks like.</p></a>
-        <a class="card t-sre" href="sre/index.html" style="border-top:4px solid var(--sre)"><h3>SRE: focus on</h3><p>Rust specifics, the telemetry pipeline and its gaps, and which logs live in which workspace.</p></a>
-        <a class="card t-lead" href="leaders/index.html" style="border-top:4px solid var(--lead)"><h3>Managers: focus on</h3><p>Shared dependencies, ownership gray zones, and the tools &amp; process landscape.</p></a>
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>Whatever your product, draw this picture first: every hop a request takes, who owns each hop, and where your telemetry is blind. Most incident time is lost working out <em>which layer</em> is failing and <em>who owns it</em>. See <a href="adapt.html">Using This Guide Anywhere</a> to map Nimbus terms to your own.</p>
       </div>
 
-      <h2 id="what-nimbus-is">What Nimbus is</h2>
-      <p>Nimbus comes pre-installed on Windows PCs. Users open it with a hotkey or from the taskbar, then ask it to search their files, rewrite text, recap meetings, or fix device settings. The <strong>Nimbus app</strong> (UI) and the <strong>Nimbus Agent</strong> (a background service that collects device context) are Rust binaries that update themselves through staged rollouts. Anything generative goes to the cloud.</p>
+      <div class="card-grid">
+        <a class="card t-noc" href="noc/index.html" style="border-top:4px solid var(--noc)"><h3>NOC: Focus On</h3><p>The request path (so you can tell where errors come from), who owns what, and what normal looks like.</p></a>
+        <a class="card t-sre" href="sre/index.html" style="border-top:4px solid var(--sre)"><h3>SRE: Focus On</h3><p>The two orchestrators, Rust specifics, the telemetry pipeline and its gaps, and which logs live where.</p></a>
+        <a class="card t-lead" href="leaders/index.html" style="border-top:4px solid var(--lead)"><h3>Managers: Focus On</h3><p>Shared dependencies, Cloud Infrastructure's role, ownership gray zones, and the tools &amp; process landscape.</p></a>
+      </div>
+
+      <h2 id="what-nimbus-is">What Nimbus Is</h2>
+      <p>Nimbus comes pre-installed on Windows PCs. Users open it with a hotkey or from the taskbar, then ask it to search their files, rewrite text, recap meetings, or fix device settings. The <strong>Nimbus app</strong> (UI) and the <strong>Nimbus Agent</strong> (a background service that collects device context) are Rust binaries that update themselves through staged rollouts. A <strong>device orchestrator</strong> inside the Agent handles simple requests on the device with a small local model (quick rewrites, settings lookups, simple Device Care steps) and sends everything else to the cloud.</p>
       <p>Three things make Nimbus harder to run than a typical web service:</p>
       <ul>
         <li><strong>The client is on the user's machine.</strong> Its network, proxy, clock, and version are out of our control. Several client versions are always live at once.</li>
@@ -47,101 +53,132 @@
 
       <h2 id="architecture">Architecture</h2>
       <figure class="diagram">
-        <svg viewBox="0 0 960 480" role="img" aria-labelledby="arch-title arch-desc">
-          <title id="arch-title">Nimbus architecture</title>
-          <desc id="arch-desc">A Rust desktop client gets tokens from Entra ID and calls Azure Front Door, then APIM, then Rust orchestration services, which call retrieval services and Azure AI Foundry. Telemetry flows from Rust OpenTelemetry SDKs through an OpenTelemetry Collector into Application Insights. Front Door and APIM logs go to Log Analytics. Grafana reads both, with under 10 percent dashboard coverage.</desc>
+        <svg viewBox="0 0 1000 540" role="img" aria-labelledby="arch-title arch-desc">
+          <title id="arch-title">Nimbus Architecture</title>
+          <desc id="arch-desc">On the desktop, the Nimbus app sends requests to a device orchestrator, which either answers with an on-device model or calls the cloud. In the cloud, requests pass Azure Front Door, then APIM, then a cloud orchestrator, which routes to feature services that call retrieval and Azure AI Foundry. Entra ID issues tokens. Telemetry flows from Rust OpenTelemetry SDKs through an OpenTelemetry Collector into Application Insights, Front Door and APIM logs go to Log Analytics, and Grafana reads both with under 10 percent dashboard coverage.</desc>
           <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="d-arrow"/></marker></defs>
 
-          <rect class="d-box" x="185" y="8" width="265" height="44" rx="10"/>
-          <text class="d-text" x="317" y="35" text-anchor="middle">Entra ID · tokens · managed identity</text>
+          <rect class="d-box" x="10" y="40" width="210" height="245" rx="10"/>
+          <text class="d-text" x="115" y="63" text-anchor="middle">Desktop (Rust)</text>
+          <rect class="d-box" x="25" y="76" width="180" height="40" rx="8" style="fill:var(--surface)"/>
+          <text class="d-sub" x="115" y="101" text-anchor="middle">Nimbus app</text>
+          <rect class="d-box-accent" x="25" y="132" width="180" height="50" rx="8"/>
+          <text class="d-text" x="115" y="154" text-anchor="middle">Device orchestrator</text>
+          <text class="d-sub" x="115" y="172" text-anchor="middle">local or cloud?</text>
+          <rect class="d-box" x="25" y="222" width="180" height="50" rx="8" style="fill:var(--surface)"/>
+          <text class="d-text" x="115" y="244" text-anchor="middle">On-device model</text>
+          <text class="d-sub" x="115" y="262" text-anchor="middle">NPU · answers locally</text>
+          <path class="d-line" d="M115 116 V128" marker-end="url(#arr)"/>
+          <path class="d-line" d="M115 182 V218" marker-end="url(#arr)"/>
+          <text class="d-accent-text" x="124" y="205">local</text>
 
-          <rect class="d-box" x="10" y="70" width="150" height="124" rx="10"/>
-          <text class="d-text" x="85" y="98" text-anchor="middle">Desktop client</text>
-          <text class="d-sub" x="85" y="120" text-anchor="middle">Rust app + Agent</text>
-          <text class="d-sub" x="85" y="140" text-anchor="middle">staged auto-update</text>
-          <text class="d-sub" x="85" y="160" text-anchor="middle">many versions live</text>
+          <rect class="d-box" x="250" y="8" width="240" height="40" rx="10"/>
+          <text class="d-sub" x="370" y="33" text-anchor="middle">Entra ID · tokens · managed identity</text>
 
-          <rect class="d-box-accent" x="185" y="92" width="120" height="76" rx="10"/>
-          <text class="d-text" x="245" y="124" text-anchor="middle">Front Door</text>
-          <text class="d-sub" x="245" y="144" text-anchor="middle">CDN · WAF</text>
+          <rect class="d-box-accent" x="250" y="120" width="110" height="70" rx="10"/>
+          <text class="d-text" x="305" y="150" text-anchor="middle">Front Door</text>
+          <text class="d-sub" x="305" y="170" text-anchor="middle">CDN · WAF</text>
+          <rect class="d-box-accent" x="380" y="120" width="110" height="70" rx="10"/>
+          <text class="d-text" x="435" y="150" text-anchor="middle">APIM</text>
+          <text class="d-sub" x="435" y="170" text-anchor="middle">auth · routing</text>
+          <rect class="d-box-warn" x="510" y="110" width="140" height="90" rx="10"/>
+          <text class="d-text" x="580" y="140" text-anchor="middle">Cloud</text>
+          <text class="d-text" x="580" y="158" text-anchor="middle">orchestrator</text>
+          <text class="d-sub" x="580" y="180" text-anchor="middle">shared choke point</text>
 
-          <rect class="d-box-accent" x="330" y="92" width="120" height="76" rx="10"/>
-          <text class="d-text" x="390" y="124" text-anchor="middle">APIM</text>
-          <text class="d-sub" x="390" y="144" text-anchor="middle">auth · routing</text>
+          <rect class="d-box" x="670" y="40" width="150" height="230" rx="10"/>
+          <text class="d-text" x="745" y="64" text-anchor="middle">Feature services</text>
+          <text class="d-sub" x="745" y="90" text-anchor="middle">Smart Search</text>
+          <text class="d-sub" x="745" y="114" text-anchor="middle">Writing Assist</text>
+          <text class="d-sub" x="745" y="138" text-anchor="middle">Meeting Recap</text>
+          <text class="d-sub" x="745" y="162" text-anchor="middle">Device Care</text>
+          <text class="d-sub" x="745" y="186" text-anchor="middle">Proactive Tips</text>
+          <text class="d-sub" x="745" y="214" text-anchor="middle">one CFT each</text>
 
-          <rect class="d-box" x="475" y="40" width="205" height="184" rx="10"/>
-          <text class="d-text" x="577" y="66" text-anchor="middle">Rust orchestration</text>
-          <text class="d-sub" x="577" y="86" text-anchor="middle">one service per feature</text>
-          <text class="d-sub" x="577" y="110" text-anchor="middle">Smart Search · Search</text>
-          <text class="d-sub" x="577" y="130" text-anchor="middle">Writing Assist · Create</text>
-          <text class="d-sub" x="577" y="150" text-anchor="middle">Meeting Recap · Collab</text>
-          <text class="d-sub" x="577" y="170" text-anchor="middle">Device Care · Device</text>
-          <text class="d-sub" x="577" y="190" text-anchor="middle">Proactive Tips · Insights</text>
+          <rect class="d-box-accent" x="840" y="40" width="150" height="230" rx="10"/>
+          <text class="d-text" x="915" y="64" text-anchor="middle">AI Foundry</text>
+          <text class="d-sub" x="915" y="90" text-anchor="middle">chat-large-ptu</text>
+          <text class="d-sub" x="915" y="114" text-anchor="middle">chat-large-paygo</text>
+          <text class="d-sub" x="915" y="138" text-anchor="middle">chat-small</text>
+          <text class="d-sub" x="915" y="162" text-anchor="middle">embeddings</text>
+          <text class="d-sub" x="915" y="190" text-anchor="middle">East US 2</text>
+          <text class="d-sub" x="915" y="210" text-anchor="middle">Sweden Central</text>
 
-          <rect class="d-box-accent" x="705" y="40" width="245" height="184" rx="10"/>
-          <text class="d-text" x="827" y="66" text-anchor="middle">Azure AI Foundry</text>
-          <text class="d-sub" x="827" y="86" text-anchor="middle">shared · Platform-owned</text>
-          <text class="d-sub" x="827" y="112" text-anchor="middle">chat-large-ptu (provisioned)</text>
-          <text class="d-sub" x="827" y="132" text-anchor="middle">chat-large-paygo (overflow)</text>
-          <text class="d-sub" x="827" y="152" text-anchor="middle">chat-small (shared)</text>
-          <text class="d-sub" x="827" y="172" text-anchor="middle">embeddings</text>
-          <text class="d-sub" x="827" y="198" text-anchor="middle">East US 2 · Sweden Central</text>
+          <rect class="d-box" x="670" y="290" width="150" height="50" rx="10"/>
+          <text class="d-text" x="745" y="312" text-anchor="middle">Retrieval</text>
+          <text class="d-sub" x="745" y="330" text-anchor="middle">AI Search · Graph</text>
 
-          <rect class="d-box" x="475" y="250" width="205" height="54" rx="10"/>
-          <text class="d-text" x="577" y="273" text-anchor="middle">Retrieval &amp; tools</text>
-          <text class="d-sub" x="577" y="292" text-anchor="middle">AI Search · Graph · device APIs</text>
+          <path class="d-line" d="M205 157 H246" marker-end="url(#arr)"/>
+          <text class="d-accent-text" x="212" y="148">cloud</text>
+          <path class="d-line" d="M360 155 H376" marker-end="url(#arr)"/>
+          <path class="d-line" d="M490 155 H506" marker-end="url(#arr)"/>
+          <path class="d-line" d="M650 155 H666" marker-end="url(#arr)"/>
+          <path class="d-line" d="M820 155 H836" marker-end="url(#arr)"/>
+          <path class="d-line" d="M745 270 V286" marker-end="url(#arr)"/>
+          <path class="d-line-dash" d="M205 96 H232 V28 H246" marker-end="url(#arr)"/>
+          <text class="d-reality-text" x="115" y="305" text-anchor="middle">⚠ local path: client telemetry only</text>
+          <text class="d-reality-text" x="115" y="325" text-anchor="middle">⚠ local failure → cloud surge</text>
+          <text class="d-reality-text" x="370" y="218" text-anchor="middle">⚠ 5xx · 403 · 401 start here</text>
 
-          <path class="d-line-dash" d="M85 70 V30 H181" marker-end="url(#arr)"/>
-          <path class="d-line" d="M160 130 H181" marker-end="url(#arr)"/>
-          <path class="d-line" d="M305 130 H326" marker-end="url(#arr)"/>
-          <path class="d-line" d="M450 130 H471" marker-end="url(#arr)"/>
-          <path class="d-line" d="M680 130 H701" marker-end="url(#arr)"/>
-          <path class="d-line" d="M577 224 V246" marker-end="url(#arr)"/>
-          <text class="d-reality-text" x="85" y="214" text-anchor="middle">⚠ trace context often lost</text>
-          <text class="d-reality-text" x="317" y="190" text-anchor="middle">⚠ 5xx · 403 · 401 can start here</text>
-
-          <text class="d-sub" x="10" y="340">Telemetry</text>
-          <rect class="d-box" x="10" y="352" width="225" height="50" rx="10"/>
-          <text class="d-text" x="122" y="374" text-anchor="middle">Rust OTel SDKs</text>
-          <text class="d-sub" x="122" y="392" text-anchor="middle">tracing + OTLP export</text>
-          <rect class="d-box-warn" x="270" y="352" width="200" height="50" rx="10"/>
-          <text class="d-text" x="370" y="374" text-anchor="middle">OTel Collector</text>
-          <text class="d-sub" x="370" y="392" text-anchor="middle">gateway (single point)</text>
-          <rect class="d-box" x="505" y="352" width="200" height="50" rx="10"/>
-          <text class="d-text" x="605" y="374" text-anchor="middle">Application Insights</text>
-          <text class="d-sub" x="605" y="392" text-anchor="middle">requests · dependencies</text>
-          <rect class="d-box" x="270" y="420" width="200" height="50" rx="10"/>
-          <text class="d-text" x="370" y="442" text-anchor="middle">Front Door + APIM</text>
-          <text class="d-sub" x="370" y="460" text-anchor="middle">diagnostic logs</text>
-          <rect class="d-box" x="505" y="420" width="200" height="50" rx="10"/>
-          <text class="d-text" x="605" y="442" text-anchor="middle">Log Analytics</text>
-          <text class="d-sub" x="605" y="460" text-anchor="middle">AzureDiagnostics · APIM</text>
-          <rect class="d-box-reality" x="745" y="380" width="205" height="62" rx="10"/>
-          <text class="d-text" x="847" y="405" text-anchor="middle">Grafana</text>
-          <text class="d-reality-text" x="847" y="426" text-anchor="middle">&lt;10% dashboard coverage</text>
-          <path class="d-line" d="M235 377 H266" marker-end="url(#arr)"/>
-          <path class="d-line" d="M470 377 H501" marker-end="url(#arr)"/>
-          <path class="d-line" d="M470 445 H501" marker-end="url(#arr)"/>
-          <path class="d-line" d="M705 377 H725 V400 H741" marker-end="url(#arr)"/>
-          <path class="d-line" d="M705 445 H725 V422 H741" marker-end="url(#arr)"/>
+          <text class="d-sub" x="10" y="380">Telemetry</text>
+          <rect class="d-box" x="10" y="392" width="230" height="50" rx="10"/>
+          <text class="d-text" x="125" y="414" text-anchor="middle">Rust OTel SDKs</text>
+          <text class="d-sub" x="125" y="432" text-anchor="middle">tracing + OTLP export</text>
+          <rect class="d-box-warn" x="280" y="392" width="200" height="50" rx="10"/>
+          <text class="d-text" x="380" y="414" text-anchor="middle">OTel Collector</text>
+          <text class="d-sub" x="380" y="432" text-anchor="middle">single point of failure</text>
+          <rect class="d-box" x="520" y="392" width="200" height="50" rx="10"/>
+          <text class="d-text" x="620" y="414" text-anchor="middle">Application Insights</text>
+          <text class="d-sub" x="620" y="432" text-anchor="middle">requests · dependencies</text>
+          <rect class="d-box" x="280" y="462" width="200" height="50" rx="10"/>
+          <text class="d-text" x="380" y="484" text-anchor="middle">Front Door + APIM</text>
+          <text class="d-sub" x="380" y="502" text-anchor="middle">diagnostic logs</text>
+          <rect class="d-box" x="520" y="462" width="200" height="50" rx="10"/>
+          <text class="d-text" x="620" y="484" text-anchor="middle">Log Analytics</text>
+          <text class="d-sub" x="620" y="502" text-anchor="middle">AzureDiagnostics · APIM</text>
+          <rect class="d-box-reality" x="770" y="422" width="220" height="62" rx="10"/>
+          <text class="d-text" x="880" y="447" text-anchor="middle">Grafana</text>
+          <text class="d-reality-text" x="880" y="468" text-anchor="middle">&lt;10% dashboard coverage</text>
+          <path class="d-line" d="M240 417 H276" marker-end="url(#arr)"/>
+          <path class="d-line" d="M480 417 H516" marker-end="url(#arr)"/>
+          <path class="d-line" d="M480 487 H516" marker-end="url(#arr)"/>
+          <path class="d-line" d="M720 417 H745 V442 H766" marker-end="url(#arr)"/>
+          <path class="d-line" d="M720 487 H745 V464 H766" marker-end="url(#arr)"/>
         </svg>
-        <figcaption>Request path (top) and telemetry (bottom). Amber marks a single point of failure. Pink dashed outlines and ⚠ labels mark known gaps.</figcaption>
+        <figcaption>Device (left), cloud request path (top right), and telemetry (bottom). Amber marks shared choke points. Pink and ⚠ mark known gaps.</figcaption>
       </figure>
 
-      <h3 id="a-request-step-by-step">A request, step by step</h3>
+      <h3 id="a-request-step-by-step">A Request, Step by Step</h3>
       <ol class="steps">
-        <li><strong>Sign-in token</strong>The client gets an Entra ID access token for the user or device, and refreshes it before it expires. If the refresh fails, or the device clock is wrong, you get <strong>401s</strong>.</li>
-        <li><strong>Azure Front Door</strong>The CDN edge terminates TLS, applies WAF rules, and forwards to APIM. Edge problems show up as <strong>502/503/504</strong> (origin unreachable or slow) or <strong>403</strong> (WAF block), before our code ever runs.</li>
-        <li><strong>APIM gateway</strong>Validates the token (<code>validate-jwt</code> policy), applies per-feature rate limits, and routes to the right orchestration service.</li>
-        <li><strong>Rust orchestration</strong>The CFT's axum service builds the prompt, calls retrieval and tools with reqwest, then calls Foundry using a managed identity.</li>
-        <li><strong>Azure AI Foundry</strong>The model streams tokens back. PTU deployments have fixed capacity. Requests over that limit spill to pay-as-you-go or get <strong>429s</strong>.</li>
+        <li><strong>Device orchestrator</strong>The Agent's orchestrator looks at the request and the device state. Simple tasks are answered by the <strong>on-device model</strong> in well under a second, with no cloud call at all. Everything else goes to the cloud. If the local model fails, it <strong>falls back to the cloud</strong>.</li>
+        <li><strong>Sign-in token</strong>For cloud calls, the client uses an Entra ID token and refreshes it before it expires. If the refresh fails, or the device clock is wrong, you get <strong>401s</strong>.</li>
+        <li><strong>Azure Front Door</strong>The CDN edge terminates TLS, applies WAF rules, and forwards to APIM. Edge problems show up as <strong>502/503/504</strong> or <strong>403</strong> before our code ever runs.</li>
+        <li><strong>APIM gateway</strong>Validates the token, applies rate limits, and forwards to the cloud orchestrator.</li>
+        <li><strong>Cloud orchestrator</strong>Owned by Cloud Infrastructure. It routes each request to the right feature service and applies cross-feature policies. Every cloud request passes through it, so when it degrades, <em>every</em> feature degrades.</li>
+        <li><strong>Feature service</strong>The CFT's Rust service builds the prompt, calls retrieval and tools, then calls Foundry with a managed identity.</li>
+        <li><strong>Azure AI Foundry</strong>The model streams tokens back. Over PTU capacity, requests spill to pay-as-you-go or get <strong>429s</strong>.</li>
       </ol>
       <div class="callout tip">
         <div class="callout-title">Which layer answered?</div>
         <p>The same status code can come from different layers. A <strong>401</strong> could come from APIM (bad client token) or from Foundry (managed identity problem). A <strong>503</strong> could come from Front Door (origin down) or from Foundry (overloaded). Always establish <em>which layer</em> returned the error. The <a href="sre/investigate.html#which-layer-returned-the-error">SRE investigate page</a> shows how.</p>
       </div>
 
-      <h2 id="what-rust-means-for-incidents">What Rust means for incidents</h2>
+      <h2 id="the-two-orchestrators">The Two Orchestrators</h2>
+      <p>The orchestrators shape most of the trickier incidents. Learn these four patterns:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pattern</th><th>What happens</th><th>What you see</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Local-to-cloud fallback surge</strong></td><td>On-device inference starts failing (a bad local model update, an NPU driver, memory pressure), so the device orchestrator sends those requests to the cloud instead</td><td>Cloud traffic and 429s rise "for no reason". Users on affected devices get slower answers. Server metrics show more load, not errors.</td><td>Client CFT (device), Cloud Infrastructure (capacity)</td></tr>
+            <tr><td><strong>Routing-policy misconfiguration</strong></td><td>A config change routes too much, or the wrong feature, to the cloud, or to the wrong model</td><td>A step change in the local/cloud ratio for one client version or feature</td><td>Client CFT</td></tr>
+            <tr><td><strong>Invisible local path</strong></td><td>On-device answers never touch the cloud, so only client telemetry records them</td><td>Users complain about local answers while every server metric looks perfect</td><td>Client CFT</td></tr>
+            <tr><td><strong>Cloud orchestrator degradation</strong></td><td>The shared router is slow or failing</td><td>Every feature slows down or fails at once, while Foundry looks healthy</td><td>Cloud Infrastructure</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The <a href="queries.html#q-routing-split">local vs cloud split</a> and <a href="queries.html#q-fallback-rate">fallback rate</a> queries watch these patterns.</p>
+
+      <h2 id="what-rust-means-for-incidents">What Rust Means for Incidents</h2>
       <p>Rust removes whole classes of crashes, such as null pointers and data races, but it has its own failure modes. You'll see these in Nimbus:</p>
       <div class="table-wrap">
         <table>
@@ -158,7 +195,7 @@
         </table>
       </div>
 
-      <h2 id="feature-experiences-and-cfts">Feature experiences and CFTs</h2>
+      <h2 id="feature-experiences-and-cfts">Feature Experiences and CFTs</h2>
       <p>A <strong>CFT</strong> (cross-functional team) owns a <strong>feature experience</strong> end to end. Every CFT shares Front Door, APIM, and Foundry.</p>
       <div class="table-wrap">
         <table>
@@ -173,27 +210,30 @@
         </table>
       </div>
 
-      <h2 id="who-owns-what">Who owns what</h2>
+      <h2 id="who-owns-what">Who Owns What</h2>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Layer</th><th>Owner</th><th>Paged via</th><th>Page them when…</th></tr></thead>
+          <thead><tr><th>Area</th><th>Owner</th><th>Paged via</th><th>Involve them when…</th></tr></thead>
           <tbody>
-            <tr><td>Monitoring &amp; first response</td><td><strong>NOC</strong></td><td>Watches 24/7</td><td>—</td></tr>
-            <tr><td>Investigation &amp; incident command</td><td><strong>SRE on-call</strong></td><td>PagerDuty "Nimbus SRE"</td><td>NOC confirms user impact, or any Sev 1–2</td></tr>
-            <tr><td>Desktop app &amp; Agent</td><td>Client CFT</td><td>PagerDuty (business hours + Sev 1)</td><td>Only some client versions affected, crash spike</td></tr>
-            <tr><td>Front Door, APIM, auth policies</td><td>Platform</td><td>PagerDuty 24/7</td><td>Edge 5xx/403, gateway latency, 401s across features</td></tr>
-            <tr><td>Orchestration (per feature)</td><td>Owning CFT</td><td>PagerDuty, but <em>not every CFT has a service yet</em></td><td>Problem limited to one feature</td></tr>
-            <tr><td>Foundry deployments &amp; quota</td><td>Platform</td><td>PagerDuty 24/7</td><td>429s, model 5xx, model latency across features</td></tr>
-            <tr><td>Telemetry, Collector, Grafana</td><td>Platform (Observability, 2 people)</td><td>Business hours</td><td>Telemetry missing everywhere, Collector down</td></tr>
+            <tr><td>Monitoring, declaring, and <strong>coordinating incidents</strong></td><td><strong>NOC</strong> (Incident Coordinator)</td><td>Watches 24/7</td><td>Always. The NOC runs every declared incident, but has no tooling to make changes.</td></tr>
+            <tr><td>Investigation and <strong>technical lead</strong></td><td><strong>SRE on-call</strong> (central team, not embedded in CFTs)</td><td>PagerDuty "Nimbus SRE"</td><td>Confirmed user impact, any Sev 1–2, or unclear cause</td></tr>
+            <tr><td>Desktop app, Agent, <strong>device orchestrator</strong>, on-device model</td><td>Client CFT</td><td>PagerDuty (business hours + Sev 1)</td><td>One client version affected, crashes, local/cloud ratio shifts, fallback surges</td></tr>
+            <tr><td>Front Door, APIM, auth policies, <strong>cloud orchestrator</strong>, Foundry capacity</td><td><strong>Cloud Infrastructure CFT</strong></td><td>PagerDuty 24/7</td><td>Edge 5xx/403, 401s across features, gateway or orchestrator latency, 429s, model 5xx</td></tr>
+            <tr><td>Feature services (one per feature)</td><td>Owning CFT</td><td>PagerDuty, but <em>not every CFT has a service yet</em></td><td>Problem limited to one feature</td></tr>
+            <tr><td>Telemetry, Collector, Grafana</td><td>Cloud Infrastructure (Observability, 2 people)</td><td>Business hours</td><td>Telemetry missing everywhere, Collector down</td></tr>
           </tbody>
         </table>
       </div>
+      <div class="callout reality">
+        <div class="callout-title">Reality Check: Cloud Infrastructure Is Powerful</div>
+        <p>Cloud Infrastructure owns almost everything every other team depends on, and they control their own change process. Incidents go faster when you bring them <strong>evidence</strong> rather than accusations, and escalate through management rather than around them. See <a href="ways-of-working.html#working-with-cloud-infrastructure">Working With Cloud Infrastructure</a>.</p>
+      </div>
       <div class="callout warn">
         <div class="callout-title">Gray zones</div>
-        <p>When a feature's model calls slow down, is it the CFT's prompt or Platform's capacity? The working rule: <strong>the affected CFT owns it until the evidence points to shared infrastructure</strong>. SRE on-call coordinates in the meantime, so nobody waits for ownership to be settled before mitigating.</p>
+        <p>When a feature's model calls slow down, is it the CFT's prompt or Cloud Infrastructure's capacity? The working rule: <strong>the affected CFT owns it until the evidence points to shared infrastructure</strong>. Meanwhile the NOC coordinates and SRE investigates, so nobody waits for ownership to be settled before mitigating.</p>
       </div>
 
-      <h2 id="telemetry-pipeline">Telemetry pipeline</h2>
+      <h2 id="telemetry-pipeline">Telemetry Pipeline</h2>
       <p>The Rust services and client use the <code>tracing</code> and <code>opentelemetry</code> crates and export <strong>OTLP</strong> to an <strong>OpenTelemetry Collector gateway</strong>. Rust has no direct Azure Monitor exporter, so the Collector translates the data into Application Insights. Front Door and APIM send <strong>diagnostic logs to Log Analytics</strong>, which means a different place to query.</p>
       <div class="table-wrap">
         <table>
@@ -209,7 +249,7 @@
           </tbody>
         </table>
       </div>
-      <h3 id="nimbus-attribute-conventions">Nimbus attribute conventions</h3>
+      <h3 id="nimbus-attribute-conventions">Nimbus Attribute Conventions</h3>
       <p>These show up in <code>customDimensions</code>. They're <strong>specific to Nimbus</strong>, so every query in this guide tags them <code>[NIMBUS]</code> to make them easy to swap for your own (see <a href="queries.html#how-to-read-these-queries">how to read the queries</a>).</p>
       <div class="table-wrap">
         <table>
@@ -224,17 +264,17 @@
         </table>
       </div>
 
-      <h2 id="how-we-measure">How we measure: P50 and P95</h2>
+      <h2 id="how-we-measure">How We Measure: P50 and P95</h2>
       <p>Latency is tracked at two percentiles only:</p>
       <div class="card-grid">
-        <div class="card"><h3>P50 (median)</h3><p>Half of requests are faster than this. This is the <strong>typical</strong> experience.</p></div>
+        <div class="card"><h3>P50 (Median)</h3><p>Half of requests are faster than this. This is the <strong>typical</strong> experience.</p></div>
         <div class="card"><h3>P95</h3><p>95% are faster than this, and 1 in 20 users waits longer. This is the <strong>bad-day</strong> experience.</p></div>
       </div>
       <div class="callout reality">
         <div class="callout-title">Reality check: what P95 doesn't show</div>
         <p>P95 hides the worst 5% of requests. For a feature with a million requests a day, that's 50,000 slow experiences P95 can't see. Adding <strong>P99</strong> is on the <a href="observability-maturity.html">maturity roadmap</a>. Until then, when P95 looks fine but users complain, look at the slowest individual requests directly.</p>
       </div>
-      <h3 id="what-normal-looks-like">What normal looks like</h3>
+      <h3 id="what-normal-looks-like">What Normal Looks Like</h3>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Feature</th><th>P50</th><th>P95</th><th>Error rate</th></tr></thead>
@@ -250,23 +290,25 @@
         </table>
       </div>
 
-      <h2 id="tools-and-process-landscape">Tools &amp; process landscape</h2>
+      <h2 id="tools-and-process-landscape">Tools &amp; Process Landscape</h2>
       <p>This is how we actually work today. Every role page assumes this reality.</p>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Tool</th><th>What we use it for</th><th>The catch</th><th>Workaround</th></tr></thead>
           <tbody>
-            <tr><td><strong>PagerDuty</strong></td><td>Paging on-call (NOC → SRE → CFTs and Platform)</td><td>Not every CFT has a PagerDuty service or escalation policy yet</td><td>Page the CFT's manager through the "Nimbus CFT leads" policy</td></tr>
+            <tr><td><strong>PagerDuty</strong></td><td>Paging on-call (NOC → SRE → CFTs and Cloud Infrastructure)</td><td>Not every CFT has a PagerDuty service or escalation policy yet</td><td>Page the CFT's manager through the "Nimbus CFT leads" policy</td></tr>
             <tr><td><strong>Slack</strong></td><td>Our team, NOC, and 3 CFTs. All incident workflows live here.</td><td>Workflows (declare, page, timeline) are Slack-only</td><td>The incident channel in Slack is the source of truth</td></tr>
             <tr><td><strong>Microsoft Teams</strong></td><td>Collab and Device CFTs</td><td>No incident workflow, and they don't see Slack channels</td><td>A named <strong>bridge person</strong> mirrors updates into Teams</td></tr>
             <tr><td><strong>Jira</strong></td><td>Our only "ticketing system"</td><td>The project is locked down: we can't create incident issue types or edit fields freely</td><td>Keep the incident record in Slack and a pinned doc, and file one Jira ticket afterwards</td></tr>
             <tr><td><strong>Runbooks</strong></td><td>—</td><td>We're a new team, so there are very few</td><td>Use the <a href="playbooks.html">starter playbooks</a> and write one after every incident</td></tr>
+            <tr><td><strong>Postmortems</strong></td><td>Learning after incidents</td><td>Often skipped or never finished, and action items get lost</td><td>The <a href="postmortems/index.html">postmortem track</a> makes them routine</td></tr>
+            <tr><td><strong>NOC tooling</strong></td><td>—</td><td>The NOC can see and coordinate, but can't change anything in production</td><td>The NOC <a href="noc/action-requests.html">requests actions</a> from owners</td></tr>
           </tbody>
         </table>
       </div>
       <p>The full approach is on <a href="ways-of-working.html">Ways of working</a>.</p>
 
-      <h2 id="known-maturity-gaps">Known maturity gaps</h2>
+      <h2 id="known-maturity-gaps">Known Maturity Gaps</h2>
       <div class="callout reality">
         <div class="callout-title">Reality check: plan around these</div>
         <ul>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Postmortem Action Items · Nimbus SRE</title>
+  <meta name="description" content="Writing postmortem action items that get done, and tracking them when your ticketing system is locked down.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pm-actions">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Post-Incident</a></div>
+      <div class="eyebrow">Post-Incident · General Purpose</div>
+      <h1>Action Items That Get Done</h1>
+      <p class="lede">Action items are the whole point of a postmortem. Most teams write too many, write them vaguely, and never check whether they were done. Here's how to write fewer, better ones and see them through, even with a locked-down Jira.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><strong>3–7 actions</strong> per postmortem. Each one is specific, has one owner team, a due date, and a type.</li>
+          <li>Prefer actions that <strong>change the system</strong> over actions that ask people to try harder.</li>
+          <li>Track them <strong>linked to the incident ticket</strong>, and review open ones <strong>monthly</strong> until closed or explicitly dropped.</li>
+        </ul>
+      </div>
+
+      <h2 id="writing-good-action-items">Writing Good Action Items</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Weak</th><th>Good</th></tr></thead>
+          <tbody>
+            <tr><td>"Be more careful with deploys."</td><td>"Client CFT: add fallback rate to the rollout health gate, auto-halting above 5%. Due Nov 15. Type: prevent."</td></tr>
+            <tr><td>"Improve monitoring."</td><td>"Cloud Infrastructure: alert when <code>chat-small</code> tokens per minute exceed 80% of quota for 10 min. Due Nov 1. Type: detect."</td></tr>
+            <tr><td>"Communicate better."</td><td>"NOC lead: publish the exec update template and comms buffer role. Due Oct 25. Type: process."</td></tr>
+            <tr><td>"Look into the CFT response time."</td><td>"Device CFT manager: create a PagerDuty service and rotation. Due Oct 31. Type: process."</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 id="action-types">Action Types</h3>
+      <div class="card-grid">
+        <div class="card"><h3>Prevent</h3><p>Stop it happening: gates, limits, separation, tests.</p></div>
+        <div class="card"><h3>Detect</h3><p>Notice sooner: alerts, dashboards, telemetry.</p></div>
+        <div class="card"><h3>Mitigate</h3><p>Recover faster: runbooks, tooling, failover.</p></div>
+        <div class="card"><h3>Process</h3><p>Coordinate better: roles, paging, communication.</p></div>
+      </div>
+
+      <h2 id="tracking-with-a-locked-down-jira">Tracking With a Locked-Down Jira</h2>
+      <ol class="steps">
+        <li><strong>One incident ticket</strong>Filed by the NOC after the incident, in the existing project (<a href="../ways-of-working.html#keeping-a-record-without-jira">how</a>).</li>
+        <li><strong>Each action as a normal task</strong>Created in the <em>owner team's</em> project if possible, linked to the incident ticket and labelled <code>postmortem-action</code>.</li>
+        <li><strong>If you can't create tasks in their project</strong>Ask the owner team to create it during the review, and paste the link into the postmortem.</li>
+        <li><strong>A simple tracking list</strong>Keep a shared list (or a filter on the label) of all open postmortem actions: incident, action, owner, due, status.</li>
+      </ol>
+
+      <h2 id="the-monthly-review">The Monthly Review</h2>
+      <p>At the monthly operations review, the senior manager walks the open-actions list:</p>
+      <ul>
+        <li><strong>Overdue?</strong> Ask what's blocking it, then unblock it, fund it, or explicitly drop it with a reason.</li>
+        <li><strong>Done?</strong> Ask how we'll know it worked.</li>
+        <li><strong>Repeat incident?</strong> Check whether an earlier action would have prevented it.</li>
+      </ul>
+
+      <h2 id="follow-through-metrics">Follow-Through Metrics</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>Weak</th><th>Good</th><th>Best in Class</th></tr></thead>
+          <tbody>
+            <tr><td>Postmortems completed for Sev 1–2</td><td>&lt; 50%</td><td>&gt; 90%</td><td>100%</td></tr>
+            <tr><td>Actions closed by their due date</td><td>&lt; 30%</td><td>&gt; 70%</td><td>&gt; 90%</td></tr>
+            <tr><td>Repeat incidents within 90 days</td><td>Common</td><td>Rare</td><td>Very rare, and each one is investigated</td></tr>
+            <tr><td>Days from incident to review</td><td>Never, or 30+</td><td>≤ 5</td><td>≤ 5, with the draft ready at close</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

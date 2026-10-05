@@ -18,41 +18,43 @@
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">NOC</a></div>
       <div class="track-banner t-noc"><i class="track-dot"></i>NOC · First line of defense</div>
-      <h1>Triage &amp; escalate</h1>
-      <p class="lede">From the first alert to the right people working on the problem in <strong>15 minutes</strong>. You don't need a runbook for this. The same steps work for every incident.</p>
+      <h1>Triage &amp; Escalate</h1>
+      <p class="lede">From the first alert to a declared incident with the right people working on it, in <strong>15 minutes</strong>. You don't need a runbook for this. The same steps work for every incident. You'll stay on as <strong>Incident Coordinator</strong> afterwards.</p>
 
       <div class="tldr">
         <ul>
           <li>Confirm the problem, identify the <strong>layer</strong>, propose a severity, and <strong>page through PagerDuty</strong>.</li>
-          <li>The layer tells you who to page: edge or auth points to <strong>Platform</strong>, one feature points to its <strong>CFT</strong>, and anything shared or unclear goes to <strong>SRE</strong>.</li>
+          <li>The layer tells you who to page: edge or auth points to <strong>Cloud Infrastructure</strong>, one feature points to its <strong>CFT</strong>, and anything shared or unclear goes to <strong>SRE</strong>.</li>
           <li>Open the Slack channel and pinned record. <strong>Bridge</strong> to Teams-only CFTs.</li>
-          <li>Start the <strong>escalation timer</strong> the moment you page.</li>
+          <li>Start the <strong>escalation timer</strong> the moment you page. Brief the <strong>Technical Lead</strong> (SRE) when they join. You stay IC.</li>
         </ul>
       </div>
 
-      <h2 id="first-15-minutes">The first 15 minutes</h2>
+      <h2 id="first-15-minutes">The First 15 Minutes</h2>
       <ul class="checklist" data-key="noc-first15">
         <li><strong>Min 0–2: Acknowledge</strong> in PagerDuty.</li>
         <li><strong>Min 2–5: Confirm.</strong> Run the matching <a href="detect.html#shift-health-sweep">sweep query</a> and compare with yesterday. Is it real and sustained?</li>
         <li><strong>Min 5–8: Scope.</strong> Which feature(s), which layer (table below), which client version, which region?</li>
         <li><strong>Min 8–10: Propose a severity</strong> using the <a href="../incident-response.html#severity-levels">severity matrix</a>. If unsure, go higher.</li>
-        <li><strong>Min 10–12: Open <code>#inc-YYYYMMDD-name</code></strong> in Slack and pin the <a href="../ways-of-working.html#keeping-a-record-without-jira">incident record</a>.</li>
+        <li><strong>Min 10–12: Declare and open <code>#inc-YYYYMMDD-name</code></strong> in Slack and pin the <a href="../ways-of-working.html#keeping-a-record-without-jira">incident record</a>.</li>
         <li><strong>Min 12–15: Page</strong> the owner and SRE on-call through PagerDuty, with the escalation message below. Start the timer.</li>
         <li><strong>If a Teams-only CFT is involved,</strong> open the Teams chat and post the mirror message.</li>
       </ul>
 
-      <h2 id="which-layer">Which layer, and who to page</h2>
+      <h2 id="which-layer">Which Layer, and Who to Page</h2>
       <p>Most of our incidents fit one of these patterns. Match what you see to a row.</p>
       <div class="table-wrap">
         <table>
           <thead><tr><th>What you see</th><th>Likely layer</th><th>Page</th><th>Playbook</th></tr></thead>
           <tbody>
-            <tr><td>Edge 5xx or 403s in Front Door logs, often across features</td><td>CDN / Front Door</td><td>Platform + SRE</td><td><a href="../playbooks.html#pb-cdn-edge">CDN / edge errors</a></td></tr>
-            <tr><td>401s at APIM across many features or versions</td><td>Auth / gateway</td><td>Platform + SRE</td><td><a href="../playbooks.html#pb-401-surge">401 surge</a></td></tr>
+            <tr><td>Edge 5xx or 403s in Front Door logs, often across features</td><td>CDN / Front Door</td><td>Cloud Infrastructure + SRE</td><td><a href="../playbooks.html#pb-cdn-edge">CDN / edge errors</a></td></tr>
+            <tr><td>401s at APIM across many features or versions</td><td>Auth / gateway</td><td>Cloud Infrastructure + SRE</td><td><a href="../playbooks.html#pb-401-surge">401 surge</a></td></tr>
             <tr><td>401s only on one client version, or a small set of devices</td><td>Desktop client</td><td>Client CFT + SRE</td><td><a href="../playbooks.html#pb-401-surge">401 surge</a></td></tr>
             <tr><td>One feature slow or failing, others fine</td><td>That feature's service</td><td>That CFT (+ SRE if Sev 1–2)</td><td><a href="../playbooks.html#pb-latency-one-feature">Latency on one feature</a></td></tr>
-            <tr><td>429s on a Foundry deployment</td><td>Model capacity / quota</td><td>Platform + SRE</td><td><a href="../playbooks.html#pb-429-surge">429 surge</a></td></tr>
-            <tr><td>Model 5xx or slow across features</td><td>Azure AI Foundry</td><td>Platform + SRE (Sev 1–2)</td><td><a href="../playbooks.html#pb-foundry-5xx">Foundry 5xx</a></td></tr>
+            <tr><td>429s on a Foundry deployment</td><td>Model capacity / quota</td><td>Cloud Infrastructure + SRE</td><td><a href="../playbooks.html#pb-429-surge">429 surge</a></td></tr>
+            <tr><td>Every feature slow or failing, Foundry looks healthy</td><td>Cloud orchestrator</td><td>Cloud Infrastructure + SRE</td><td><a href="../playbooks.html#pb-foundry-5xx">Platform degradation</a></td></tr>
+            <tr><td>Cloud traffic and 429s up with no release on the server side, often one client or local model version</td><td>Device orchestrator (local-to-cloud fallback)</td><td>Client CFT + Cloud Infrastructure + SRE</td><td><a href="../playbooks.html#pb-fallback-surge">Fallback surge</a></td></tr>
+            <tr><td>Model 5xx or slow across features</td><td>Azure AI Foundry</td><td>Cloud Infrastructure + SRE (Sev 1–2)</td><td><a href="../playbooks.html#pb-foundry-5xx">Foundry 5xx</a></td></tr>
             <tr><td>Errors only on the newest client version</td><td>Desktop client release</td><td>Client CFT + SRE</td><td><a href="../playbooks.html#pb-client-rollout">Client rollout</a></td></tr>
             <tr><td>Users complain, signals look fine or quiet</td><td>Unknown / telemetry gap</td><td>SRE</td><td><a href="../playbooks.html#pb-dashboards-green">Dashboards green</a></td></tr>
           </tbody>
@@ -77,43 +79,43 @@
 Impact: [e.g. Device Care errors 9% (baseline &lt;1%) since 14:05 UTC]
 Scope: [features / layer / client versions / region]
 Checked: [sweep queries 1, 5 — links]; Azure status [green/red]; recent changes [none/…]
-Done: [nothing yet / paused Proactive Tips batch at 14:18]
+Requested: [nothing yet / pause Proactive Tips batch from Insights CFT at 14:18]
 Channel: Slack #inc-… · Teams bridge: [name or n/a]
-Need: [owner to investigate X / SRE to take IC]</code></pre>
+Need: [owner to investigate X / SRE as Technical Lead]</code></pre>
       </div>
 
       <h2 id="bridging-to-teams">Bridging to Teams</h2>
-      <p>Two CFTs, <strong>Collab (Meeting Recap)</strong> and <strong>Device (Device Care)</strong>, work in Microsoft Teams and can't see our Slack workflows. Until SRE assigns someone else, <strong>you are the bridge</strong>:</p>
+      <p>Two CFTs, <strong>Collab (Meeting Recap)</strong> and <strong>Device (Device Care)</strong>, work in Microsoft Teams and can't see our Slack workflows. As Incident Coordinator, <strong>you are the bridge</strong> unless you assign a second NOC person:</p>
       <ul>
         <li>Open a Teams chat with the same name as the Slack channel, and add the CFT on-call or lead.</li>
         <li>Post the <a href="../ways-of-working.html#slack-and-teams">mirror message</a> at every update, and relay their replies to Slack prefixed with <code>[from Teams]</code>.</li>
         <li>If they want to talk it through, start a Teams meeting and invite the IC.</li>
       </ul>
 
-      <h2 id="escalation-timers">Escalation timers</h2>
+      <h2 id="escalation-timers">Escalation Timers</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>No acknowledgement after…</th><th>You do</th></tr></thead>
           <tbody>
             <tr><td><strong>15 min</strong></td><td>Re-page. PagerDuty escalates to the secondary. Post again in their Slack or Teams channel.</td></tr>
             <tr><td><strong>30 min</strong></td><td>Tell SRE: "No response from [CFT] after 30 min." SRE pages the CFT manager.</td></tr>
-            <tr><td><strong>Any time</strong></td><td>If impact is ongoing and a <a href="safe-actions.html">pre-approved action</a> fits, announce it and take it.</td></tr>
+            <tr><td><strong>Any time</strong></td><td>If impact is ongoing and a <a href="action-requests.html">pre-agreed request</a> fits, send it to the owner who can do it. If the CFT is silent, there may be another owner, such as Cloud Infrastructure.</td></tr>
           </tbody>
         </table>
       </div>
       <p>The full ladder, including the manager rungs, is on <a href="../ways-of-working.html#when-cfts-dont-respond">Ways of working</a>. Halve the timers for Sev 1.</p>
 
-      <h2 id="handing-off-to-sre">Handing off to SRE</h2>
-      <p>When SRE joins, hand over IC explicitly. Then stay on as bridge or scribe if asked.</p>
+      <h2 id="briefing-the-technical-lead">Briefing the Technical Lead</h2>
+      <p>When SRE joins, <strong>you stay Incident Coordinator</strong>. Give them the technical picture in one message, then keep running the incident.</p>
       <div class="code-card">
-        <div class="code-head"><span class="lang">Text</span><span class="title">Handoff to SRE<span class="answers">Post in the channel when SRE joins</span></span></div>
-<pre><code>Handing IC to @[sre]. State as of HH:MM:
+        <div class="code-head"><span class="lang">Text</span><span class="title">Brief for the Technical Lead<span class="answers">Post in the channel when SRE joins</span></span></div>
+<pre><code>@[sre] welcome. I'm IC; you're Technical Lead. State as of HH:MM:
 - Saw: [symptom + numbers, start time]
 - Layer/scope: [..]
-- Paged: [CFT — acked HH:MM / no ack], [Platform — ..]
-- Actions taken: [none / action + time + how to undo]
+- Paged: [CFT — acked HH:MM / no ack], [Cloud Infrastructure — ..]
+- Action requests: [none / action — owner — status]
 - Open questions: [..]
-I'll stay on as [bridge / scribe].</code></pre>
+Next update HH:MM. What do you need from me?</code></pre>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>

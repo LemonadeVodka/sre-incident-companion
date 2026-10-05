@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to Use This Guide · Nimbus SRE</title>
+  <meta name="description" content="Which pages to open for a live incident, onboarding, tabletop exercises, postmortems, leadership reviews, and reuse in another organization.">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="how-to-use">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Start</div>
+      <div class="eyebrow">Start · All Roles</div>
+      <h1>How to Use This Guide</h1>
+      <p class="lede">This guide is used at different moments by different people. Find your moment below and follow its path.</p>
+
+      <h2 id="live-incident">During a Live Incident</h2>
+      <div class="panel">
+        <p><strong>Who:</strong> the NOC Coordinator, the SRE Technical Lead, and managers joining.</p>
+        <ol>
+          <li>Press <strong>In an Incident</strong> (top right) to open the <a href="index.html#triage">triage tool</a>.</li>
+          <li>NOC: <a href="noc/triage-and-escalate.html">Triage &amp; Escalate</a>, then <a href="noc/coordinate.html">Coordinate</a>. SRE: <a href="sre/investigate.html">Investigate</a>. Managers: <a href="leaders/during-an-incident.html">During an Incident</a>.</li>
+          <li>Open the matching <a href="playbooks.html">playbook</a>.</li>
+        </ol>
+        <p style="margin-bottom:0"><strong>Tip:</strong> click the <strong>#</strong> next to any heading to copy a link to that section, then paste it into Slack or Teams so everyone sees the same steps.</p>
+      </div>
+
+      <h2 id="onboarding">Onboarding</h2>
+      <div class="panel">
+        <p><strong>Who:</strong> new NOC engineers, SREs, and managers.</p>
+        <p style="margin-bottom:0">Follow your role's <a href="onboarding.html">onboarding path</a> (week 1, month 1, month 3). Your progress is saved in your browser. Print your <a href="cards/index.html">role card</a>.</p>
+      </div>
+
+      <h2 id="tabletop-exercises">Tabletop Exercises and Game Days</h2>
+      <div class="panel">
+        <p><strong>Who:</strong> a facilitator plus one person per role. Allow 45–60 minutes.</p>
+        <p style="margin-bottom:0">Open the <a href="tabletop.html">Tabletop Kit</a>, pick a scenario, assign roles, and reveal injects on the timer. Expect Morgan the director to show up. Score the debrief with <a href="response-quality.html">Weak / Good / Best</a> and export the summary.</p>
+      </div>
+
+      <h2 id="post-incident">After an Incident</h2>
+      <div class="panel">
+        <p><strong>Who:</strong> the NOC (timeline), SRE (author), CFTs, and the senior manager (chair).</p>
+        <p style="margin-bottom:0">Follow the <a href="postmortems/index.html">postmortem process</a>: write it with the <a href="postmortems/template.html">writer</a>, run the <a href="postmortems/review-meeting.html">review</a>, and track the <a href="postmortems/action-items.html">action items</a>. Update the playbook you used.</p>
+      </div>
+
+      <h2 id="leadership-reviews">Leadership and Monthly Reviews</h2>
+      <div class="panel">
+        <p><strong>Who:</strong> senior managers and directors.</p>
+        <p style="margin-bottom:0">Use the <a href="leaders/after-and-between.html#between-incidents">monthly health check</a>, the <a href="observability-maturity.html#self-assessment-scorecard">maturity scorecard</a>, and <a href="response-quality.html">What Good Looks Like</a>. When asking for budget or tooling, link the <a href="leaders/investing.html#tooling-and-process-asks">tooling asks</a>.</p>
+      </div>
+
+      <h2 id="reusing-elsewhere">Reusing It Elsewhere</h2>
+      <div class="panel">
+        <p><strong>Who:</strong> other teams and organizations.</p>
+        <p style="margin-bottom:0">Start with <a href="adapt.html">Using This Guide Anywhere</a>, then the generic <a href="https://github.com/LemonadeVodka/kql-toolkit">KQL toolkit</a> and <a href="postmortems/template.html">postmortem template</a>.</p>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="./assets/site.js"></script>
+</body>
+</html>

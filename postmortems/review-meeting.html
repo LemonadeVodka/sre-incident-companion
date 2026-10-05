@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Running the Postmortem Review · Nimbus SRE</title>
+  <meta name="description" content="How to facilitate a blameless postmortem review: agenda, language, questions by role, and handling defensiveness from CFTs or platform teams.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pm-review">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Post-Incident</a></div>
+      <div class="eyebrow">Post-Incident · General Purpose</div>
+      <h1>Running the Postmortem Review</h1>
+      <p class="lede">The review meeting is where a postmortem either turns into change or turns into blame. Fifty minutes, a clear agenda, and a facilitator who protects the room are enough.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><strong>Chair:</strong> a senior manager for Sev 1–2. <strong>Facilitator:</strong> anyone trained, ideally not the author.</li>
+          <li>Open by stating the <strong>blameless rule</strong>. Close with <strong>owned, dated actions</strong>.</li>
+          <li>Invite <strong>every team involved</strong>, including Teams-only CFTs and Cloud Infrastructure.</li>
+        </ul>
+      </div>
+
+      <h2 id="before-the-meeting">Before the Meeting</h2>
+      <ul class="checklist" data-key="pm-before">
+        <li>The draft is shared at least 24 hours ahead, so people come having read it.</li>
+        <li>Calendar invites go to everyone involved. For Teams-only CFTs, also send the invite and doc link in Teams.</li>
+        <li>The chair has personally asked Cloud Infrastructure and the CFT leads to attend if their systems were involved.</li>
+        <li>The timeline is accurate. Ask the NOC Coordinator to confirm the times.</li>
+      </ul>
+
+      <h2 id="agenda">Agenda (50 Minutes)</h2>
+      <ol class="steps">
+        <li><strong>Blameless opening (2 min)</strong>The chair reads it out: "We assume everyone acted reasonably with what they knew. We're here to improve the system, not to find who to blame."</li>
+        <li><strong>Summary and impact (5 min)</strong>The author, in plain language.</li>
+        <li><strong>Timeline walk-through (15 min)</strong>Stop at the key moments. "What did you know here? What made sense at the time?"</li>
+        <li><strong>Contributing factors (12 min)</strong>Look for the conditions behind each decision point, not the person.</li>
+        <li><strong>Response quality (6 min)</strong>Rate each dimension Weak, Good, or Best (<a href="../response-quality.html">rubric</a>), and pick the weakest to improve.</li>
+        <li><strong>Action items (10 min)</strong>Each one gets one owner team, a date, and a type. Write them down live.</li>
+      </ol>
+
+      <h2 id="questions-that-work">Questions That Work</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Ask</th><th>Instead of</th></tr></thead>
+          <tbody>
+            <tr><td>"What made that seem like the right call at the time?"</td><td>"Why did you do that?"</td></tr>
+            <tr><td>"What information would have changed the decision?"</td><td>"Didn't you check X?"</td></tr>
+            <tr><td>"Where did we lose the most time?"</td><td>"Who was slow?"</td></tr>
+            <tr><td>"What would make this impossible, or obvious, next time?"</td><td>"How do we make sure people are more careful?"</td></tr>
+            <tr><td>"Where did we get lucky?"</td><td>(Usually never asked)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="questions-by-role">Questions by Role</h2>
+      <div class="card-grid">
+        <div class="card t-noc" style="border-top:4px solid var(--noc)"><h3>For the NOC Coordinator</h3><p>When did we declare compared with when impact started? Which requests stalled, and for how long? What interrupted coordination?</p></div>
+        <div class="card t-sre" style="border-top:4px solid var(--sre)"><h3>For the Technical Lead</h3><p>How long until we knew the layer? Which telemetry was missing? Which mitigation helped, and could it have come sooner?</p></div>
+        <div class="card"><h3>For CFTs and Cloud Infrastructure</h3><p>What did you see from your side? What would have helped you act faster? What change or condition in your system contributed?</p></div>
+        <div class="card t-lead" style="border-top:4px solid var(--lead)"><h3>For the Chair</h3><p>Which decisions waited on leadership? Did stakeholder pressure slow the response? What do we need to fund?</p></div>
+      </div>
+
+      <h2 id="handling-defensiveness">Handling Defensiveness</h2>
+      <ul>
+        <li><strong>"That wasn't our system."</strong> "Understood. What would we need to see to rule it in or out? Let's write that down as a detection gap."</li>
+        <li><strong>A powerful team pushing back</strong> (often Cloud Infrastructure): keep it on evidence and shared improvements. "What would help your team catch this earlier?" Have the chair agree joint actions with their manager.</li>
+        <li><strong>Someone blaming an individual:</strong> the facilitator steps in. "Let's look at what made that easy to do. What conditions were in place?"</li>
+        <li><strong>An executive who dives in again:</strong> "Great question for the analysis. Let's capture it as an open question and keep to the timeline."</li>
+      </ul>
+
+      <h2 id="after-the-meeting">After the Meeting</h2>
+      <ul class="checklist" data-key="pm-after">
+        <li>The author updates the doc with the agreed factors and actions within 1 business day.</li>
+        <li>Action items are created and linked to the incident ticket (<a href="action-items.html">how</a>).</li>
+        <li>The summary is shared with all involved teams, in Slack and Teams.</li>
+        <li>The playbook or runbook is updated with what we learned.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

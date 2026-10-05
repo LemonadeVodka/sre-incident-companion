@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Postmortems · Nimbus SRE</title>
+  <meta name="description" content="Blameless postmortems as a first-class practice: when they're required, the timeline, who does what, and what a good one looks like.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pm">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Post-Incident</div>
+      <div class="eyebrow">Post-Incident · All Roles · General Purpose</div>
+      <h1>Postmortems</h1>
+      <p class="lede">An incident you don't learn from is one you'll have again. Postmortems are one of our weakest practices: they get skipped, started and abandoned, or written as a blame document, and their action items disappear. This track makes them routine, blameless, and useful.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><strong>Required</strong> for every Sev 1 and Sev 2, every repeat incident, and any incident where customers told us first.</li>
+          <li><strong>Timeline:</strong> scheduled before stand-down, draft in 2 business days, review within 5, and action items reviewed monthly until closed.</li>
+          <li><strong>Roles:</strong> the NOC brings the timeline, SRE writes the analysis, CFTs own the fixes, and a senior manager chairs and funds.</li>
+          <li><strong>Blameless:</strong> ask how the system made the failure possible, not who caused it.</li>
+        </ul>
+      </div>
+
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>A postmortem is worth what its action items change. A beautiful document with no completed actions is the same as no postmortem. Measure postmortems by follow-through, not by page count.</p>
+      </div>
+
+      <h2 id="why-ours-are-weak">Why Ours Are Weak, and the Fix</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>What goes wrong today</th><th>Why</th><th>Fix</th></tr></thead>
+          <tbody>
+            <tr><td>Never scheduled</td><td>Everyone's exhausted, and the next fire starts</td><td>The NOC schedules the review <strong>before standing down</strong></td></tr>
+            <tr><td>Started, never finished</td><td>No owner, no deadline</td><td>Named author (SRE Technical Lead), draft due in 2 business days</td></tr>
+            <tr><td>Timeline rebuilt from memory</td><td>Nobody kept one</td><td>The NOC keeps the pinned record live, so the timeline is ready at close</td></tr>
+            <tr><td>"Human error" as root cause</td><td>Blame culture, a single-cause mindset</td><td>Contributing factors, blameless language, and a manager protecting both</td></tr>
+            <tr><td>Action items disappear</td><td>Jira is locked down, and nobody reviews them</td><td>The <a href="action-items.html">action item process</a> and a monthly review</td></tr>
+            <tr><td>CFTs or Cloud Infrastructure don't attend</td><td>Different chat tools, other priorities, defensiveness</td><td>Invites through calendar <em>and</em> Teams, and the manager asks their leaders</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="when-a-postmortem-is-required">When a Postmortem Is Required</h2>
+      <ul>
+        <li>Every <strong>Sev 1 and Sev 2</strong>.</li>
+        <li>Any <strong>repeat</strong> of an incident in the last 90 days.</li>
+        <li>Any incident where <strong>customers or executives told us first</strong>.</li>
+        <li>Any incident where <strong>escalation stalled</strong> for 30+ minutes.</li>
+        <li>Anything a responder asks for. Near misses teach a lot too.</li>
+      </ul>
+
+      <h2 id="the-timeline">The Timeline</h2>
+      <ol class="steps">
+        <li><strong>At stand-down (NOC)</strong>Schedule the review within 5 business days, assign the author, and hand over the timeline from the pinned record.</li>
+        <li><strong>Within 2 business days (SRE author)</strong>Draft using the <a href="template.html">template and writer</a>. Gather input from the CFTs and Cloud Infrastructure.</li>
+        <li><strong>Within 5 business days (manager chairs)</strong>Hold the blameless <a href="review-meeting.html">review meeting</a> and agree action items with owners and dates.</li>
+        <li><strong>Within 1 week after review</strong>Action items are in Jira (or the tracking sheet) and linked to the incident ticket.</li>
+        <li><strong>Monthly</strong>Review open action items at the operations review until every one is closed or explicitly dropped.</li>
+      </ol>
+
+      <h2 id="who-does-what">Who Does What</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Postmortem responsibility</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge noc">NOC (Coordinator)</span></td><td>Schedules the review, provides the timeline and decision log, and records escalation and response times.</td></tr>
+            <tr><td><span class="badge sre">SRE (Technical Lead)</span></td><td>Writes the draft: technical analysis, contributing factors, and proposed actions.</td></tr>
+            <tr><td><strong>CFTs and Cloud Infrastructure</strong></td><td>Contribute their view, own their action items, and attend the review.</td></tr>
+            <tr><td><span class="badge lead">Senior Manager</span></td><td>Chairs Sev 1–2 reviews, protects blamelessness, funds actions, and runs the monthly follow-up.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="quality-rubric">Quality Rubric: Weak / Good / Best</h2>
+      <div class="wgb">
+        <div><span class="q-level q-weak">Weak</span><p>Late or never written. A single "root cause", often a person. Vague actions with no owner ("be more careful"). Nobody reads it after the meeting.</p></div>
+        <div><span class="q-level q-good">Good</span><p>Written within days, with a clear timeline and impact, blameless contributing factors, and 3–7 specific owned actions with dates. Reviewed with every team involved.</p></div>
+        <div><span class="q-level q-best">Best in Class</span><p>Good, plus actions change the system (gates, alerts, architecture), follow-through is tracked to 100%, learnings are shared across teams, and repeat incidents become rare.</p></div>
+      </div>
+
+      <h2 id="the-post-incident-pages">The Post-Incident Pages</h2>
+      <div class="card-grid">
+        <a class="card" href="template.html"><h3>Template &amp; Writer</h3><p>Fill in the sections and get blameless Markdown to paste or download.</p></a>
+        <a class="card" href="review-meeting.html"><h3>Running the Review</h3><p>Agenda, blameless language, and handling defensiveness.</p></a>
+        <a class="card" href="example.html"><h3>Worked Example</h3><p>A complete postmortem for a Nimbus incident.</p></a>
+        <a class="card" href="action-items.html"><h3>Action Items</h3><p>Writing them well and making sure they get done.</p></a>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

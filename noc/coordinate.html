@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NOC: Coordinate the Incident · Nimbus SRE</title>
+  <meta name="description" content="How the NOC runs a declared Nimbus incident as Incident Coordinator: the IC loop, roles, Slack and Teams, slow CFTs, executive interruptions, and closing.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="noc-coordinate">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">NOC</a></div>
+      <div class="track-banner t-noc"><i class="track-dot"></i>NOC · Incident Coordinator</div>
+      <h1>Coordinate the Incident</h1>
+      <p class="lede">Once an incident is declared, the NOC is the <strong>Incident Coordinator (IC)</strong>. You don't debug and you don't change production. You keep the people, the cadence, the decisions, and the record in order, across two chat platforms, slow CFTs, a powerful Cloud Infrastructure team, and the occasional director who wants to see the raw queries.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Run the <strong>IC loop</strong> every 10 to 15 minutes: impact, workstreams, silence, decisions, update.</li>
+          <li>Assign <strong>Technical Lead</strong> (SRE), <strong>bridge</strong>, <strong>scribe</strong>, and <strong>comms buffer</strong> early.</li>
+          <li>Chase CFTs on the <strong>ladder timers</strong>. Bring the senior manager in for decisions and stuck escalations.</li>
+          <li>Absorb <strong>executive interruptions</strong> so responders can keep working.</li>
+          <li>Close with a <strong>Jira ticket, a runbook owner, and a scheduled postmortem</strong>.</li>
+        </ul>
+      </div>
+
+      <h2 id="the-ic-loop">The IC Loop</h2>
+      <ol class="steps">
+        <li><strong>What's the impact now?</strong>Ask the Technical Lead for the user-facing number, or re-run the sweep query yourself.</li>
+        <li><strong>What are we trying, and who's on it?</strong>Each workstream has one name next to it.</li>
+        <li><strong>Who haven't we heard from?</strong>Check the ladder timers for every paged team and every open action request.</li>
+        <li><strong>Is any decision waiting?</strong>Get it made: by the Tech Lead (technical), the owner (their system), or the senior manager (business).</li>
+        <li><strong>Update.</strong>Post the Slack update, mirror it to Teams through the bridge, and update the pinned record.</li>
+      </ol>
+
+      <h2 id="assigning-roles">Assigning Roles</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Who</th><th>Job</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Incident Coordinator</strong></td><td>NOC on shift</td><td>People, cadence, decisions log, escalation, record</td></tr>
+            <tr><td><strong>Technical Lead</strong></td><td>SRE on-call</td><td>Diagnosis, technical options, and recommended mitigations</td></tr>
+            <tr><td><strong>Owners</strong></td><td>CFT and Cloud Infrastructure engineers</td><td>Execute changes on their systems</td></tr>
+            <tr><td><strong>Bridge</strong></td><td>A second NOC person, or the IC</td><td>Mirror between Slack and Teams</td></tr>
+            <tr><td><strong>Scribe</strong></td><td>A second NOC person, or the IC</td><td>Timeline and pinned record</td></tr>
+            <tr><td><strong>Comms buffer</strong></td><td>Senior manager (Sev 1), IC (Sev 2)</td><td>Fields executive and stakeholder questions</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="running-across-slack-and-teams">Running Across Slack and Teams</h2>
+      <ul>
+        <li><strong>Decisions only count in Slack.</strong> Anything agreed in a Teams call gets posted in Slack, prefixed with <code>[from Teams]</code>.</li>
+        <li><strong>Join the Teams call</strong> if a Teams-only CFT is doing most of the work, and keep a bridge person on Slack.</li>
+        <li><strong>Use the Slack workflows</strong> for declaring and the timeline. They don't exist in Teams.</li>
+        <li>Templates: <a href="../incident-response.html#communication-templates">updates</a> and the <a href="../ways-of-working.html#slack-and-teams">Teams mirror</a>.</li>
+      </ul>
+
+      <h2 id="chasing-non-responding-cfts">Chasing Non-Responding CFTs</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>After first page</th><th>IC action</th></tr></thead>
+          <tbody>
+            <tr><td><strong>15 min</strong></td><td>Re-page. Ask in the CFT's own channel (Slack or Teams) for <em>anyone</em> from the team.</td></tr>
+            <tr><td><strong>30 min</strong></td><td>Page the CFT engineering manager ("Nimbus CFT leads" policy), and tell the senior manager in the channel.</td></tr>
+            <tr><td><strong>45 min</strong></td><td>Ask the senior manager to escalate to CFT leadership.</td></tr>
+            <tr><td><strong>Meanwhile</strong></td><td>With the Tech Lead, look for actions another owner can take, such as Cloud Infrastructure shifting traffic or enabling spillover. Missing CFTs shouldn't block every option.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="working-with-cloud-infrastructure">Working With Cloud Infrastructure</h2>
+      <p>Cloud Infrastructure owns the shared layers and has a lot of influence. When they're involved:</p>
+      <ul>
+        <li><strong>Lead with evidence.</strong> Share the query and the numbers from the Tech Lead, for example "edge 5xx at 4% since 14:05, origin connection errors", not "your CDN is broken".</li>
+        <li><strong>Ask for specific actions</strong> through their PagerDuty, and respect their change process. Ask what they need from us to move faster.</li>
+        <li><strong>If they say "not us"</strong>, ask what evidence would change their mind, and get the Tech Lead to produce it. Escalate through the senior manager, never around them.</li>
+      </ul>
+
+      <h2 id="handling-executive-interruptions">Handling Executive Interruptions</h2>
+      <div class="persona">
+        <div><b>Meet Morgan, the deep-diving director.</b> Morgan (they/them) joins incidents worried, then dives into the weeds. They ask for raw KQL, question every hypothesis, demand root cause in the middle of mitigation, message responders directly, and sometimes open a side call with a CFT. Morgan means well, but every interruption costs minutes. Handling this pattern is part of coordinating.</div>
+      </div>
+      <ol class="steps">
+        <li><strong>Name a comms buffer early.</strong>For Sev 1 it's the senior manager. For Sev 2 it's you. Announce it: "Questions about status go to @buffer, so responders can focus."</li>
+        <li><strong>Redirect, don't ignore.</strong>Acknowledge the question, point to the next update, and make sure it gets answered there.</li>
+        <li><strong>Pull side calls back.</strong>If a separate call or Teams thread starts, ask that its decisions be posted in Slack, and invite the starter into the main channel.</li>
+        <li><strong>Give them a job.</strong>Executives are most useful making decisions: spend, priorities, contacting other leaders.</li>
+        <li><strong>Escalate kindly.</strong>If the interruptions continue, ask the senior manager to step in privately.</li>
+      </ol>
+      <h3 id="scripts-you-can-paste">Scripts You Can Paste</h3>
+      <p class="script">"Thanks, Morgan. Good question. The next update is at 14:30, and I'll make sure it answers that."</p>
+      <p class="script">"The Tech Lead is mid-investigation, so I'll take questions for them. What do you need to know?"</p>
+      <p class="script">"Could we keep decisions in #inc-… so everyone's working from the same plan? I'll summarize the Teams call there."</p>
+      <p class="script">"We could use your help with one decision: approving spillover capacity, about $X per hour. Can you make that call?"</p>
+      <p>Record interruptions neutrally in the timeline. They're a legitimate <a href="../postmortems/index.html">postmortem</a> topic, framed as a system issue (no exec update format, no comms buffer), never as a person.</p>
+
+      <h2 id="bringing-in-the-senior-manager">Bringing in the Senior Manager</h2>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Decision Request<span class="answers">Post in the channel and @ the senior manager</span></span></div>
+<pre><code>@[manager] decision needed by HH:MM:
+Option A: [e.g. enable paygo spillover] — fixes [X], costs ~[$/h]
+Option B: [e.g. pause Proactive Tips for the day] — fixes [X], impact [Y]
+Technical Lead recommends: [A/B] because [..]</code></pre>
+      </div>
+
+      <h2 id="handing-over-ic">Handing Over IC</h2>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">IC Handover<span class="answers">Post in the channel; the new IC replies "I have IC"</span></span></div>
+<pre><code>IC handover to @[name] at HH:MM.
+Impact now: [..]   Severity: [..]   Technical Lead: [..]
+Workstreams: [who — what]
+Open action requests: [owner — action — requested HH:MM — next check HH:MM]
+Waiting on: [CFT / Cloud Infrastructure — since HH:MM]
+Comms buffer: [..]   Next update due: HH:MM</code></pre>
+      </div>
+
+      <h2 id="closing-the-incident">Closing the Incident</h2>
+      <ul class="checklist" data-key="noc-close">
+        <li>The Technical Lead confirms impact has been at baseline for <strong>30 minutes</strong>. Post the resolution update in Slack, mirror it to Teams, and resolve in PagerDuty.</li>
+        <li>Temporary changes still in effect have an owner and an undo time.</li>
+        <li><strong>File the Jira ticket</strong> within 24 hours, using the pinned record (<a href="../ways-of-working.html#keeping-a-record-without-jira">how</a>).</li>
+        <li><strong>Schedule the postmortem</strong> before standing down (required for Sev 1–2), and invite every CFT involved, Teams users included. Use the <a href="../postmortems/index.html">postmortem process</a>.</li>
+        <li>Hand the <strong>timeline</strong> to the postmortem author.</li>
+        <li>Assign a <strong>runbook owner</strong> if no playbook fit.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

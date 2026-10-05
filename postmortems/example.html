@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Worked Postmortem Example · Nimbus SRE</title>
+  <meta name="description" content="A complete fictional blameless postmortem for a Nimbus incident: Device Care 429s from a background batch combined with a local-to-cloud fallback surge.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pm-example">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Post-Incident</a></div>
+      <div class="eyebrow">Post-Incident · Worked Example (Fictional)</div>
+      <h1>Worked Example: Device Care 429s</h1>
+      <p class="lede">A complete, fictional, blameless postmortem showing what "Good" looks like. It involves several contributing factors, two teams on different chat tools, a powerful platform team, and a director who dove in.</p>
+
+      <div class="panel">
+        <p style="margin:0"><strong>Severity:</strong> Sev 2 · <strong>Date:</strong> 2026-09-21 · <strong>Duration:</strong> 1 h 25 m (09:02–10:27 local) · <strong>Coordinator:</strong> NOC (Priya) · <strong>Technical Lead:</strong> SRE (Jordan) · <strong>Chair:</strong> Senior Manager · <strong>Status:</strong> Reviewed</p>
+      </div>
+
+      <h2 id="summary">Summary</h2>
+      <p>For about 85 minutes, Device Care requests failed at up to 14% because the shared <code>chat-small</code> model deployment ran out of capacity. Two things combined: the daily Proactive Tips batch, and a surge of requests from devices whose new on-device model (v2.3) was failing and falling back to the cloud. Service recovered after the batch was paused and the on-device model rollout was halted.</p>
+
+      <h2 id="user-impact">User Impact</h2>
+      <ul>
+        <li>Device Care: error rate peaked at 14% (baseline 0.6%), and P95 rose from 9 s to 21 s. About 38,000 users saw "Nimbus is busy".</li>
+        <li>Quick on-device tasks were slower for about 12% of devices (the v2.3 cohort).</li>
+        <li>Proactive Tips were delayed by up to 3 hours. This was acceptable.</li>
+      </ul>
+
+      <h2 id="detection">Detection</h2>
+      <p>The NOC's 09:00 shift sweep flagged 429s on <code>chat-small</code> at 09:11, 9 minutes after impact began. No alert fired, because no alert existed for quota saturation or fallback rate.</p>
+
+      <h2 id="timeline">Timeline</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Time</th><th>Event</th></tr></thead>
+          <tbody>
+            <tr><td>08:30</td><td>Client CFT ramps the on-device model v2.3 from 5% to 25% (routine).</td></tr>
+            <tr><td>09:00</td><td>The Proactive Tips daily batch starts on <code>chat-small</code>.</td></tr>
+            <tr><td>09:02</td><td>429s begin on <code>chat-small</code>. Device Care errors rise.</td></tr>
+            <tr><td>09:11</td><td>The NOC sweep flags 429s. Priya (NOC) declares Sev 2 and opens <code>#inc-20260921-device-care-429</code>.</td></tr>
+            <tr><td>09:14</td><td>Pages: Device CFT (Teams), Cloud Infrastructure, and SRE. Jordan (SRE) joins as Technical Lead at 09:19.</td></tr>
+            <tr><td>09:22</td><td>Jordan's token-share query shows Proactive Tips <em>and</em> unexpected Device Care volume. Recommends pausing the batch.</td></tr>
+            <tr><td>09:24</td><td>NOC sends the pause-batch request to the Insights CFT.</td></tr>
+            <tr><td>09:31</td><td>A director DMs Jordan three times asking for the KQL and an ETA, and opens a Teams call with the Device CFT. The NOC names the senior manager as comms buffer at 09:38.</td></tr>
+            <tr><td>09:41</td><td>The Insights CFT pauses the batch (17 min after the request). 429s drop but don't clear.</td></tr>
+            <tr><td>09:52</td><td>Jordan finds the fallback rate for v2.3 is 31% (normally &lt;2%). Cloud Infrastructure initially says capacity is fine. Jordan shares the fallback query.</td></tr>
+            <tr><td>10:03</td><td>NOC sends the halt-rollout request to the Client CFT, and Cloud Infrastructure enables pay-as-you-go spillover after the senior manager approves the cost.</td></tr>
+            <tr><td>10:12</td><td>Errors return to baseline.</td></tr>
+            <tr><td>10:27</td><td>Stable for 15 min. Resolved. Postmortem scheduled for 09-25.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="contributing-factors">Contributing Factors</h2>
+      <ul>
+        <li><strong>Shared capacity:</strong> interactive Device Care and background Proactive Tips share <code>chat-small</code>, with no priority between them.</li>
+        <li><strong>Fallback isn't a rollout gate:</strong> the on-device model rollout checked crash rate but not fallback rate, so v2.3's failures shifted load to the cloud silently.</li>
+        <li><strong>No saturation or fallback alerts:</strong> detection depended on the NOC's sweep timing.</li>
+        <li><strong>Request latency:</strong> the NOC can't act directly, and the pause request took 17 minutes, partly because the Insights CFT's on-call is business hours only.</li>
+        <li><strong>Split visibility:</strong> Cloud Infrastructure saw "more traffic, no errors in our layer", and the Client CFT saw "rollout healthy". Neither saw the whole picture until the Technical Lead joined the data.</li>
+        <li><strong>Stakeholder interruptions:</strong> with no exec update format and no comms buffer named at the start, a director's questions went straight to the Technical Lead during diagnosis.</li>
+      </ul>
+
+      <h2 id="what-went-well">What Went Well</h2>
+      <ul>
+        <li>The NOC declared within 9 minutes of impact and ran a clear channel with a Teams bridge.</li>
+        <li>The Technical Lead used the token-share and fallback queries to prove the cause with evidence.</li>
+        <li>The senior manager approved the spillover cost within 4 minutes.</li>
+      </ul>
+
+      <h2 id="what-was-hard">What Was Hard</h2>
+      <ul>
+        <li>Two causes at once: pausing the batch helped, but it hid the second cause for a while.</li>
+        <li>Cloud Infrastructure needed evidence before accepting that capacity was the problem.</li>
+      </ul>
+
+      <h2 id="where-we-got-lucky">Where We Got Lucky</h2>
+      <ul>
+        <li>The v2.3 rollout was at 25%, not 100%.</li>
+        <li>It happened during business hours, when the Insights CFT was online.</li>
+      </ul>
+
+      <h2 id="response-quality">Response Quality</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Dimension</th><th>Rating</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td>Detection</td><td><span class="q-level q-weak">Weak</span></td><td>No alert. Found by the sweep.</td></tr>
+            <tr><td>Coordination</td><td><span class="q-level q-good">Good</span></td><td>Clear IC, bridge, and roles.</td></tr>
+            <tr><td>Mitigation</td><td><span class="q-level q-good">Good</span></td><td>Reversible actions, but requests were slow.</td></tr>
+            <tr><td>Working With CFTs</td><td><span class="q-level q-good">Good</span></td><td>Evidence changed Cloud Infrastructure's view.</td></tr>
+            <tr><td>Stakeholder Pressure</td><td><span class="q-level q-weak">Weak</span></td><td>No comms buffer for the first 27 minutes.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="action-items">Action Items</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Owner</th><th>Action</th><th>Due</th><th>Type</th></tr></thead>
+          <tbody>
+            <tr><td>Client CFT</td><td>Add fallback rate to the on-device model rollout gate (auto-halt above 5%)</td><td>2026-10-15</td><td>Prevent</td></tr>
+            <tr><td>Insights CFT + Cloud Infrastructure</td><td>Move the Proactive Tips batch to its own deployment</td><td>2026-11-01</td><td>Prevent</td></tr>
+            <tr><td>Cloud Infrastructure</td><td>Alert on <code>chat-small</code> tokens per minute above 80% of quota for 10 min</td><td>2026-10-08</td><td>Detect</td></tr>
+            <tr><td>SRE</td><td>Add fallback rate by local model version to the NOC sweep and a Grafana panel</td><td>2026-10-08</td><td>Detect</td></tr>
+            <tr><td>NOC lead + Senior Manager</td><td>Publish an exec update template, name a comms buffer at declaration for Sev 1–2, and brief directors</td><td>2026-10-10</td><td>Process</td></tr>
+            <tr><td>Senior Manager</td><td>Agree a 15-minute response expectation for pre-agreed requests with the Insights CFT, and scope NOC tooling for the batch pause</td><td>2026-10-31</td><td>Mitigate</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><a href="template.html">Write your own with the template →</a></p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

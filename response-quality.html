@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What Good Looks Like · Nimbus SRE</title>
+  <meta name="description" content="Weak, Good, and Best-in-Class incident response, by dimension and by role: coordination, communication, escalation, mitigation, stakeholder pressure, and postmortems.">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="response-quality">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Start</div>
+      <div class="eyebrow">Start · All Roles · General Purpose</div>
+      <h1>What Good Looks Like</h1>
+      <p class="lede">The same incident can go very differently depending on how people respond. Pick a level and a role to see what <strong>Weak</strong>, <strong>Good</strong>, and <strong>Best in Class</strong> look like across nine dimensions of incident response.</p>
+      <div class="tldr">
+        <ul>
+          <li><strong>Weak</strong> is where many new teams start: unclear ownership, no cadence, debugging before mitigating, and no learning afterwards.</li>
+          <li><strong>Good</strong> is the target for most teams: clear roles, timed escalation, reversible mitigations, and blameless postmortems.</li>
+          <li><strong>Best in Class</strong> is when the system does the work: tooling, agreements, and practice make good behavior the default.</li>
+        </ul>
+      </div>
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>These descriptions are written generically, so use them as a self-assessment for any team, as a rubric for <a href="tabletop.html">tabletop exercises</a>, or to grade a <a href="postmortems/index.html">postmortem</a>. Each card ends with a short Nimbus example.</p>
+      </div>
+      <h2 id="explore-the-levels">Explore the Levels</h2>
+      <div id="quality-app" aria-live="polite"></div>
+      <div id="quality-static"><div class="table-wrap"><table><thead><tr><th>Dimension</th><th>Weak</th><th>Good</th><th>Best in Class</th></tr></thead><tbody>
+            <tr><td><strong>Detection</strong></td><td><b>NOC:</b> Finds out from a customer or a CFT. Alerts are ignored because they're noisy.<br><b>SRE:</b> Hears about it only when paged, with no signal of their own.<br><b>Manager:</b> Learns about the incident from an executive or a customer.</td><td><b>NOC:</b> Regular health sweep, and alerts acknowledged within 5 minutes and checked against a baseline.<br><b>SRE:</b> Keeps the sweep queries and alerts tuned, and fixes noisy alerts after incidents.<br><b>Manager:</b> Gets notified for Sev 1, and tracks how incidents were detected each month.</td><td><b>NOC:</b> Spots slow-burning issues before alerts fire, and notices when telemetry goes quiet.<br><b>SRE:</b> Alerts are based on error-budget burn rate, and user-impacting problems are caught before customers notice.<br><b>Manager:</b> Most incidents are detected by our own monitoring, and that share is a goal they track.</td></tr>
+            <tr><td><strong>Triage</strong></td><td><b>NOC:</b> &quot;Something is wrong with the product.&quot; Pages everyone, or nobody.<br><b>SRE:</b> Starts debugging before confirming scope.<br><b>Manager:</b> Pushes for a severity based on who's asking.</td><td><b>NOC:</b> Within 15 minutes: confirmed, scoped (feature, layer, version, region), severity proposed, right owner paged.<br><b>SRE:</b> Confirms impact, finds the failing layer, and narrows down the owner.<br><b>Manager:</b> Accepts severity based on user impact and asks why it was set there.</td><td><b>NOC:</b> Scopes by layer straight away and pages the owner directly. Rarely needs a reroute.<br><b>SRE:</b> Triage queries are saved and shared, so anyone can scope in minutes.<br><b>Manager:</b> Severity definitions are agreed in advance, so nobody argues about them mid-incident.</td></tr>
+            <tr><td><strong>Coordination</strong></td><td><b>NOC:</b> Nobody is clearly in charge. Several channels, side calls, and decisions scattered across them.<br><b>SRE:</b> Tries to coordinate and debug at once, and does both badly.<br><b>Manager:</b> Takes over the call without being asked.</td><td><b>NOC:</b> One channel, a named coordinator, assigned roles, a regular update loop, and a pinned record.<br><b>SRE:</b> Acts as Technical Lead and gives the coordinator workstreams and recommendations.<br><b>Manager:</b> Backs the coordinator's authority and stays in their own lane.</td><td><b>NOC:</b> Runs the room calmly, keeps the handover-ready record current, and absorbs interruptions before they reach responders.<br><b>SRE:</b> Runs named technical workstreams and hands over cleanly at shift change.<br><b>Manager:</b> Coordination is a trained skill, practiced in tabletop exercises.</td></tr>
+            <tr><td><strong>Communication</strong></td><td><b>NOC:</b> Updates are irregular and vague, with no next-update time.<br><b>SRE:</b> Posts raw query output that only engineers understand.<br><b>Manager:</b> Gives executives conflicting information from side channels.</td><td><b>NOC:</b> Updates on a schedule with status, impact, changes, next step, and next update time.<br><b>SRE:</b> Gives the coordinator one plain-language technical summary each cycle.<br><b>Manager:</b> Uses the coordinator's updates as the single source for executives.</td><td><b>NOC:</b> Mirrors updates to every audience (Slack, Teams, executives) automatically or through a named buffer.<br><b>SRE:</b> Shares one clear chart that explains the problem to everyone.<br><b>Manager:</b> Executives get a standard update format, so they stop asking responders.</td></tr>
+            <tr><td><strong>Escalation</strong></td><td><b>NOC:</b> Posts in chat and waits, hoping someone notices.<br><b>SRE:</b> Escalates by complaining instead of with evidence.<br><b>Manager:</b> Isn't told about stuck escalations until it's too late.</td><td><b>NOC:</b> Pages through PagerDuty, runs timers (15, 30, 45 minutes), and records acknowledgement times.<br><b>SRE:</b> Explains the technical case for pulling in another team.<br><b>Manager:</b> Acts as the top rung of the ladder and contacts other teams' leaders quickly.</td><td><b>NOC:</b> Every team has a PagerDuty service, and timers are rarely needed.<br><b>SRE:</b> Has working relationships with every CFT through a liaison.<br><b>Manager:</b> Response expectations are agreed with every team and reviewed monthly using real numbers.</td></tr>
+            <tr><td><strong>Mitigation</strong></td><td><b>NOC:</b> Can't act and doesn't ask, so waits for someone to notice.<br><b>SRE:</b> Hunts for the root cause while users stay broken.<br><b>Manager:</b> Delays costly mitigations while asking for more analysis.</td><td><b>NOC:</b> Sends specific, timed action requests to owners, and checks back.<br><b>SRE:</b> Recommends reversible mitigations (pause, halt, shift, roll back) with evidence and undo steps.<br><b>Manager:</b> Decides on spend and trade-offs within minutes when asked.</td><td><b>NOC:</b> Has scoped tooling to run the common safe actions directly.<br><b>SRE:</b> Common mitigations are rehearsed and documented in runbooks.<br><b>Manager:</b> Pre-approves categories of spend so the team doesn't have to ask mid-incident.</td></tr>
+            <tr><td><strong>Working With CFTs and Platform Teams</strong></td><td><b>NOC:</b> Blames or bypasses the platform team, and teams argue about fault mid-incident.<br><b>SRE:</b> Debates owners without data, so &quot;not us&quot; goes unchallenged.<br><b>Manager:</b> Escalates around other leaders, or avoids conflict entirely.</td><td><b>NOC:</b> Brings evidence to owners and uses their process.<br><b>SRE:</b> Answers &quot;not us&quot; with the evidence that would change their mind.<br><b>Manager:</b> Escalates peer to peer, calmly, with data.</td><td><b>NOC:</b> Owners trust the coordinator's requests and act on them quickly.<br><b>SRE:</b> Has joint postmortem actions with the platform team that actually ship.<br><b>Manager:</b> Shared-layer changes have agreed review and announcement rules.</td></tr>
+            <tr><td><strong>Managing Stakeholder Pressure</strong></td><td><b>NOC:</b> Lets an executive's questions pull responders off the fix.<br><b>SRE:</b> Answers every DM from a director, and loses the thread.<br><b>Manager:</b> Is the director diving into the weeds, or lets one do it unchallenged.</td><td><b>NOC:</b> Names a comms buffer, redirects executive questions to the update schedule, and pulls side calls back.<br><b>SRE:</b> Routes DMs to the coordinator and shares one chart, not raw queries.<br><b>Manager:</b> Acts as the buffer, gives anxious leaders real decisions to make, and has a private word early.</td><td><b>NOC:</b> An exec update format exists and executives follow it.<br><b>SRE:</b> Is never interrupted mid-investigation, because the system absorbs it.<br><b>Manager:</b> Directors are briefed on incident etiquette in advance, and interruptions are reviewed blamelessly in postmortems.</td></tr>
+            <tr><td><strong>Post-Mortem</strong></td><td><b>NOC:</b> No postmortem is scheduled. The timeline is rebuilt from memory weeks later.<br><b>SRE:</b> Writes &quot;human error&quot; as the root cause.<br><b>Manager:</b> Asks who did it, and action items are never funded.</td><td><b>NOC:</b> The postmortem is scheduled before standing down, and the timeline is handed over the same day.<br><b>SRE:</b> Blameless analysis of contributing factors, with SMART action items owned by the right teams.<br><b>Manager:</b> Chairs Sev 1–2 reviews, protects blamelessness, and reviews action items monthly.</td><td><b>NOC:</b> Timelines are postmortem-ready at close, and the NOC tracks follow-through.<br><b>SRE:</b> Postmortems change the system: alerts, gates, runbooks, and architecture.<br><b>Manager:</b> Action-item completion and repeat incidents are tracked as organizational goals.</td></tr>
+          </tbody></table></div></div>
+      <h2 id="how-to-use-this">How to Use This</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Self-Assessment</h3><p>For each dimension, ask honestly where your team is today. Pick one dimension to move up a level this quarter.</p></div>
+        <div class="card"><h3>Tabletop Rubric</h3><p>The <a href="tabletop.html">tabletop kit</a> scores the debrief on these dimensions.</p></div>
+        <div class="card"><h3>Postmortem Lens</h3><p>Ask which dimensions were Weak in this incident, and what action would move them to Good.</p></div>
+        <div class="card"><h3>Onboarding</h3><p>New responders read the Good column for their role in week 1.</p></div>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="./assets/site.js"></script>
+<script src="./assets/quality.js"></script>
+</body>
+</html>

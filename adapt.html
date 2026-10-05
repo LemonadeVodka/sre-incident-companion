@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Using This Guide Anywhere · Nimbus SRE</title>
+  <meta name="description" content="How to adapt this incident companion to your own organization: map Nimbus terms to yours, keep the practices, and replace the specifics.">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="adapt">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Start</div>
+      <div class="eyebrow">Start · General Purpose</div>
+      <h1>Using This Guide Anywhere</h1>
+      <p class="lede">Nimbus is a worked example. The roles, the process, the templates, and the Weak / Good / Best levels apply to any team running a production service. This page shows what to keep, what to swap, and how to map our terms to yours.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><strong>Keep:</strong> the separation of coordinator and technical lead, mitigate before you debug, timed escalation, blameless postmortems, and Weak / Good / Best.</li>
+          <li><strong>Swap:</strong> team names, tools, the architecture layers, KQL parameter values, and the baselines.</li>
+          <li><strong>Start small:</strong> pick one role track and one playbook, and adapt those first.</li>
+        </ul>
+      </div>
+
+      <h2 id="term-map">Map Our Terms to Yours</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nimbus term</th><th>Generic equivalent</th><th>Your term</th></tr></thead>
+          <tbody>
+            <tr><td>NOC (Incident Coordinator)</td><td>Incident commander / coordinator, ops center, on-call manager</td><td></td></tr>
+            <tr><td>SRE on-call (Technical Lead)</td><td>Technical incident lead, on-call engineer, ops lead</td><td></td></tr>
+            <tr><td>CFT / feature experience</td><td>Product or feature team, service owner</td><td></td></tr>
+            <tr><td>Cloud Infrastructure CFT</td><td>Platform, infrastructure, or cloud engineering team</td><td></td></tr>
+            <tr><td>Device orchestrator / on-device model</td><td>Client-side logic, edge compute, offline mode</td><td></td></tr>
+            <tr><td>Cloud orchestrator</td><td>API router, BFF, service mesh ingress</td><td></td></tr>
+            <tr><td>Azure Front Door</td><td>CDN / WAF (Cloudflare, Akamai, CloudFront)</td><td></td></tr>
+            <tr><td>APIM</td><td>API gateway (Kong, Apigee, AWS API Gateway)</td><td></td></tr>
+            <tr><td>Azure AI Foundry</td><td>Model provider (any hosted LLM API), or any critical third-party dependency</td><td></td></tr>
+            <tr><td>Application Insights / KQL</td><td>Your APM and query language (Datadog, Grafana Loki/Tempo, Splunk, New Relic)</td><td></td></tr>
+            <tr><td>PagerDuty, Slack, Teams, Jira</td><td>Your paging, chat, and ticketing tools</td><td></td></tr>
+            <tr><td>Morgan, the deep-diving director</td><td>Any well-meaning stakeholder who interrupts responders</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="keep-as-is">Keep As-Is</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Roles</h3><p>Coordinator, technical lead, owners, and a senior manager who decides and unblocks. These work at any size.</p></div>
+        <div class="card"><h3>Process</h3><p>Detect, triage, declare, mitigate, resolve, learn. Severity follows user impact.</p></div>
+        <div class="card"><h3>Templates</h3><p>Updates, action requests, handovers, and the postmortem. They're written generically.</p></div>
+        <div class="card"><h3>Weak / Good / Best</h3><p>Use it as a self-assessment, a tabletop rubric, and a postmortem lens.</p></div>
+      </div>
+
+      <h2 id="replace">Replace</h2>
+      <ul class="checklist" data-key="adapt">
+        <li><strong>The architecture page:</strong> draw your own request path, owners, and blind spots, the same way as <a href="environment.html">Background: Nimbus</a>.</li>
+        <li><strong>Baselines:</strong> your own P50/P95 and error rates per feature.</li>
+        <li><strong>KQL values:</strong> set them once in <a href="queries.html#make-it-yours">Make It Yours</a>, or use the generic <a href="https://github.com/LemonadeVodka/kql-toolkit">KQL toolkit</a>.</li>
+        <li><strong>Escalation ladder:</strong> your teams, your paging tool, your timers.</li>
+        <li><strong>Pre-agreed requests:</strong> the low-risk actions your owners will take on request.</li>
+        <li><strong>Playbooks:</strong> keep the shape (symptoms, checks, causes, verify, roles, Weak/Good/Best, postmortem focus) and swap the specifics.</li>
+      </ul>
+
+      <h2 id="fork-it">Fork It</h2>
+      <p>The site is plain HTML, CSS, and JavaScript, with no build step. Fork <a href="https://github.com/LemonadeVodka/sre-incident-companion">the repository</a>, edit the pages, and publish it with GitHub Pages or any static host.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="./assets/site.js"></script>
+</body>
+</html>

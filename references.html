@@ -18,7 +18,7 @@
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
       <div class="eyebrow">Shared · all roles</div>
-      <h1>Glossary &amp; references</h1>
+      <h1>Glossary &amp; References</h1>
       <p class="lede">Definitions of the terms used throughout this guide, plus the sources it draws on.</p>
 
       <h2 id="glossary">Glossary</h2>
@@ -34,12 +34,16 @@
             <tr><td><strong>CFT</strong></td><td>Cross-functional team. Owns one or more feature experiences end to end.</td></tr>
             <tr><td><strong>cloud_RoleName</strong></td><td>The App Insights field holding the service name, mapped from OTel <code>service.name</code>.</td></tr>
             <tr><td><strong>Entra ID</strong></td><td>Microsoft's identity service. It issues the tokens that APIM validates.</td></tr>
+            <tr><td><strong>Cloud Infrastructure</strong></td><td>The Nimbus CFT that owns the shared cloud: Front Door, APIM, the cloud orchestrator, Foundry capacity, and telemetry.</td></tr>
+            <tr><td><strong>Cloud orchestrator</strong></td><td>The shared cloud router that sends each request to the right feature service.</td></tr>
+            <tr><td><strong>Device orchestrator</strong></td><td>Logic in the desktop Agent that decides whether to answer on-device or call the cloud.</td></tr>
             <tr><td><strong>Error budget</strong></td><td>1 − SLO: the amount of unreliability you're allowed over the window.</td></tr>
+            <tr><td><strong>Fallback surge</strong></td><td>On-device answers fail, so devices send that work to the cloud and create an unexpected load spike.</td></tr>
             <tr><td><strong>Feature experience</strong></td><td>A user-facing Nimbus capability, such as Writing Assist or Device Care.</td></tr>
             <tr><td><strong>Foundry</strong></td><td>Azure AI Foundry, the platform hosting Nimbus's model deployments.</td></tr>
             <tr><td><strong>GenAI semantic conventions</strong></td><td>OpenTelemetry's standard attribute names for generative AI calls, such as <code>gen_ai.request.model</code> and <code>gen_ai.usage.input_tokens</code>.</td></tr>
             <tr><td><strong>Golden signals</strong></td><td>Latency, traffic, errors, and saturation.</td></tr>
-            <tr><td><strong>IC</strong></td><td>Incident Commander. Coordinates the response and doesn't debug.</td></tr>
+            <tr><td><strong>IC (Incident Coordinator)</strong></td><td>Runs the incident: cadence, roles, comms, escalation, record. At Nimbus, the NOC.</td></tr>
             <tr><td><strong>itemCount</strong></td><td>The number of real events a sampled App Insights row stands for.</td></tr>
             <tr><td><strong>NOC</strong></td><td>Network Operations Center: the first line of defense that detects, triages, and escalates.</td></tr>
             <tr><td><strong>Noisy neighbor</strong></td><td>One workload using up shared capacity and hurting others.</td></tr>
@@ -54,13 +58,14 @@
             <tr><td><strong>TPM</strong></td><td>Tokens per minute, the unit of Foundry quota.</td></tr>
             <tr><td><strong>WAF</strong></td><td>Web Application Firewall. Blocks suspicious requests at Front Door, returning 403.</td></tr>
             <tr><td><strong>traceparent</strong></td><td>The W3C HTTP header that carries trace context between services.</td></tr>
+            <tr><td><strong>Technical Lead</strong></td><td>Leads the technical investigation and recommends mitigations. At Nimbus, the SRE on-call.</td></tr>
             <tr><td><strong>tokio</strong></td><td>The Rust async runtime our services use. Blocking work on it stalls every request on that instance.</td></tr>
             <tr><td><strong>TTFT</strong></td><td>Time to first token: delay before a streamed response starts.</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h2 id="google-sre-books">Google SRE books</h2>
+      <h2 id="google-sre-books">Google SRE Books</h2>
       <p>Both books are free to read online at <a href="https://sre.google/books/">sre.google</a>. This guide summarizes their ideas in its own words.</p>
       <h3 id="site-reliability-engineering-2016"><em>Site Reliability Engineering</em> (2016)</h3>
       <ul>
@@ -84,13 +89,13 @@
       <aside class="leader" aria-label="For senior managers">
         <div class="leader-head">For senior managers <small>· recommended reading</small></div>
         <div class="leader-grid">
-          <div><h4>Start with these four</h4><ul>
+          <div><h4>Start With These Four</h4><ul>
             <li><a href="https://sre.google/sre-book/embracing-risk/">Embracing Risk</a>: why perfect reliability is the wrong goal.</li>
             <li><a href="https://sre.google/sre-book/managing-incidents/">Managing Incidents</a>: how a well-run incident looks.</li>
             <li><a href="https://sre.google/sre-book/postmortem-culture/">Postmortem Culture</a>: why blameless reviews work.</li>
             <li><a href="https://sre.google/workbook/error-budget-policy/">Example Error Budget Policy</a>: what you'd be agreeing to.</li>
           </ul></div>
-          <div class="ask"><h4>Questions to bring to your team</h4><ul>
+          <div class="ask"><h4>Questions to Bring to Your Team</h4><ul>
             <li>Which of these ideas do we already practice, and which don't we?</li>
             <li>What would an error budget policy look like for our top feature?</li>
           </ul></div>
@@ -116,10 +121,10 @@
         <li><a href="https://grafana.com/docs/grafana/latest/datasources/azure-monitor/">Grafana Azure Monitor data source</a></li>
       </ul>
 
-      <h2 id="kql-toolkit">KQL toolkit</h2>
+      <h2 id="kql-toolkit">KQL Toolkit</h2>
       <p>The <a href="https://github.com/LemonadeVodka/kql-toolkit">kql-toolkit repository</a> holds generic, parameterized KQL for any Azure environment, covering App Insights, Front Door, APIM, auth, Azure Activity, and reusable patterns. The <a href="queries.html">Nimbus KQL</a> page has the Nimbus-specific versions.</p>
 
-      <h2 id="related-templates">Related templates</h2>
+      <h2 id="related-templates">Related Templates</h2>
       <p>These come from the companion repository <a href="https://github.com/LemonadeVodka/noc-tools-templates">noc-tools-templates</a>:</p>
       <ul>
         <li><a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/incident-postmortem-template.md">Incident postmortem template</a></li>

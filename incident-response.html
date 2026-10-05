@@ -18,26 +18,31 @@
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
       <div class="eyebrow">Shared · all roles</div>
-      <h1>Incident process</h1>
-      <p class="lede">How we run incidents across the NOC, SRE on-call, five CFTs, a Platform team, and senior management, from the first alert to the last action item. For how this works with our actual tools (PagerDuty, Slack and Teams, a locked-down Jira), see <a href="ways-of-working.html">Ways of working</a>.</p>
+      <h1>Incident Process</h1>
+      <p class="lede">How we run incidents across the NOC, SRE on-call, five CFTs, a Cloud Infrastructure CFT, and senior management, from the first alert to the last action item. For how this works with our actual tools (PagerDuty, Slack and Teams, a locked-down Jira), see <a href="ways-of-working.html">Ways of working</a>.</p>
 
       <div class="tldr">
         <ul>
           <li>Six phases: <strong>detect, triage, declare, mitigate, resolve, learn</strong>.</li>
-          <li><strong>Severity follows user impact.</strong> If you're unsure, go higher. Sev 1–2 always get an Incident Commander.</li>
+          <li><strong>Severity follows user impact.</strong> If you're unsure, go higher. Sev 1–2 always get an Incident Coordinator (the NOC) and a Technical Lead (SRE).</li>
           <li>The affected CFT owns the incident until the evidence points to shared infrastructure. <strong>Mitigate before you debug.</strong></li>
         </ul>
+      </div>
+
+<div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>Whatever your tools, the same lifecycle applies: detect, triage, declare, mitigate, resolve, learn. Separating coordination from technical investigation is the most valuable habit to build.</p>
       </div>
 
       <aside class="leader" aria-label="For senior managers">
         <div class="leader-head">For senior managers <small>· where you fit in the response</small></div>
         <div class="leader-grid">
-          <div><h4>Your role</h4><ul>
+          <div><h4>Your Role</h4><ul>
             <li>You're usually <strong>not</strong> the IC. You're the escalation point for decisions and resources.</li>
             <li>Handle executive and customer messaging through the comms lead.</li>
             <li>Approve costly or risky mitigations quickly.</li>
           </ul></div>
-          <div class="ask"><h4>Questions to ask</h4><ul>
+          <div class="ask"><h4>Questions to Ask</h4><ul>
             <li>What severity is this, and why?</li>
             <li>Is there one channel and one IC, even with several teams involved?</li>
             <li>Should customers or partners hear from us, and when?</li>
@@ -50,7 +55,7 @@
         </div>
       </aside>
 
-      <h2 id="the-incident-lifecycle">The incident lifecycle</h2>
+      <h2 id="the-incident-lifecycle">The Incident Lifecycle</h2>
       <figure class="diagram">
         <svg viewBox="0 0 900 170" role="img" aria-labelledby="lc-title lc-desc">
           <title id="lc-title">Incident lifecycle</title>
@@ -88,22 +93,22 @@
         </table>
       </div>
 
-      <h2 id="who-does-what-by-phase">Who does what, by phase</h2>
+      <h2 id="who-does-what-by-phase">Who Does What, by Phase</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Phase</th><th><span class="badge noc">NOC</span></th><th><span class="badge sre">SRE on-call</span></th><th><span class="badge lead">Senior manager</span></th></tr></thead>
           <tbody>
             <tr><td><strong>Detect</strong></td><td>Shift sweep, acknowledge alerts, take user reports</td><td>—</td><td>—</td></tr>
             <tr><td><strong>Triage</strong></td><td>Confirm, find the layer, propose a severity</td><td>Joins if paged</td><td>—</td></tr>
-            <tr><td><strong>Declare</strong></td><td>Open the channel and pinned record, page through PagerDuty, bridge to Teams</td><td>Takes IC, confirms severity, assigns roles</td><td>Notified for Sev 1</td></tr>
-            <tr><td><strong>Mitigate</strong></td><td>Pre-approved actions, timers, bridging</td><td>Investigates, chooses mitigations, chases CFTs</td><td>Decisions (spend, failover, comms), escalates silent CFTs</td></tr>
-            <tr><td><strong>Resolve</strong></td><td>Undo temporary actions when told</td><td>Verifies, files the Jira ticket, assigns a runbook owner</td><td>Approves the external "resolved" message</td></tr>
-            <tr><td><strong>Learn</strong></td><td>Feeds noisy-alert notes into runbooks</td><td>Drives the postmortem</td><td>Keeps it blameless, funds action items</td></tr>
+            <tr><td><strong>Declare</strong></td><td><strong>Declares and takes IC</strong>, opens the channel and pinned record, pages through PagerDuty, bridges to Teams</td><td>Joins as <strong>Technical Lead</strong></td><td>Notified for Sev 1</td></tr>
+            <tr><td><strong>Mitigate</strong></td><td>Coordinates, sends action requests, runs timers, chases CFTs, buffers stakeholders</td><td>Investigates and recommends mitigations to owners</td><td>Decisions (spend, failover, comms), escalates silent CFTs</td></tr>
+            <tr><td><strong>Resolve</strong></td><td>Resolves, files the Jira ticket, schedules the postmortem, assigns a runbook owner</td><td>Verifies recovery, confirms temporary changes have owners</td><td>Approves the external "resolved" message</td></tr>
+            <tr><td><strong>Learn</strong></td><td>Hands over the timeline, records response times</td><td>Writes the technical analysis for the <a href="postmortems/index.html">postmortem</a></td><td>Keeps it blameless, funds action items</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h2 id="severity-levels">Severity levels</h2>
+      <h2 id="severity-levels">Severity Levels</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Severity</th><th>Definition</th><th>Nimbus examples</th><th>Response</th></tr></thead>
@@ -121,29 +126,29 @@
       </div>
 
       <h2 id="roles">Roles</h2>
-      <p>These roles come from the Incident Command System that firefighters use, which Google's SRE book adapted for software. In a small incident one person holds every role. When the incident grows, hand roles out explicitly.</p>
+      <p>These roles come from the Incident Command System that firefighters use, which Google's SRE book adapted for software. At Nimbus the <strong>NOC is the Incident Coordinator</strong>, the <strong>SRE on-call is the Technical Lead</strong>, and owners (CFTs and Cloud Infrastructure) make the changes. In a small incident one person may hold several roles, but coordinating and debugging should never be done by the same person for long.</p>
       <div class="card-grid">
-        <div class="card"><h3>Incident Commander (IC)</h3><p>Owns the incident. Coordinates, decides, and delegates, but <strong>doesn't debug</strong>. Keeps the big picture and sets the severity.</p></div>
-        <div class="card"><h3>Ops lead</h3><p>Directs the hands-on investigation and mitigation. The only role that makes changes to production during the incident.</p></div>
-        <div class="card"><h3>Comms lead</h3><p>Sends stakeholder updates on schedule and shields responders from "any update?" messages.</p></div>
+        <div class="card"><h3>Incident Coordinator (IC): NOC</h3><p>Owns the incident's coordination: declares, sets the cadence, assigns roles, runs escalation timers, and keeps the record. <strong>Doesn't debug</strong> or change production.</p></div>
+        <div class="card"><h3>Technical Lead: SRE</h3><p>Leads the investigation, finds the failing layer, and recommends mitigations with evidence. Owners execute.</p></div>
+        <div class="card"><h3>Comms Buffer</h3><p>Fields executive and stakeholder questions so responders can work: the senior manager for Sev 1, the IC for Sev 2.</p></div>
         <div class="card"><h3>Scribe</h3><p>Keeps the timeline: what was observed, decided, and changed, with timestamps. Writing the postmortem is much easier with a good timeline.</p></div>
-        <div class="card"><h3>Subject-matter experts</h3><p>CFT engineers and Platform specialists pulled in by the IC for a specific question.</p></div>
+        <div class="card"><h3>Subject-Matter Experts</h3><p>CFT engineers and Cloud Infrastructure specialists pulled in by the IC for a specific question.</p></div>
       </div>
 
-      <h2 id="coordinating-across-cfts">Coordinating across CFTs</h2>
+      <h2 id="coordinating-across-cfts">Coordinating Across CFTs</h2>
       <ol class="steps">
-        <li><strong>The affected CFT owns it first.</strong>If one feature experience is affected, that CFT's on-call is the default IC.</li>
-        <li><strong>Pull in Platform on evidence, not hunches.</strong>Signs it's Platform's problem: several features affected, model dependency latency or errors rising across deployments, 429s on a shared deployment, or gateway errors.</li>
-        <li><strong>One incident, one channel.</strong>When several CFTs notice the same problem, merge into one incident with one IC. Parallel investigations waste effort and send mixed messages.</li>
-        <li><strong>Hand off out loud.</strong>When IC moves from a CFT to Platform, say so in the channel: "Handing IC to @name. Current state: …". No silent handoffs.</li>
+        <li><strong>The NOC coordinates. The affected CFT owns the fix.</strong>If one feature experience is affected, that CFT owns the technical fix and SRE leads the investigation.</li>
+        <li><strong>Pull in Cloud Infrastructure on evidence, not hunches.</strong>Signs it's Cloud Infrastructure's problem: several features affected, model dependency latency or errors rising across deployments, 429s on a shared deployment, or gateway errors.</li>
+        <li><strong>One incident, one channel.</strong>When several CFTs notice the same problem, the NOC merges them into one incident with one coordinator. Parallel investigations waste effort and send mixed messages.</li>
+        <li><strong>Hand off out loud.</strong>When IC moves between NOC shifts, or the Technical Lead changes, say so in the channel. No silent handoffs.</li>
         <li><strong>Escalate on a timer.</strong>No progress in 30 minutes on a Sev 1 or 60 minutes on a Sev 2? Escalate to the next tier or a secondary on-call.</li>
       </ol>
       <div class="callout reality">
         <div class="callout-title">Reality check: unclear owners</div>
-        <p>If you can't tell who owns a service (no <code>cft.owner</code>, a cryptic <code>cloud_RoleName</code>), don't let that stop you. Page Platform as the default owner and keep mitigating. Then file an ownership gap as a follow-up.</p>
+        <p>If you can't tell who owns a service (no <code>cft.owner</code>, a cryptic <code>cloud_RoleName</code>), don't let that stop you. Page Cloud Infrastructure as the default owner and keep mitigating. Then file an ownership gap as a follow-up.</p>
       </div>
 
-      <h2 id="mitigate-before-you-debug">Mitigate before you debug</h2>
+      <h2 id="mitigate-before-you-debug">Mitigate Before You Debug</h2>
       <p>Your first job is to reduce user impact, not to find the root cause. Most mitigations can be reversed, and an outage that runs on can't be undone. These are the levers you have:</p>
       <div class="table-wrap">
         <table>
@@ -152,16 +157,16 @@
             <tr><td>Roll back service deploy</td><td>The problem started after a deploy</td><td>CFT</td><td>Low</td></tr>
             <tr><td>Flip feature flag / revert prompt template</td><td>A prompt, model-version, or config change lines up with the start</td><td>CFT</td><td>Low</td></tr>
             <tr><td>Halt client rollout</td><td>Only a new desktop build is affected</td><td>Client CFT</td><td>Low</td></tr>
-            <tr><td>Pause background workloads</td><td>429s or saturation on a shared deployment</td><td>Insights CFT / Platform</td><td>Low (tips arrive late)</td></tr>
-            <tr><td>Shift traffic to another deployment or region</td><td>One deployment or region is degraded</td><td>Platform</td><td>Medium (capacity, data residency)</td></tr>
-            <tr><td>Enable spillover / raise quota</td><td>Sustained demand over PTU capacity</td><td>Platform</td><td>Medium (cost)</td></tr>
+            <tr><td>Pause background workloads</td><td>429s or saturation on a shared deployment</td><td>Insights CFT / Cloud Infrastructure</td><td>Low (tips arrive late)</td></tr>
+            <tr><td>Shift traffic to another deployment or region</td><td>One deployment or region is degraded</td><td>Cloud Infrastructure</td><td>Medium (capacity, data residency)</td></tr>
+            <tr><td>Enable spillover / raise quota</td><td>Sustained demand over PTU capacity</td><td>Cloud Infrastructure</td><td>Medium (cost)</td></tr>
             <tr><td>Graceful degradation</td><td>A dependency such as retrieval is failing</td><td>CFT</td><td>Medium (lower-quality answers)</td></tr>
             <tr><td>Scale out a service</td><td>Service CPU or thread saturation</td><td>CFT</td><td>Low</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h2 id="communication-templates">Communication templates</h2>
+      <h2 id="communication-templates">Communication Templates</h2>
       <p>Keep updates short, factual, and on schedule. Even "no change" is an update. Fill in the brackets.</p>
       <div class="code-card">
         <div class="code-head"><span class="lang">Text</span><span class="title">Initial notification<span class="answers">Send within 15 minutes of declaring</span></span></div>
@@ -193,23 +198,24 @@ Root cause: [known / under investigation]
 Postmortem: [link or ETA]</code></pre>
       </div>
 
-      <h2 id="after-the-incident">After the incident</h2>
+      <h2 id="after-the-incident">After the Incident</h2>
       <ul class="checklist" data-key="after-incident">
         <li>Write the postmortem draft within 2 business days (required for Sev 1–2).</li>
-        <li>Hold a blameless review with every involved CFT and Platform.</li>
+        <li>Hold a blameless review with every involved CFT and Cloud Infrastructure.</li>
         <li>Give every action item a <strong>single owner</strong> and a <strong>due date</strong>, and track it in the backlog.</li>
         <li>File observability gaps you hit: missing dashboards, broken traces, misrouted alerts.</li>
         <li>Update or create the playbook for this scenario.</li>
         <li>Check that alerts would catch this sooner next time.</li>
       </ul>
 
-      <h2 id="anti-patterns">Anti-patterns to avoid</h2>
+      <h2 id="anti-patterns">Anti-Patterns to Avoid</h2>
       <div class="card-grid">
-        <div class="card"><h3>The hero</h3><p>One person debugs silently for an hour without declaring. Declare early, because it's cheap.</p></div>
-        <div class="card"><h3>The debugging IC</h3><p>The IC gets lost in a query and coordination stops. The IC delegates.</p></div>
-        <div class="card"><h3>Root cause first</h3><p>Users stay broken while you look for the "why". Mitigate first.</p></div>
-        <div class="card"><h3>Parallel incidents</h3><p>Three CFTs open three channels for one Foundry problem. Merge them.</p></div>
-        <div class="card"><h3>Write-only postmortems</h3><p>Action items never get done. Track them like features.</p></div>
+        <div class="card"><h3>The Hero</h3><p>One person debugs silently for an hour without declaring. Declare early, because it's cheap.</p></div>
+        <div class="card"><h3>The Debugging Coordinator</h3><p>The coordinator gets lost in a query and coordination stops. Coordinators coordinate.</p></div>
+        <div class="card"><h3>The Deep-Diving Director</h3><p>A leader pulls responders into explaining raw data. Name a comms buffer. See <a href="leaders/during-an-incident.html#when-a-leader-dives-too-deep">When a Leader Dives Too Deep</a>.</p></div>
+        <div class="card"><h3>Root Cause First</h3><p>Users stay broken while you look for the "why". Mitigate first.</p></div>
+        <div class="card"><h3>Parallel Incidents</h3><p>Three CFTs open three channels for one Foundry problem. Merge them.</p></div>
+        <div class="card"><h3>Write-Only Postmortems</h3><p>Action items never get done. Track them like features.</p></div>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>

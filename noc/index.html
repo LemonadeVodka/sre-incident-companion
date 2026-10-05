@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NOC: First Line of Defense · Nimbus SRE</title>
-  <meta name="description" content="The NOC role for Nimbus: what you own, when to hand off to SRE, shift rhythm, and how to grow.">
+  <title>NOC: Incident Coordinator · Nimbus SRE</title>
+  <meta name="description" content="The NOC role for Nimbus: first line of defense and Incident Coordinator for every declared incident, with no production tooling yet.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -17,108 +17,97 @@
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / NOC</div>
-      <div class="track-banner t-noc"><i class="track-dot"></i>NOC · First line of defense</div>
-      <h1>NOC: first line of defense</h1>
-      <p class="lede">You usually see a problem first. Your job is to <strong>notice it, confirm it, scope it, communicate it, and get the right people moving fast</strong>. You can also take a few safe, pre-approved actions when owners are slow. You are <em>not</em> expected to find the root cause.</p>
+      <div class="track-banner t-noc"><i class="track-dot"></i>NOC · Incident Coordinator</div>
+      <h1>NOC: First Line of Defense and Incident Coordinator</h1>
+      <p class="lede">You usually see a problem first, and once an incident is declared, <strong>you run it</strong>. The NOC detects, declares, and coordinates: channel, roles, cadence, communication, escalation timers, and the timeline. You don't have tooling to change production yet, so you get things done by <strong>requesting actions from the people who own them</strong>.</p>
 
       <div class="tldr">
         <ul>
-          <li><strong>Detect:</strong> run the health sweep every shift. Most services have no dashboard, so the sweep <em>is</em> your dashboard.</li>
-          <li><strong>Triage in 15 minutes:</strong> is it real, which layer, which feature, how bad? Then page through PagerDuty.</li>
-          <li><strong>Escalate on a timer.</strong> If CFTs don't respond, climb the ladder and use <a href="safe-actions.html">pre-approved actions</a>.</li>
-          <li><strong>Hand off cleanly to SRE</strong> with what you saw, checked, and did.</li>
+          <li><strong>Detect:</strong> run the shift health sweep. Most services have no dashboard, so the sweep is your dashboard.</li>
+          <li><strong>Declare and coordinate:</strong> you're the <strong>Incident Coordinator (IC)</strong> for every declared incident. SRE is the Technical Lead.</li>
+          <li><strong>Request, don't act:</strong> ask owners for specific actions using the <a href="action-requests.html">pre-agreed requests</a>, and chase them on timers.</li>
+          <li><strong>Close the loop:</strong> schedule the postmortem and hand over your timeline. Postmortems are one of our weakest spots.</li>
         </ul>
       </div>
 
-      <h2 id="what-you-own">What you own, and what you don't</h2>
+      <div class="anywhere">
+        <div class="callout-title">Applies Anywhere</div>
+        <p>Separating <strong>coordination</strong> from <strong>technical investigation</strong> is the single most effective incident practice. The coordinator keeps the big picture, the cadence, and the people. The technical lead keeps their head in the problem. Neither tries to do both.</p>
+      </div>
+
+      <h2 id="what-you-own">What You Own, and What You Don't</h2>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>NOC owns</th><th>NOC does not own</th></tr></thead>
+          <thead><tr><th>NOC owns</th><th>NOC does not own (yet)</th></tr></thead>
           <tbody>
-            <tr><td>Watching signals and running the shift sweep</td><td>Root-cause investigation</td></tr>
-            <tr><td>Confirming impact and proposing a severity</td><td>Final severity for Sev 1–2 (the IC decides)</td></tr>
-            <tr><td>Paging SRE, CFTs, and Platform through PagerDuty</td><td>Rolling back service deployments</td></tr>
-            <tr><td>Opening the Slack incident channel and the pinned record</td><td>Region failover, quota changes, WAF changes</td></tr>
-            <tr><td>Bridging to Teams-only CFTs (default)</td><td>Customer or public messaging</td></tr>
-            <tr><td>The <a href="safe-actions.html">pre-approved safe actions</a></td><td>Anything not on that list</td></tr>
+            <tr><td>Watching signals and running the shift sweep</td><td>Root-cause investigation (SRE Technical Lead)</td></tr>
+            <tr><td><strong>Declaring</strong> incidents and setting the initial severity</td><td>Any production change: rollbacks, flags, restarts, scaling, failover</td></tr>
+            <tr><td><strong>Coordinating</strong>: channel, roles, cadence, updates, decisions log</td><td>Technical decisions about <em>what</em> to change (SRE recommends, owners decide)</td></tr>
+            <tr><td>Paging SRE, CFTs, and Cloud Infrastructure through PagerDuty, and running escalation timers</td><td>Business decisions such as spend or customer messaging (senior manager)</td></tr>
+            <tr><td>Bridging to Teams-only CFTs, and protecting responders from interruptions</td><td>—</td></tr>
+            <tr><td>The timeline, the pinned record, the Jira ticket, and scheduling the postmortem</td><td>—</td></tr>
           </tbody>
         </table>
       </div>
-
-      <h2 id="when-to-hand-off-to-sre">When to hand off to SRE</h2>
-      <p>Page <strong>SRE on-call</strong> (PagerDuty "Nimbus SRE") when <em>any</em> of these is true:</p>
-      <ul>
-        <li>User impact is confirmed and above the <a href="../environment.html#what-normal-looks-like">normal baselines</a> for more than 10 minutes.</li>
-        <li>More than one feature is affected, or the problem is at a shared layer (Front Door, APIM, auth, Foundry).</li>
-        <li>You've spent 15 minutes and still can't tell which layer or owner is involved.</li>
-        <li>A CFT hasn't acknowledged within 15 minutes.</li>
-        <li>You've taken a pre-approved action. SRE should know, even if it worked.</li>
-      </ul>
-      <div class="leader sre" aria-label="What SRE needs from NOC">
-        <div class="leader-head">What SRE needs from you <small>· a good handoff saves 15 minutes</small></div>
-        <div class="leader-grid">
-          <div><h4>Include</h4><ul>
-            <li>What you saw, with numbers and the start time.</li>
-            <li>Scope: feature, region, client version, layer.</li>
-            <li>What you checked, with links to the queries.</li>
-            <li>What you did, and when.</li>
-          </ul></div>
-          <div><h4>Avoid</h4><ul>
-            <li>"Something's wrong with Nimbus." Be specific.</li>
-            <li>Paging without opening the channel and pinned record.</li>
-          </ul></div>
-        </div>
+      <div class="callout reality">
+        <div class="callout-title">Reality Check: Coordinating Without Tooling</div>
+        <p>You can see almost everything and change almost nothing. That's fine for a coordinator, as long as requests are <strong>specific, timed, and recorded</strong>: "Insights CFT, please pause the Proactive Tips batch now. I'll check again at 14:30." See <a href="action-requests.html">Requesting Actions</a>. Getting the NOC executable tooling is on the <a href="../leaders/investing.html#tooling-and-process-asks">manager asks list</a>.</p>
       </div>
 
-      <h2 id="shift-rhythm">Shift rhythm</h2>
-      <h3 id="start-of-shift">Start of shift</h3>
+      <h2 id="when-to-bring-in-sre">When to Bring in SRE</h2>
+      <p>Page <strong>SRE on-call</strong> (PagerDuty "Nimbus SRE") as Technical Lead when <em>any</em> of these is true:</p>
+      <ul>
+        <li>User impact is confirmed and above the <a href="../environment.html#what-normal-looks-like">baselines</a> for more than 10 minutes.</li>
+        <li>More than one feature is affected, or the problem is at a shared layer (Front Door, APIM, auth, cloud orchestrator, Foundry).</li>
+        <li>After 15 minutes you still can't tell which layer or owner is involved.</li>
+        <li>A CFT hasn't acknowledged within 15 minutes, and you need someone to judge the technical options.</li>
+      </ul>
+      <p>When SRE joins, <strong>you stay IC</strong>. Hand them the technical picture (template on <a href="triage-and-escalate.html#briefing-the-technical-lead">Triage &amp; Escalate</a>) and keep coordinating.</p>
+
+      <h2 id="shift-rhythm">Shift Rhythm</h2>
+      <h3 id="start-of-shift">Start of Shift</h3>
       <ul class="checklist" data-key="noc-shift-start">
-        <li>Read the previous shift's handoff note and any open <code>#inc-</code> channels.</li>
-        <li>Check that PagerDuty shows you on call and that your phone gets a test notification.</li>
-        <li>Run the <a href="detect.html#shift-health-sweep">shift health sweep</a> and note anything unusual.</li>
-        <li>Check scheduled changes: client rollouts in progress, CFT deploys, Azure maintenance.</li>
+        <li>Read the previous shift's handoff note and any open <code>#inc-</code> channels. You may be inheriting IC.</li>
+        <li>Check PagerDuty shows you on call, and that your phone gets a test notification.</li>
+        <li>Run the <a href="detect.html#shift-health-sweep">shift health sweep</a>.</li>
+        <li>Check scheduled changes: client rollouts, local model updates, CFT deploys, Cloud Infrastructure changes, Azure maintenance.</li>
         <li>Open the Teams channels for the Collab and Device CFTs, so you can bridge quickly.</li>
       </ul>
-      <h3 id="during-the-shift">During the shift</h3>
+      <h3 id="during-the-shift">During the Shift</h3>
       <ul>
-        <li>Re-run the sweep every <strong>2 hours</strong>, and right after any rollout or deploy you hear about.</li>
-        <li>Acknowledge every page within <strong>5 minutes</strong>, even if it's only to say you're looking.</li>
-        <li>Keep notes as you go. They become the handoff.</li>
+        <li>Re-run the sweep every <strong>2 hours</strong>, and after any rollout or change you hear about.</li>
+        <li>Acknowledge every page within <strong>5 minutes</strong>.</li>
+        <li>Keep notes as you go. They become the handoff and the postmortem timeline.</li>
       </ul>
-      <h3 id="end-of-shift">End of shift</h3>
+      <h3 id="end-of-shift">End of Shift</h3>
       <ul class="checklist" data-key="noc-shift-end">
-        <li>Open incidents: current status, IC, next update time.</li>
-        <li>Anything odd that didn't become an incident, and the queries you used.</li>
-        <li>Actions you took that are still in effect (for example, the Proactive Tips batch is still paused).</li>
-        <li>Alerts that were noisy or confusing, for the runbook backlog.</li>
+        <li>Open incidents: status, IC handover (template on <a href="coordinate.html#handing-over-ic">Coordinate</a>), next update time.</li>
+        <li>Outstanding action requests: who owns each one, and when you're due to check.</li>
+        <li>Postmortems to schedule, and timelines to hand over.</li>
+        <li>Noisy or confusing alerts, for the runbook backlog.</li>
       </ul>
 
-      <h2 id="what-good-looks-like">What good looks like</h2>
-      <div class="card-grid">
-        <div class="card"><h3>Fast acknowledgement</h3><p>Pages acknowledged within 5 minutes.</p></div>
-        <div class="card"><h3>Fast, specific escalation</h3><p>SRE or the owner paged within 15 minutes of a confirmed impact, with a complete handoff.</p></div>
-        <div class="card"><h3>Clean records</h3><p>Channel opened, pinned record started, and timeline kept from the first minute.</p></div>
-        <div class="card"><h3>Runbook feedback</h3><p>Every confusing alert is noted, so the next shift has an easier time.</p></div>
-      </div>
+      <h2 id="what-good-looks-like">What Good Looks Like</h2>
+      <details>
+        <summary>Weak / Good / Best in Class: NOC as Incident Coordinator</summary>
+        <div class="details-body">
+          <div class="wgb">
+            <div><span class="q-level q-weak">Weak</span><p>Notices late, debugs instead of coordinating, pages in chat, nobody knows who's in charge, and the timeline is rebuilt from memory.</p></div>
+            <div><span class="q-level q-good">Good</span><p>Declares within 10 minutes, runs a clear channel with roles and a cadence, pages through PagerDuty with timers, and makes specific action requests.</p></div>
+            <div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus executive questions are absorbed before they reach responders, the timeline is postmortem-ready at close, and the review is scheduled before standing down.</p></div>
+          </div>
+          <p>Compare every dimension on <a href="../response-quality.html">What Good Looks Like</a>.</p>
+        </div>
+      </details>
 
-      <h2 id="your-pages">Your pages</h2>
+      <h2 id="your-pages">Your Pages</h2>
       <div class="card-grid">
-        <a class="card" href="detect.html"><h3>Watch &amp; detect</h3><p>Signals to watch, the shift health sweep, and telling noise from signal.</p></a>
-        <a class="card" href="triage-and-escalate.html"><h3>Triage &amp; escalate</h3><p>The first 15 minutes, which layer, who to page, PagerDuty how-to, and bridging.</p></a>
-        <a class="card" href="safe-actions.html"><h3>Pre-approved actions</h3><p>What you're allowed to do, when, and how to undo it.</p></a>
-        <a class="card" href="../playbooks.html"><h3>Starter playbooks</h3><p>Every playbook has a "NOC does" row.</p></a>
-      </div>
-
-      <h2 id="growing-in-the-role">Growing in the role</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Timeframe</th><th>You can…</th></tr></thead>
-          <tbody>
-            <tr><td><strong>Week 1</strong></td><td>Run the sweep, acknowledge pages, open channels, and page SRE with a complete handoff.</td></tr>
-            <tr><td><strong>Month 1</strong></td><td>Identify the layer (edge, gateway, service, model) from the queries, page the right owner directly, and bridge to Teams.</td></tr>
-            <tr><td><strong>Month 3</strong></td><td>Take pre-approved actions confidently, write runbooks from incidents, and suggest alert improvements. You're ready to shadow SRE on-call.</td></tr>
-          </tbody>
-        </table>
+        <a class="card" href="detect.html"><h3>Watch &amp; Detect</h3><p>Signals, the shift health sweep, and noise vs signal.</p></a>
+        <a class="card" href="triage-and-escalate.html"><h3>Triage &amp; Escalate</h3><p>The first 15 minutes, which layer, who to page, and briefing the Tech Lead.</p></a>
+        <a class="card" href="coordinate.html"><h3>Coordinate the Incident</h3><p>The IC loop, roles, Slack/Teams, slow CFTs, and executive interruptions.</p></a>
+        <a class="card" href="action-requests.html"><h3>Requesting Actions</h3><p>How to get owners to act, plus the pre-agreed requests.</p></a>
+        <a class="card" href="../onboarding.html#noc-path"><h3>NOC Onboarding Path</h3><p>Week 1, month 1, and month 3, with progress tracking.</p></a>
+        <a class="card" href="../cards/noc.html"><h3>NOC Role Card</h3><p>A printable one-pager for your desk.</p></a>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>

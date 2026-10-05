@@ -19,7 +19,7 @@
 
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">SRE On-Call</a></div>
       <div class="track-banner t-sre"><i class="track-dot"></i>SRE On-Call · Investigate &amp; command</div>
-      <h1>Deep dives</h1>
+      <h1>Deep Dives</h1>
       <p class="lede">The hardest Nimbus incidents aren't single broken components. They come from interactions: shared quota, feedback loops, biased telemetry, and models that change underneath you. This page is about reasoning at the system level.</p>
 
       <div class="tldr">
@@ -31,7 +31,7 @@
         </ul>
       </div>
 
-      <h2 id="thinking-in-systems">Thinking in systems</h2>
+      <h2 id="thinking-in-systems">Thinking in Systems</h2>
       <ul>
         <li><strong>Contributing factors, not one root cause.</strong> Complex incidents usually need several conditions at once, for example a batch job, a shared deployment, retries without backoff, <em>and</em> no alert on 429s.</li>
         <li><strong>Write hypotheses down.</strong> In the incident channel, list each hypothesis, the evidence for and against it, and the cheapest test. This avoids tunnel vision and lets others help.</li>
@@ -39,7 +39,7 @@
         <li><strong>Beware of confirmation bias.</strong> Ask "what would I expect to see if I'm wrong?", then look for it.</li>
       </ul>
 
-      <h2 id="noisy-neighbor-on-shared-foundry-quota">Noisy neighbor on shared Foundry quota</h2>
+      <h2 id="noisy-neighbor-on-shared-foundry-quota">Noisy Neighbor on Shared Foundry Quota</h2>
       <p>Foundry quota is counted per deployment in <strong>tokens per minute</strong> and requests per minute. PTU deployments have a fixed throughput. When several CFTs share a deployment, the heaviest caller sets everyone else's experience.</p>
       <div class="panel">
         <p><strong>Classic Nimbus pattern:</strong> at 09:00 local time, Proactive Tips starts its morning batch on <code>chat-small</code>. Its token usage triples. Device Care is interactive and shares <code>chat-small</code>, and it starts getting 429s. Device Care's retries add more load. Users see "Nimbus is having trouble right now."</p>
@@ -51,7 +51,20 @@
         <li><strong>Alert on it.</strong>Alert on a deployment's tokens per minute as a share of quota (saturation), not only on 429s (failure).</li>
       </ol>
 
-      <h2 id="retry-storms-and-cascading-failure">Retry storms and cascading failure</h2>
+      <h2 id="local-to-cloud-fallback-surge">Local-to-Cloud Fallback Surge</h2>
+      <p>The device orchestrator normally answers a large share of simple requests on-device. If a local model update ships with a bug, or a driver update breaks the NPU, millions of devices quietly start sending those requests to the cloud. This is a <strong>demand shock with no server-side cause</strong>.</p>
+      <ol class="steps">
+        <li><strong>Spot it.</strong>Cloud request volume and tokens per minute rise in a staircase that follows the client or local model rollout curve, not the time of day.</li>
+        <li><strong>Prove it.</strong>The <a href="../queries.html#q-fallback-rate">fallback rate</a> by local model version jumps, and the <a href="../queries.html#q-routing-split">local share</a> drops for the new version.</li>
+        <li><strong>Mitigate on both sides.</strong>The Client CFT halts the rollout or reverts the local model. Cloud Infrastructure adds spillover and sheds background load (Proactive Tips) to absorb the surge.</li>
+        <li><strong>Fix it structurally.</strong>Make fallback rate a rollout health gate. Cap how much fallback traffic the cloud will accept per client version. Alert on local share as well as server errors.</li>
+      </ol>
+      <div class="callout reality">
+        <div class="callout-title">Why It's Easy to Miss</div>
+        <p>Server dashboards show more traffic, not errors, so the first symptom is usually 429s in an unrelated feature that shares a deployment. The cloud teams and the Client CFT each see half of the picture.</p>
+      </div>
+
+      <h2 id="retry-storms-and-cascading-failure">Retry Storms and Cascading Failure</h2>
       <figure class="diagram">
         <svg viewBox="0 0 900 230" role="img" aria-labelledby="rs-title rs-desc">
           <title id="rs-title">Retry storm feedback loop</title>
@@ -79,7 +92,10 @@
       <p><strong>Retry amplification:</strong> if the client, APIM, and the orchestration service each retry 3 times, one user action can turn into 4 × 4 × 4 = <strong>64</strong> model calls. Retry at one layer only, usually the one closest to the dependency.</p>
       <p><strong>Mitigate:</strong> shed load first (pause background features, rate-limit at APIM), so the loop has room to drain. Then fix the retry policies.</p>
 
-      <h2 id="tail-latency">Tail latency</h2>
+      <h2 id="the-cloud-orchestrator-as-a-choke-point">The Cloud Orchestrator as a Choke Point</h2>
+      <p>Every cloud request passes through the cloud orchestrator, which Cloud Infrastructure owns. When it slows down, every feature slows down together, while Foundry and the feature services look normal from the inside. Recognize the pattern (everything degrades at once, and the dependencies are fine) and bring Cloud Infrastructure in early with the evidence. Their structural fixes are horizontal scaling, per-feature bulkheads (so one feature can't exhaust the router), and canary releases for routing changes.</p>
+
+      <h2 id="tail-latency">Tail Latency</h2>
       <p>For LLM workloads the P95 is often 2–4× the P50, because output length varies a lot. And P95 still hides the slowest 5%. Tail latency matters more than it seems:</p>
       <ul>
         <li><strong>Fan-out multiplies it.</strong> If one action makes 5 model calls in sequence (as Device Care's tool loop does), the chance that at least one of them lands in its own slowest 5% is about 23%.</li>
@@ -87,7 +103,7 @@
         <li><strong>Levers:</strong> cap <code>max_tokens</code> to what the feature really needs, stream every interactive response, trim context (summarize history, rank retrieval chunks), and use the small model where quality allows. For idempotent, cheap calls, consider hedged requests.</li>
       </ul>
 
-      <h2 id="sampling-bias-and-broken-trace-propagation">Sampling bias and broken trace propagation</h2>
+      <h2 id="sampling-bias-and-broken-trace-propagation">Sampling Bias and Broken Trace Propagation</h2>
       <p>Your telemetry isn't the truth. It's a sample, and the sample can be biased.</p>
       <div class="table-wrap">
         <table>
@@ -108,8 +124,8 @@
         <p>Server-side success rates only count requests that reached the server. If the client can't connect, the server's error rate stays perfect. "Dashboards green, users complaining" is often exactly this. See the <a href="../playbooks.html#pb-dashboards-green">playbook</a>.</p>
       </div>
 
-      <h2 id="regional-failover">Regional failover</h2>
-      <p>Nimbus has Foundry deployments in East US 2 (primary) and Sweden Central (secondary). Failover is a Platform decision, made with these trade-offs in mind:</p>
+      <h2 id="regional-failover">Regional Failover</h2>
+      <p>Nimbus has Foundry deployments in East US 2 (primary) and Sweden Central (secondary). Failover is a Cloud Infrastructure decision, made with these trade-offs in mind:</p>
       <ul class="checklist" data-key="failover">
         <li><strong>Capacity:</strong> can the secondary absorb the traffic? Check its quota and PTU headroom first, or you'll cause a second incident.</li>
         <li><strong>Data residency:</strong> some users' data may be required to stay in-region. Confirm which features can move.</li>
@@ -119,7 +135,7 @@
         <li><strong>Failback:</strong> decide on the criteria for coming back before you leave.</li>
       </ul>
 
-      <h2 id="prompt-and-model-regressions">Prompt and model regressions</h2>
+      <h2 id="prompt-and-model-regressions">Prompt and Model Regressions</h2>
       <p>In LLM systems, <strong>prompts, model versions, and content-filter configurations are code</strong>. They can regress latency, cost, quality, and safety behavior without a single line of service code changing.</p>
       <div class="table-wrap">
         <table>
@@ -135,7 +151,7 @@
       </div>
       <p><strong>Prevent it:</strong> pin model versions in production, put prompt templates behind flags and version them, run evaluation suites before rollout, and canary model changes on a small slice of traffic.</p>
 
-      <h2 id="capacity-planning">Capacity planning</h2>
+      <h2 id="capacity-planning">Capacity Planning</h2>
       <ul>
         <li><strong>Plan in tokens, not requests.</strong> Expected requests × (average input tokens + average output tokens) at the peak minute, per deployment.</li>
         <li><strong>Plan for the peak minute, not the daily average.</strong> Desktop usage spikes at the start of the workday in each timezone.</li>
@@ -144,13 +160,13 @@
         <li><strong>Review quarterly</strong> with every CFT. A CFT launch that doubles token use is a capacity event.</li>
       </ul>
 
-      <h2 id="game-days">Game days</h2>
+      <h2 id="game-days">Game Days</h2>
       <p>Practice the incidents you expect, before they happen. Each game day should test a hypothesis such as "if X happens, we detect it in under 5 minutes and mitigate in under 15".</p>
       <div class="card-grid">
         <div class="card"><h3>Throttle chat-small</h3><p>Lower its quota in staging. Do the alerts fire? Does Device Care degrade gracefully?</p></div>
-        <div class="card"><h3>Fail East US 2</h3><p>Block the primary Foundry endpoint. Can Platform fail over within the target time?</p></div>
-        <div class="card"><h3>Kill telemetry</h3><p>Stop the exporter in one service. Does anyone notice? How long does it take?</p></div>
-        <div class="card"><h3>Bad prompt deploy</h3><p>Ship a prompt that doubles the input tokens. Does anything catch it before the 429s do?</p></div>
+        <div class="card"><h3>Fail East US 2</h3><p>Block the primary Foundry endpoint. Can Cloud Infrastructure fail over within the target time?</p></div>
+        <div class="card"><h3>Kill Telemetry</h3><p>Stop the exporter in one service. Does anyone notice? How long does it take?</p></div>
+        <div class="card"><h3>Bad Prompt Deploy</h3><p>Ship a prompt that doubles the input tokens. Does anything catch it before the 429s do?</p></div>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>
