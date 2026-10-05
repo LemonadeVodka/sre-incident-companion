@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glossary &amp; References · Nimbus SRE</title>
+  <meta name="description" content="Glossary of SRE, observability, and Azure AI Foundry terms, with links to the Google SRE books and official documentation.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="references">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Reference</div>
+      <div class="eyebrow">Reference</div>
+      <h1>Glossary &amp; references</h1>
+      <p class="lede">Definitions of the terms used throughout this guide, plus the sources it draws on.</p>
+
+      <h2 id="glossary">Glossary</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><strong>APIM</strong></td><td>Azure API Management, the gateway in front of every Nimbus feature.</td></tr>
+            <tr><td><strong>Burn rate</strong></td><td>How fast error budget is being used compared with spending it evenly. 1× uses the whole budget exactly over the SLO window.</td></tr>
+            <tr><td><strong>CFT</strong></td><td>Cross-functional team. Owns one or more feature experiences end to end.</td></tr>
+            <tr><td><strong>cloud_RoleName</strong></td><td>The App Insights field holding the service name, mapped from OTel <code>service.name</code>.</td></tr>
+            <tr><td><strong>Error budget</strong></td><td>1 − SLO: the amount of unreliability you're allowed over the window.</td></tr>
+            <tr><td><strong>Feature experience</strong></td><td>A user-facing Nimbus capability, such as Writing Assist or Device Care.</td></tr>
+            <tr><td><strong>Foundry</strong></td><td>Azure AI Foundry, the platform hosting Nimbus's model deployments.</td></tr>
+            <tr><td><strong>GenAI semantic conventions</strong></td><td>OpenTelemetry's standard attribute names for generative AI calls, such as <code>gen_ai.request.model</code> and <code>gen_ai.usage.input_tokens</code>.</td></tr>
+            <tr><td><strong>Golden signals</strong></td><td>Latency, traffic, errors, and saturation.</td></tr>
+            <tr><td><strong>IC</strong></td><td>Incident Commander. Coordinates the response and doesn't debug.</td></tr>
+            <tr><td><strong>itemCount</strong></td><td>The number of real events a sampled App Insights row stands for.</td></tr>
+            <tr><td><strong>Noisy neighbor</strong></td><td>One workload using up shared capacity and hurting others.</td></tr>
+            <tr><td><strong>operation_Id</strong></td><td>The App Insights field holding the trace ID, which links all telemetry for one request.</td></tr>
+            <tr><td><strong>PTU</strong></td><td>Provisioned Throughput Units: reserved model capacity with predictable latency, up to its limit.</td></tr>
+            <tr><td><strong>SLI / SLO</strong></td><td>Service level indicator (a measure of user experience) and objective (the target for it).</td></tr>
+            <tr><td><strong>Spillover</strong></td><td>Sending requests that exceed PTU capacity to a pay-as-you-go deployment.</td></tr>
+            <tr><td><strong>Tail-based sampling</strong></td><td>Deciding whether to keep a trace <em>after</em> it completes, so errors and slow traces can always be kept.</td></tr>
+            <tr><td><strong>Toil</strong></td><td>Manual, repetitive, automatable operational work with no lasting value.</td></tr>
+            <tr><td><strong>TPM</strong></td><td>Tokens per minute, the unit of Foundry quota.</td></tr>
+            <tr><td><strong>traceparent</strong></td><td>The W3C HTTP header that carries trace context between services.</td></tr>
+            <tr><td><strong>TTFT</strong></td><td>Time to first token: delay before a streamed response starts.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="google-sre-books">Google SRE books</h2>
+      <p>Both books are free to read online at <a href="https://sre.google/books/">sre.google</a>. This guide summarizes their ideas in its own words.</p>
+      <h3 id="site-reliability-engineering-2016"><em>Site Reliability Engineering</em> (2016)</h3>
+      <ul>
+        <li><a href="https://sre.google/sre-book/embracing-risk/">Embracing Risk</a>: why 100% is the wrong target, and error budgets.</li>
+        <li><a href="https://sre.google/sre-book/service-level-objectives/">Service Level Objectives</a>: SLIs, SLOs, and SLAs.</li>
+        <li><a href="https://sre.google/sre-book/eliminating-toil/">Eliminating Toil</a></li>
+        <li><a href="https://sre.google/sre-book/monitoring-distributed-systems/">Monitoring Distributed Systems</a>: the four golden signals.</li>
+        <li><a href="https://sre.google/sre-book/effective-troubleshooting/">Effective Troubleshooting</a>: forming and testing hypotheses.</li>
+        <li><a href="https://sre.google/sre-book/managing-incidents/">Managing Incidents</a>: incident command roles.</li>
+        <li><a href="https://sre.google/sre-book/postmortem-culture/">Postmortem Culture: Learning from Failure</a></li>
+        <li><a href="https://sre.google/sre-book/handling-overload/">Handling Overload</a> and <a href="https://sre.google/sre-book/addressing-cascading-failures/">Addressing Cascading Failures</a>: retries, load shedding.</li>
+      </ul>
+      <h3 id="the-site-reliability-workbook-2018"><em>The Site Reliability Workbook</em> (2018)</h3>
+      <ul>
+        <li><a href="https://sre.google/workbook/implementing-slos/">Implementing SLOs</a></li>
+        <li><a href="https://sre.google/workbook/alerting-on-slos/">Alerting on SLOs</a>: multi-window, multi-burn-rate alerts.</li>
+        <li><a href="https://sre.google/workbook/error-budget-policy/">Example Error Budget Policy</a></li>
+        <li><a href="https://sre.google/workbook/incident-response/">Incident Response</a></li>
+      </ul>
+
+      <aside class="leader" aria-label="For senior managers">
+        <div class="leader-head">For senior managers <small>· recommended reading</small></div>
+        <div class="leader-grid">
+          <div><h4>Start with these four</h4><ul>
+            <li><a href="https://sre.google/sre-book/embracing-risk/">Embracing Risk</a>: why perfect reliability is the wrong goal.</li>
+            <li><a href="https://sre.google/sre-book/managing-incidents/">Managing Incidents</a>: how a well-run incident looks.</li>
+            <li><a href="https://sre.google/sre-book/postmortem-culture/">Postmortem Culture</a>: why blameless reviews work.</li>
+            <li><a href="https://sre.google/workbook/error-budget-policy/">Example Error Budget Policy</a>: what you'd be agreeing to.</li>
+          </ul></div>
+          <div class="ask"><h4>Questions to bring to your team</h4><ul>
+            <li>Which of these ideas do we already practice, and which don't we?</li>
+            <li>What would an error budget policy look like for our top feature?</li>
+          </ul></div>
+        </div>
+      </aside>
+
+      <h2 id="observability-and-opentelemetry">Observability and OpenTelemetry</h2>
+      <ul>
+        <li><a href="https://opentelemetry.io/docs/">OpenTelemetry documentation</a></li>
+        <li><a href="https://opentelemetry.io/docs/specs/semconv/gen-ai/">OpenTelemetry semantic conventions for generative AI</a></li>
+        <li><a href="https://opentelemetry.io/docs/concepts/sampling/">OpenTelemetry sampling concepts</a> (head-based and tail-based)</li>
+        <li><a href="https://www.w3.org/TR/trace-context/">W3C Trace Context</a></li>
+        <li><a href="https://openslo.com/">OpenSLO</a>: an open specification for SLOs as code.</li>
+      </ul>
+
+      <h2 id="azure-and-grafana">Azure and Grafana</h2>
+      <ul>
+        <li><a href="https://learn.microsoft.com/azure/azure-monitor/app/opentelemetry-enable">Enable Azure Monitor OpenTelemetry</a> for Application Insights</li>
+        <li><a href="https://learn.microsoft.com/azure/data-explorer/kusto/query/">Kusto Query Language (KQL) reference</a></li>
+        <li><a href="https://learn.microsoft.com/azure/ai-foundry/">Azure AI Foundry documentation</a></li>
+        <li><a href="https://learn.microsoft.com/azure/ai-services/openai/how-to/quota">Azure OpenAI quota management</a></li>
+        <li><a href="https://learn.microsoft.com/azure/ai-services/openai/concepts/provisioned-throughput">Provisioned throughput (PTU)</a></li>
+        <li><a href="https://grafana.com/docs/grafana/latest/datasources/azure-monitor/">Grafana Azure Monitor data source</a></li>
+      </ul>
+
+      <h2 id="related-templates">Related templates</h2>
+      <p>These come from the companion repository <a href="https://github.com/LemonadeVodka/noc-tools-templates">noc-tools-templates</a>:</p>
+      <ul>
+        <li><a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/incident-postmortem-template.md">Incident postmortem template</a></li>
+        <li><a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/escalation-ownership-matrix.md">Escalation ownership matrix</a></li>
+        <li><a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/on-call-runbook-template.md">On-call runbook template</a></li>
+        <li><a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/sop-template.md">SOP template</a></li>
+      </ul>
+
+      <div class="callout tip">
+        <div class="callout-title">About this guide</div>
+        <p>Nimbus, its CFTs, deployments, numbers, and incidents are <strong>fictional</strong>. They're a realistic training environment. The practices are real. Adapt the queries to your own schema and attribute names.</p>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

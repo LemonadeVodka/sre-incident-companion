@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Playbooks · Nimbus SRE</title>
+  <meta name="description" content="Scenario playbooks for the most common Nimbus incidents: latency spikes, 429 surges, Foundry 5xx, slow first token, client rollouts, and blind spots.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="playbooks">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Toolkit</div>
+      <div class="eyebrow">Toolkit</div>
+      <h1>Playbooks</h1>
+      <p class="lede">Runbooks for the incidents we see most. Every playbook has the same shape, so you always know where to look: <strong>Symptoms → Check first → Likely causes → Mitigate → Escalate → Verify</strong>.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Not sure which playbook fits? Use the <a href="index.html#triage">triage tool</a>.</li>
+          <li>Playbooks guide you. They don't replace judgment. If the evidence doesn't fit, say so and switch.</li>
+          <li>The <strong>print view</strong> is tidy if you want these on paper.</li>
+        </ul>
+      </div>
+
+      <aside class="leader" aria-label="For senior managers">
+        <div class="leader-head">For senior managers <small>· how to use the playbooks</small></div>
+        <div class="leader-grid">
+          <div><h4>Your role</h4><ul>
+            <li>Each playbook ends with a <strong>Manager lens</strong> row: the questions to ask and the decisions you may be asked to make.</li>
+            <li>Make sure every recurring incident type gets a playbook.</li>
+          </ul></div>
+          <div class="ask"><h4>Questions to ask</h4><ul>
+            <li>Which playbook are we following? Does the evidence fit it?</li>
+            <li>Which incidents do we keep having that don't have a playbook yet?</li>
+          </ul></div>
+        </div>
+      </aside>
+
+      <div class="card-grid">
+        <a class="card" href="#pb-latency-one-feature"><span class="badge neutral">Latency</span><h3>Latency spike on one feature</h3><p>One CFT's feature slows down while others are fine.</p></a>
+        <a class="card" href="#pb-429-surge"><span class="badge neutral">Errors</span><h3>429 surge</h3><p>Throttling on a Foundry deployment.</p></a>
+        <a class="card" href="#pb-foundry-5xx"><span class="badge neutral">Errors</span><h3>Foundry 5xx / degradation</h3><p>The model service is failing or slow across the board.</p></a>
+        <a class="card" href="#pb-slow-first-token"><span class="badge neutral">Latency</span><h3>Slow first token</h3><p>Streaming features feel sluggish before any text appears.</p></a>
+        <a class="card" href="#pb-client-rollout"><span class="badge neutral">Errors</span><h3>Errors after client rollout</h3><p>Problems limited to a new desktop build.</p></a>
+        <a class="card" href="#pb-dashboards-green"><span class="badge neutral">Blind spot</span><h3>Dashboards green, users complaining</h3><p>The telemetry says fine, but the users don't agree.</p></a>
+      </div>
+
+      <section class="playbook" id="pb-latency-one-feature">
+        <div class="playbook-head">
+          <h2>Latency spike on one feature experience</h2>
+          <div class="meta"><span class="badge sev2">Usually Sev 2–3</span><span class="badge neutral">Owner: feature CFT</span><span class="badge intermediate">Intermediate</span></div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>P95 for one feature (say, Writing Assist) is well above baseline. Other features look normal.</li><li>Users report "Nimbus is slow" for one action.</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Check first</div><div><ol>
+            <li><a href="queries.html#q-latency-by-feature">Latency by feature, now vs yesterday</a>: confirm only one feature is affected.</li>
+            <li><a href="queries.html#q-dependency-breakdown">Dependency breakdown</a>: which hop grew?</li>
+            <li><a href="queries.html#q-deploy-correlation">By service version</a>: did a deploy line up with the start?</li>
+            <li><a href="queries.html#q-token-growth">Token growth</a>: did prompts get bigger?</li>
+          </ol></div></div>
+          <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul>
+            <li>A service deploy, or a prompt template change that added context.</li>
+            <li>The feature's dedicated deployment is saturated.</li>
+            <li>A retrieval dependency (AI Search, Graph) slowed down.</li>
+            <li>A new code path doing synchronous work.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Mitigate</div><div><ul>
+            <li>Roll back the deploy or flip the prompt flag back.</li>
+            <li>Tighten the retrieval timeout and answer without retrieval.</li>
+            <li>Lower <code>max_tokens</code> or switch to the small model temporarily, if quality allows.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Escalate</div><div>The feature CFT's on-call owns this. Bring in Platform if the model hop grew <em>and</em> the deployment is shared.</div></div>
+          <div class="pb-section"><div class="pb-label">Verify</div><div>P95 back within 20% of baseline for 30 minutes, and the error rate unchanged.</div></div>
+          <div class="pb-section lead-row"><div class="pb-label">Manager lens</div><div><ul>
+            <li><strong>Ask:</strong> "Did something change recently, and can we roll it back?" and "How many users of this feature are affected?"</li>
+            <li><strong>Decide:</strong> approve a rollback even if it delays this CFT's launch or experiment.</li>
+            <li><strong>After:</strong> ask how the change got through without anyone noticing the latency cost.</li>
+          </ul></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="pb-429-surge">
+        <div class="playbook-head">
+          <h2>429 throttling surge</h2>
+          <div class="meta"><span class="badge sev2">Sev 2 if interactive</span><span class="badge neutral">Owner: Platform + noisy CFT</span><span class="badge advanced">Advanced patterns</span></div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>Spike in <code>429</code> on Foundry dependencies.</li><li>Users see "Nimbus is busy, try again." Latency also rises because of retries.</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Check first</div><div><ol>
+            <li><a href="queries.html#q-429">429 by deployment and caller</a>: which deployment, and who is throttled?</li>
+            <li><a href="queries.html#q-token-share">Token consumption by caller</a>: who is using the quota?</li>
+            <li><a href="queries.html#q-retry">Retry detector</a>: is it a retry storm?</li>
+            <li>Azure Monitor: the deployment's PTU utilization and its tokens-per-minute limit.</li>
+          </ol></div></div>
+          <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul>
+            <li>A background workload burst (Proactive Tips batch) on a shared deployment.</li>
+            <li>An organic traffic peak (Monday 09:00) above capacity.</li>
+            <li>Prompt growth using up tokens-per-minute faster.</li>
+            <li>Retries without backoff multiplying the load.</li>
+            <li>Quota reassigned or reduced.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Mitigate</div><div><ul>
+            <li>Pause or rate-limit background callers (feature flag or APIM policy).</li>
+            <li>Turn on or widen spillover from PTU to pay-as-you-go.</li>
+            <li>Temporarily route the interactive feature to a different deployment.</li>
+            <li>Make sure clients honor <code>retry-after</code>, and reduce retry counts.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Escalate</div><div>Platform owns quota and routing. Bring in the CFT generating the load to pause it. Request a quota increase if the demand is real.</div></div>
+          <div class="pb-section"><div class="pb-label">Verify</div><div>Throttle rate under 1% for interactive callers for 30 minutes. Calls per operation back to baseline.</div></div>
+          <div class="pb-section lead-row"><div class="pb-label">Manager lens</div><div><ul>
+            <li><strong>Ask:</strong> "Whose traffic is using up the capacity, and can it pause?" and "Is this real demand, or are we retrying ourselves into the ground?"</li>
+            <li><strong>Decide:</strong> which feature gets priority (usually customer-facing over background), and whether to approve extra spend on overflow capacity.</li>
+            <li><strong>After:</strong> ask who decides capacity priority between CFTs. If the answer is "nobody", that's the real fix.</li>
+          </ul></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="pb-foundry-5xx">
+        <div class="playbook-head">
+          <h2>Foundry 5xx / platform degradation</h2>
+          <div class="meta"><span class="badge sev1">Sev 1–2</span><span class="badge neutral">Owner: Platform</span><span class="badge intermediate">Intermediate</span></div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li><code>500/502/503</code> on Foundry dependencies across several features.</li><li>Model latency up across deployments, sometimes in one region only.</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Check first</div><div><ol>
+            <li><a href="queries.html#q-model-latency">Model latency and failures by deployment</a>, grouped by <code>target</code>, which gives you the region.</li>
+            <li>Azure status page, Service Health, and the Foundry resource health.</li>
+            <li>Is anything else on our side changing, such as APIM policies or network config?</li>
+          </ol></div></div>
+          <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul>
+            <li>An Azure platform incident in the region.</li>
+            <li>A model version rollout issue on the provider side.</li>
+            <li>Network or private endpoint problems between our services and Foundry.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Mitigate</div><div><ul>
+            <li>Fail over to Sweden Central (see the <a href="troubleshooting/advanced.html#regional-failover">failover checklist</a>).</li>
+            <li>Shed non-interactive load to protect interactive features.</li>
+            <li>Make the client fail fast with a friendly message instead of hanging.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Escalate</div><div>Declare Sev 1 if most users are affected. Platform is IC. Open an Azure support case at the highest severity early, because you can always lower it.</div></div>
+          <div class="pb-section"><div class="pb-label">Verify</div><div>Error rate back to baseline in the primary region (if failing back) or stable on the secondary. Track failback as its own change.</div></div>
+          <div class="pb-section lead-row"><div class="pb-label">Manager lens</div><div><ul>
+            <li><strong>Ask:</strong> "Is this on Microsoft's side? Is a support case open, and at what severity?" and "Can we move traffic to the other region?"</li>
+            <li><strong>Decide:</strong> approve the failover (check data residency and cost), notify executives, and approve customer or status-page messaging.</li>
+            <li><strong>After:</strong> ask what we can do to limit the impact next time, even if the provider caused it.</li>
+          </ul></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="pb-slow-first-token">
+        <div class="playbook-head">
+          <h2>Slow first token</h2>
+          <div class="meta"><span class="badge sev3">Sev 2–3</span><span class="badge neutral">Owner: feature CFT → Platform</span><span class="badge intermediate">Intermediate</span></div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>Streaming features (Writing Assist, Device Care) feel slow to start. The spinner stays up longer.</li><li>Total duration may look normal.</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Check first</div><div><ol>
+            <li><a href="queries.html#q-ttft">TTFT vs total duration</a>: is TTFT really up?</li>
+            <li><a href="queries.html#q-token-growth">Input token growth</a>: bigger prompts mean slower prefill.</li>
+            <li>PTU utilization: is traffic queueing or spilling to pay-as-you-go?</li>
+            <li>Is streaming still on? A config change that disables streaming makes TTFT equal total time.</li>
+          </ol></div></div>
+          <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul>
+            <li>PTU saturation causing queueing.</li>
+            <li>Prompt or context growth.</li>
+            <li>Retrieval added before the model call (sequential, not parallel).</li>
+            <li>Streaming disabled or buffered by a proxy or APIM policy.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Mitigate</div><div><ul>
+            <li>Shed background load from the shared deployment.</li>
+            <li>Trim context, or revert the prompt change.</li>
+            <li>Turn streaming back on, or remove response buffering in APIM.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Escalate</div><div>The CFT owns prompt and streaming issues. Platform owns PTU saturation.</div></div>
+          <div class="pb-section"><div class="pb-label">Verify</div><div>TTFT P95 back under 1.5 s (Writing Assist) for 30 minutes.</div></div>
+          <div class="pb-section lead-row"><div class="pb-label">Manager lens</div><div><ul>
+            <li><strong>Ask:</strong> "Is it a capacity problem or something in how we build the request?" and "How noticeable is it to users?"</li>
+            <li><strong>Decide:</strong> whether to accept slightly lower answer quality (smaller model, less context) for a faster experience while the team fixes it.</li>
+            <li><strong>After:</strong> ask whether "time until the user sees something" is tracked as a target for every customer-facing feature.</li>
+          </ul></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="pb-client-rollout">
+        <div class="playbook-head">
+          <h2>Errors after a desktop client rollout</h2>
+          <div class="meta"><span class="badge sev2">Sev 2 while ramping</span><span class="badge neutral">Owner: Client CFT</span><span class="badge beginner">Beginner-friendly</span></div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>Error rate or latency up, concentrated in the newest <code>client.version</code>.</li><li>Crash reports or support tickets mentioning the new build.</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Check first</div><div><ol>
+            <li><a href="queries.html#q-client-version">By client version</a>: compare the new build with the previous one.</li>
+            <li>Rollout percentage and how fast it's ramping.</li>
+            <li>What changed in the build: API version, request shape, retry policy, region pinning, telemetry config.</li>
+          </ol></div></div>
+          <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul>
+            <li>The new build calls a changed or unsupported API route.</li>
+            <li>A more aggressive retry or timeout configuration.</li>
+            <li>Larger payloads (more context collected by the Agent).</li>
+            <li>An auth or token-refresh bug.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Mitigate</div><div><ul>
+            <li><strong>Halt the rollout immediately.</strong> This is cheap and reversible.</li>
+            <li>Use a server-side feature flag to turn off the new code path for that version.</li>
+            <li>If possible, adapt on the server (accept the old and new request shapes).</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Escalate</div><div>Client CFT and the release manager. Bring in the CFT whose feature is affected.</div></div>
+          <div class="pb-section"><div class="pb-label">Verify</div><div>The new version's error rate matches the previous version's. The rollout resumes only after a fix is confirmed.</div></div>
+          <div class="pb-section lead-row"><div class="pb-label">Manager lens</div><div><ul>
+            <li><strong>Ask:</strong> "Has the rollout been halted?" (this should be the first answer) and "What share of users have the new version?"</li>
+            <li><strong>Decide:</strong> hold the release, and coordinate with release management, partners, and support on messaging.</li>
+            <li><strong>After:</strong> ask why the staged rollout didn't stop itself automatically.</li>
+          </ul></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="pb-dashboards-green">
+        <div class="playbook-head">
+          <h2>Dashboards green, users complaining</h2>
+          <div class="meta"><span class="badge sev3">Sev 3 until measured</span><span class="badge neutral">Owner: whoever's on call → Platform</span><span class="badge advanced">Advanced</span></div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>Support tickets, social posts, or internal reports say Nimbus is broken.</li><li>The dashboards you have look normal, or there are no dashboards.</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Check first</div><div><ol>
+            <li><a href="queries.html#q-telemetry-volume">Telemetry volume</a>: did data drop? Missing data looks green.</li>
+            <li>Request volume vs the usual: fewer requests can mean clients can't connect at all.</li>
+            <li><a href="queries.html#q-client-version">By client version</a> and by region: is it a small cohort?</li>
+            <li>Get 3–5 concrete reports (time, feature, device, version) and look for their traces.</li>
+          </ol></div></div>
+          <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul>
+            <li>Client-side failures (can't reach APIM, auth, crash) that never reach the server.</li>
+            <li>The telemetry exporter is broken, or sampling changed.</li>
+            <li>The feature has no instrumentation, or the dashboard charts the wrong thing.</li>
+            <li>A quality problem: responses succeed but they're wrong or empty.</li>
+          </ul></div></div>
+          <div class="pb-section"><div class="pb-label">Mitigate</div><div>That depends on what you find. The key step is to <strong>get a measurement</strong>: build an <a href="troubleshooting/intermediate.html#building-an-ad-hoc-grafana-panel">ad-hoc panel</a> that shows user impact.</div></div>
+          <div class="pb-section"><div class="pb-label">Escalate</div><div>Platform (Observability) if the telemetry is broken. Client CFT if the failures are client-side.</div></div>
+          <div class="pb-section"><div class="pb-label">Verify</div><div>You have a metric that shows the problem and its recovery. Add it to a dashboard and an alert as a follow-up.</div></div>
+          <div class="pb-section lead-row"><div class="pb-label">Manager lens</div><div><ul>
+            <li><strong>Ask:</strong> "How do we know how many users are affected?" If nobody can answer, that's the core finding.</li>
+            <li><strong>Decide:</strong> treat "customers told us before our monitoring did" as a serious issue, not bad luck.</li>
+            <li><strong>After:</strong> fund the monitoring gap as a top-priority action item, and track it in the <a href="observability-maturity.html">maturity roadmap</a>.</li>
+          </ul></div></div>
+        </div>
+      </section>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Incident Response · Nimbus SRE</title>
+  <meta name="description" content="Incident lifecycle, severity levels, roles, and communication templates for a multi-CFT organization.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="incident-response">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Foundations</div>
+      <div class="eyebrow">Foundations</div>
+      <h1>Incident response</h1>
+      <p class="lede">How we run incidents across five CFTs and a Platform team, from the first alert to the last action item.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Six phases: <strong>detect, triage, declare, mitigate, resolve, learn</strong>.</li>
+          <li><strong>Severity follows user impact.</strong> If you're unsure, go higher. Sev 1–2 always get an Incident Commander.</li>
+          <li>The affected CFT owns the incident until the evidence points to shared infrastructure. <strong>Mitigate before you debug.</strong></li>
+        </ul>
+      </div>
+
+      <aside class="leader" aria-label="For senior managers">
+        <div class="leader-head">For senior managers <small>· where you fit in the response</small></div>
+        <div class="leader-grid">
+          <div><h4>Your role</h4><ul>
+            <li>You're usually <strong>not</strong> the IC. You're the escalation point for decisions and resources.</li>
+            <li>Handle executive and customer messaging through the comms lead.</li>
+            <li>Approve costly or risky mitigations quickly.</li>
+          </ul></div>
+          <div class="ask"><h4>Questions to ask</h4><ul>
+            <li>What severity is this, and why?</li>
+            <li>Is there one channel and one IC, even with several teams involved?</li>
+            <li>Should customers or partners hear from us, and when?</li>
+            <li>Is there a decision waiting on me?</li>
+          </ul></div>
+          <div><h4>Avoid</h4><ul>
+            <li>Downgrading severity to make the numbers look better.</li>
+            <li>Starting a second channel or bridge for executives that pulls responders away.</li>
+          </ul></div>
+        </div>
+      </aside>
+
+      <h2 id="the-incident-lifecycle">The incident lifecycle</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 900 170" role="img" aria-labelledby="lc-title lc-desc">
+          <title id="lc-title">Incident lifecycle</title>
+          <desc id="lc-desc">Six phases in sequence: detect, triage, declare, mitigate, resolve, learn. Learn feeds back into better detection.</desc>
+          <defs><marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="d-arrow"/></marker></defs>
+          <g>
+            <rect class="d-box" x="10" y="30" width="120" height="64" rx="10"/><text class="d-text" x="70" y="58" text-anchor="middle">1 Detect</text><text class="d-sub" x="70" y="77" text-anchor="middle">alert · report</text>
+            <rect class="d-box" x="160" y="30" width="120" height="64" rx="10"/><text class="d-text" x="220" y="58" text-anchor="middle">2 Triage</text><text class="d-sub" x="220" y="77" text-anchor="middle">real? scope? sev?</text>
+            <rect class="d-box" x="310" y="30" width="120" height="64" rx="10"/><text class="d-text" x="370" y="58" text-anchor="middle">3 Declare</text><text class="d-sub" x="370" y="77" text-anchor="middle">IC · channel</text>
+            <rect class="d-box-accent" x="460" y="30" width="120" height="64" rx="10"/><text class="d-text" x="520" y="58" text-anchor="middle">4 Mitigate</text><text class="d-sub" x="520" y="77" text-anchor="middle">stop the bleeding</text>
+            <rect class="d-box" x="610" y="30" width="120" height="64" rx="10"/><text class="d-text" x="670" y="58" text-anchor="middle">5 Resolve</text><text class="d-sub" x="670" y="77" text-anchor="middle">verify · close</text>
+            <rect class="d-box" x="760" y="30" width="120" height="64" rx="10"/><text class="d-text" x="820" y="58" text-anchor="middle">6 Learn</text><text class="d-sub" x="820" y="77" text-anchor="middle">postmortem</text>
+          </g>
+          <path class="d-line" d="M130 62 H156" marker-end="url(#arr2)"/>
+          <path class="d-line" d="M280 62 H306" marker-end="url(#arr2)"/>
+          <path class="d-line" d="M430 62 H456" marker-end="url(#arr2)"/>
+          <path class="d-line" d="M580 62 H606" marker-end="url(#arr2)"/>
+          <path class="d-line" d="M730 62 H756" marker-end="url(#arr2)"/>
+          <path class="d-line-dash" d="M820 94 V140 H70 V98" marker-end="url(#arr2)"/>
+          <text class="d-accent-text" x="445" y="158" text-anchor="middle">action items improve detection and prevention</text>
+        </svg>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Phase</th><th>Goal</th><th>Done when…</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Detect</strong></td><td>Notice the problem: alert, support ticket, or a customer report</td><td>Someone has acknowledged it</td></tr>
+            <tr><td><strong>Triage</strong></td><td>Confirm it's real, scope it, and pick a severity</td><td>You know which feature, how many users, and the severity</td></tr>
+            <tr><td><strong>Declare</strong></td><td>Start coordination for Sev 1–2</td><td>IC named, channel open, first update posted</td></tr>
+            <tr><td><strong>Mitigate</strong></td><td>Reduce user impact as fast as possible</td><td>The user-facing metric is back near its baseline</td></tr>
+            <tr><td><strong>Resolve</strong></td><td>Confirm a stable recovery and stand down</td><td>30 minutes stable, final update sent, follow-ups filed</td></tr>
+            <tr><td><strong>Learn</strong></td><td>Understand what happened and prevent a repeat</td><td>Postmortem reviewed, action items have owners and dates</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="severity-levels">Severity levels</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Severity</th><th>Definition</th><th>Nimbus examples</th><th>Response</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge sev1">Sev 1</span></td><td>Critical user impact across most users or several features</td><td>Foundry outage in the primary region, gateway down, Writing Assist and Search failing for more than 25% of requests</td><td>Page immediately. IC required. Updates every 30 min. Exec notification. Postmortem required.</td></tr>
+            <tr><td><span class="badge sev2">Sev 2</span></td><td>Major impact on one important feature, or partial impact across features</td><td>Device Care 429s above 10%, Writing Assist P95 above 3× baseline, new client build crashing</td><td>Page the owning CFT. IC required. Updates every 60 min. Postmortem required.</td></tr>
+            <tr><td><span class="badge sev3">Sev 3</span></td><td>Minor or contained impact, or a workaround exists</td><td>Proactive Tips delayed, Meeting Recap slow but completing, a small cohort affected</td><td>Owning CFT during business hours. Ticket. Postmortem optional.</td></tr>
+            <tr><td><span class="badge sev4">Sev 4</span></td><td>No current user impact, but a risk</td><td>Alert misrouted, dashboard broken, quota trending toward its limit</td><td>Backlog ticket</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout tip">
+        <div class="callout-title">When in doubt, go higher</div>
+        <p>Downgrading a Sev 2 to a Sev 3 costs one message. Under-declaring costs hours of lost coordination. Severity can change at any time, and the IC owns that call.</p>
+      </div>
+
+      <h2 id="roles">Roles</h2>
+      <p>These roles come from the Incident Command System that firefighters use, which Google's SRE book adapted for software. In a small incident one person holds every role. When the incident grows, hand roles out explicitly.</p>
+      <div class="card-grid">
+        <div class="card"><h3>Incident Commander (IC)</h3><p>Owns the incident. Coordinates, decides, and delegates, but <strong>doesn't debug</strong>. Keeps the big picture and sets the severity.</p></div>
+        <div class="card"><h3>Ops lead</h3><p>Directs the hands-on investigation and mitigation. The only role that makes changes to production during the incident.</p></div>
+        <div class="card"><h3>Comms lead</h3><p>Sends stakeholder updates on schedule and shields responders from "any update?" messages.</p></div>
+        <div class="card"><h3>Scribe</h3><p>Keeps the timeline: what was observed, decided, and changed, with timestamps. Writing the postmortem is much easier with a good timeline.</p></div>
+        <div class="card"><h3>Subject-matter experts</h3><p>CFT engineers and Platform specialists pulled in by the IC for a specific question.</p></div>
+      </div>
+
+      <h2 id="coordinating-across-cfts">Coordinating across CFTs</h2>
+      <ol class="steps">
+        <li><strong>The affected CFT owns it first.</strong>If one feature experience is affected, that CFT's on-call is the default IC.</li>
+        <li><strong>Pull in Platform on evidence, not hunches.</strong>Signs it's Platform's problem: several features affected, model dependency latency or errors rising across deployments, 429s on a shared deployment, or gateway errors.</li>
+        <li><strong>One incident, one channel.</strong>When several CFTs notice the same problem, merge into one incident with one IC. Parallel investigations waste effort and send mixed messages.</li>
+        <li><strong>Hand off out loud.</strong>When IC moves from a CFT to Platform, say so in the channel: "Handing IC to @name. Current state: …". No silent handoffs.</li>
+        <li><strong>Escalate on a timer.</strong>No progress in 30 minutes on a Sev 1 or 60 minutes on a Sev 2? Escalate to the next tier or a secondary on-call.</li>
+      </ol>
+      <div class="callout reality">
+        <div class="callout-title">Reality check: unclear owners</div>
+        <p>If you can't tell who owns a service (no <code>cft.owner</code>, a cryptic <code>cloud_RoleName</code>), don't let that stop you. Page Platform as the default owner and keep mitigating. Then file an ownership gap as a follow-up.</p>
+      </div>
+
+      <h2 id="mitigate-before-you-debug">Mitigate before you debug</h2>
+      <p>Your first job is to reduce user impact, not to find the root cause. Most mitigations can be reversed, and an outage that runs on can't be undone. These are the levers you have:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Lever</th><th>Use when</th><th>Who</th><th>Risk</th></tr></thead>
+          <tbody>
+            <tr><td>Roll back service deploy</td><td>The problem started after a deploy</td><td>CFT</td><td>Low</td></tr>
+            <tr><td>Flip feature flag / revert prompt template</td><td>A prompt, model-version, or config change lines up with the start</td><td>CFT</td><td>Low</td></tr>
+            <tr><td>Halt client rollout</td><td>Only a new desktop build is affected</td><td>Client CFT</td><td>Low</td></tr>
+            <tr><td>Pause background workloads</td><td>429s or saturation on a shared deployment</td><td>Insights CFT / Platform</td><td>Low (tips arrive late)</td></tr>
+            <tr><td>Shift traffic to another deployment or region</td><td>One deployment or region is degraded</td><td>Platform</td><td>Medium (capacity, data residency)</td></tr>
+            <tr><td>Enable spillover / raise quota</td><td>Sustained demand over PTU capacity</td><td>Platform</td><td>Medium (cost)</td></tr>
+            <tr><td>Graceful degradation</td><td>A dependency such as retrieval is failing</td><td>CFT</td><td>Medium (lower-quality answers)</td></tr>
+            <tr><td>Scale out a service</td><td>Service CPU or thread saturation</td><td>CFT</td><td>Low</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="communication-templates">Communication templates</h2>
+      <p>Keep updates short, factual, and on schedule. Even "no change" is an update. Fill in the brackets.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Initial notification<span class="answers">Send within 15 minutes of declaring</span></span></div>
+<pre><code>[Sev X] [INVESTIGATING] Nimbus [feature experience] — [symptom]
+
+Impact: [who is affected, e.g. ~15% of Writing Assist requests failing]
+Started: [time, timezone]
+Current status: Investigating. [one line on what we know]
+IC: [name]   Channel: [#incident-link]
+Next update: [time]</code></pre>
+      </div>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Progress update<span class="answers">Every 30 min (Sev 1) or 60 min (Sev 2)</span></span></div>
+<pre><code>[Sev X] [MITIGATING] Nimbus [feature] — [symptom]
+
+What changed: [e.g. paused Proactive Tips batch; 429s dropping]
+Impact now: [current numbers]
+Next steps: [what we're doing next]
+Next update: [time]</code></pre>
+      </div>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Resolution<span class="answers">Once stable for 30 minutes</span></span></div>
+<pre><code>[Sev X] [RESOLVED] Nimbus [feature] — [symptom]
+
+Duration: [start] – [end] ([total])
+Impact: [summary of user impact]
+Mitigation: [what fixed it]
+Root cause: [known / under investigation]
+Postmortem: [link or ETA]</code></pre>
+      </div>
+
+      <h2 id="after-the-incident">After the incident</h2>
+      <ul class="checklist" data-key="after-incident">
+        <li>Write the postmortem draft within 2 business days (required for Sev 1–2).</li>
+        <li>Hold a blameless review with every involved CFT and Platform.</li>
+        <li>Give every action item a <strong>single owner</strong> and a <strong>due date</strong>, and track it in the backlog.</li>
+        <li>File observability gaps you hit: missing dashboards, broken traces, misrouted alerts.</li>
+        <li>Update or create the playbook for this scenario.</li>
+        <li>Check that alerts would catch this sooner next time.</li>
+      </ul>
+
+      <h2 id="anti-patterns">Anti-patterns to avoid</h2>
+      <div class="card-grid">
+        <div class="card"><h3>The hero</h3><p>One person debugs silently for an hour without declaring. Declare early, because it's cheap.</p></div>
+        <div class="card"><h3>The debugging IC</h3><p>The IC gets lost in a query and coordination stops. The IC delegates.</p></div>
+        <div class="card"><h3>Root cause first</h3><p>Users stay broken while you look for the "why". Mitigate first.</p></div>
+        <div class="card"><h3>Parallel incidents</h3><p>Three CFTs open three channels for one Foundry problem. Merge them.</p></div>
+        <div class="card"><h3>Write-only postmortems</h3><p>Action items never get done. Track them like features.</p></div>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

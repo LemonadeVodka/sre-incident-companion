@@ -3,42 +3,123 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SRE Incident Companion</title>
-  <style>
-    :root { --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --accent: #0969da; --border: #d1d9e0; }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --accent: #4493f8; --border: #3d444d; }
-    }
-    body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
-    main { max-width: 720px; margin: 0 auto; padding: 48px 16px; }
-    h1 { margin: 0 0 8px; font-size: 2rem; }
-    h2 { margin-top: 2rem; font-size: 1.2rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
-    .lede { color: var(--muted); margin: 0; }
-    a { color: var(--accent); }
-    footer { margin-top: 3rem; color: var(--muted); font-size: 0.9rem; }
-  </style>
+  <title>Nimbus SRE Incident Companion</title>
+  <meta name="description" content="A practical incident-response companion for SREs running Nimbus, a desktop AI companion built on Azure AI Foundry with OpenTelemetry, Application Insights, and Grafana.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
-<body>
-  <main>
-    <h1>SRE Incident Companion</h1>
-    <p class="lede">A lightweight companion for running incidents from detection through postmortem.</p>
+<body data-root="./" data-page="index">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site">
+    <noscript><div class="nav-group"><a href="environment.html">Environment</a><a href="fundamentals.html">Fundamentals</a><a href="incident-response.html">Incident response</a><a href="troubleshooting/beginner.html">Beginner</a><a href="troubleshooting/intermediate.html">Intermediate</a><a href="troubleshooting/advanced.html">Advanced</a><a href="playbooks.html">Playbooks</a><a href="queries.html">Queries</a><a href="observability-maturity.html">Maturity</a><a href="references.html">References</a></div></noscript>
+  </nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <section class="hero">
+        <div class="eyebrow">Nimbus Reliability · SRE Incident Companion</div>
+        <h1 data-notoc>Calm, practical incident response for Nimbus</h1>
+        <p class="lede">Everything an on-call engineer needs to detect, triage, mitigate, and learn from incidents in Nimbus, our desktop AI companion running on Azure AI Foundry. It's written for an environment that's still maturing, so it works even when the dashboard you need doesn't exist yet.</p>
+        <div class="hero-actions">
+          <a class="btn danger" href="#triage">I'm in an incident</a>
+          <a class="btn primary" href="environment.html">New here? Meet the environment</a>
+          <a class="btn" href="troubleshooting/beginner.html">Start troubleshooting</a>
+        </div>
+      </section>
 
-    <h2>Purpose</h2>
-    <ul>
-      <li>Give responders one place to find the current incident state, roles, and next steps.</li>
-      <li>Keep incident communication consistent across the response team and stakeholders.</li>
-      <li>Capture the timeline and follow-ups while the incident is still fresh.</li>
-    </ul>
+      <div class="stat-row" role="list">
+        <div class="stat" role="listitem"><b>5 CFTs</b><span>each owning their own feature experiences</span></div>
+        <div class="stat" role="listitem"><b>1 backbone</b><span>Azure AI Foundry, shared by every CFT</span></div>
+        <div class="stat" role="listitem"><b>&lt;10%</b><span>of services have a usable Grafana dashboard</span></div>
+        <div class="stat" role="listitem"><b>2 big ones</b><span>high latency and high error rates</span></div>
+      </div>
 
-    <h2>Related templates</h2>
-    <ul>
-      <li><a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/sop-template.md">SOP template</a></li>
-      <li><a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/escalation-ownership-matrix.md">Escalation ownership matrix</a></li>
-      <li><a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/on-call-runbook-template.md">On-call runbook template</a></li>
-      <li><a href="https://github.com/LemonadeVodka/noc-tools-templates/blob/main/templates/incident-postmortem-template.md">Incident postmortem template</a></li>
-    </ul>
+      <h2 id="triage">Triage: find your next step</h2>
+      <p>Answer a few questions. You'll get a short action list and links to the right playbook, troubleshooting level, and queries.</p>
+      <div class="triage">
+        <div class="triage-head"><h2 data-notoc>Incident triage</h2><span class="badge sev1">Live</span></div>
+        <div class="triage-body" id="triage-app" aria-live="polite">
+          <noscript>
+            <p><strong>JavaScript is off. Jump straight to a playbook:</strong></p>
+            <ul>
+              <li><a href="playbooks.html#pb-latency-one-feature">Latency spike on one feature experience</a></li>
+              <li><a href="playbooks.html#pb-429-surge">429 throttling surge</a></li>
+              <li><a href="playbooks.html#pb-foundry-5xx">Foundry 5xx / degradation</a></li>
+              <li><a href="playbooks.html#pb-slow-first-token">Slow first token</a></li>
+              <li><a href="playbooks.html#pb-client-rollout">Errors after a desktop client rollout</a></li>
+              <li><a href="playbooks.html#pb-dashboards-green">Dashboards green, users complaining</a></li>
+            </ul>
+          </noscript>
+        </div>
+      </div>
 
-    <footer>Early scaffold. <a href="https://github.com/LemonadeVodka/sre-incident-companion">View on GitHub</a></footer>
+      <h2 id="first-15-minutes">The first 15 minutes</h2>
+      <p>The same checklist works for every incident. Ticks are saved in this browser only, so you can keep your place during a long call.</p>
+      <ul class="checklist" data-key="first15">
+        <li><strong>Acknowledge the page</strong> so nobody else picks it up and the escalation timer stops.</li>
+        <li><strong>Confirm it's real:</strong> run <a href="queries.html#q-error-rate">error rate</a> or <a href="queries.html#q-latency-by-feature">latency by feature</a> for the last hour and compare it with the same hour yesterday.</li>
+        <li><strong>Scope it:</strong> which feature experience, which region, which client version, which Foundry deployment?</li>
+        <li><strong>Check outside causes:</strong> Azure status, Foundry resource health, and any recent deploy or flag change.</li>
+        <li><strong>Pick a severity</strong> using the <a href="incident-response.html#severity-levels">severity matrix</a>. If you're unsure, choose the higher one; it's cheap to downgrade.</li>
+        <li><strong>Declare and open a channel</strong> (Sev 1–2). Name an Incident Commander, even if that's you for now.</li>
+        <li><strong>Post a first update</strong> using the <a href="incident-response.html#communication-templates">comms template</a>, even if all it says is "investigating".</li>
+        <li><strong>Mitigate before you debug:</strong> roll back, fail over, or shed load if any of those clearly helps.</li>
+        <li><strong>Start the timeline:</strong> write down what you saw and did, with timestamps.</li>
+      </ul>
+
+      <aside class="leader" aria-label="For senior managers">
+        <div class="leader-head">For senior managers <small>· joining a live incident</small></div>
+        <div class="leader-grid">
+          <div><h4>Your role</h4><ul>
+            <li>Make sure an Incident Commander exists.</li>
+            <li>Make business decisions quickly: cost, customer comms, priorities.</li>
+            <li>Shield the team from executive interruptions.</li>
+          </ul></div>
+          <div class="ask"><h4>Questions to ask</h4><ul>
+            <li>Who is the Incident Commander?</li>
+            <li>What's the customer impact right now, in numbers?</li>
+            <li>What's the current mitigation, and when is the next update?</li>
+            <li>What do you need from me?</li>
+          </ul></div>
+          <div><h4>Avoid</h4><ul>
+            <li>Asking for root cause mid-incident.</li>
+            <li>Directing engineers on the call.</li>
+            <li>Messaging responders directly.</li>
+          </ul></div>
+        </div>
+      </aside>
+
+      <h2 id="pick-your-level">Pick your level</h2>
+      <div class="card-grid">
+        <a class="card" href="troubleshooting/beginner.html"><span class="badge beginner">Beginner</span><h3>First responder</h3><p>Confirm, scope, and escalate with confidence. Starter queries and the App Insights blades.</p></a>
+        <a class="card" href="troubleshooting/intermediate.html"><span class="badge intermediate">Intermediate</span><h3>Investigator</h3><p>Decompose latency hop by hop, follow traces, and tell 429s, 5xx, and timeouts apart.</p></a>
+        <a class="card" href="troubleshooting/advanced.html"><span class="badge advanced">Advanced</span><h3>Systems thinker</h3><p>Noisy neighbors, retry storms, sampling bias, failover, and model regressions.</p></a>
+      </div>
+
+      <h2 id="toolkit">Toolkit</h2>
+      <div class="card-grid">
+        <a class="card" href="playbooks.html"><h3>Playbooks</h3><p>Six scenario runbooks, all with the same shape: symptoms, checks, causes, mitigation, escalation.</p></a>
+        <a class="card" href="queries.html"><h3>KQL query library</h3><p>Copy-ready Application Insights queries for when there's no dashboard.</p></a>
+        <a class="card" href="incident-response.html"><h3>Incident response</h3><p>Severity levels, roles, and comms templates for a multi-CFT organization.</p></a>
+        <a class="card" href="observability-maturity.html"><h3>Observability maturity</h3><p>A scorecard and roadmap for getting from under 10% dashboard coverage to good.</p></a>
+      </div>
+
+      <h2 id="how-this-guide-thinks">How this guide thinks</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Users first</h3><p>Severity follows user impact, not which alert fired or how loud it was.</p></div>
+        <div class="card"><h3>Mitigate, then debug</h3><p>Stop the bleeding with a rollback, failover, or load shed. Find the root cause after users are unblocked.</p></div>
+        <div class="card"><h3>Query first</h3><p>Dashboards are rare here, so every step comes with a query you can run in Application Insights.</p></div>
+        <div class="card"><h3>Blameless</h3><p>Gaps in tooling and ownership belong to the system, not to people. Write them down and fix them.</p></div>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
   </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="assets/site.js"></script>
+<script src="assets/triage.js"></script>
 </body>
 </html>

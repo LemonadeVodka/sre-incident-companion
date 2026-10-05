@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KQL Query Library · Nimbus SRE</title>
+  <meta name="description" content="Copy-ready Application Insights KQL queries for latency, errors, Foundry throttling, tracing, and SLO burn rates.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="queries">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Toolkit</div>
+      <div class="eyebrow">Toolkit</div>
+      <h1>KQL query library</h1>
+      <p class="lede">Copy-ready queries for Application Insights. Most Nimbus services have no dashboard, so these are your dashboards. Every query also works as a Grafana panel.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Run these in <strong>Application Insights → Logs</strong>. Change the time window and the <code>role</code> or <code>feature</code> variables first.</li>
+          <li>Always <strong>compare with a baseline</strong> (yesterday, last week). A number on its own tells you nothing.</li>
+          <li>Count with <code>sum(itemCount)</code>, not <code>count()</code>, because some services sample.</li>
+        </ul>
+      </div>
+
+      <aside class="leader" aria-label="For senior managers">
+        <div class="leader-head">For senior managers <small>· you don't need to run these</small></div>
+        <div class="leader-grid">
+          <div><h4>Your role</h4><ul>
+            <li>Ask for the chart, not the query. Engineers can share a link in the incident channel.</li>
+            <li>Notice when the team is writing queries from scratch during every incident. That's toil, and it's a sign dashboards are missing.</li>
+          </ul></div>
+          <div class="ask"><h4>Questions to ask</h4><ul>
+            <li>Compared to what? Is this number unusual for this time of day?</li>
+            <li>Can you post that chart in the channel so everyone sees the same thing?</li>
+            <li>Which of these queries should become a permanent dashboard?</li>
+          </ul></div>
+        </div>
+      </aside>
+
+      <h2 id="conventions-used-below">Conventions used below</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pattern</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td><code>coalesce(tostring(customDimensions["feature.experience"]), cloud_RoleName)</code></td><td>Not every CFT sets <code>feature.experience</code>, so fall back to the service name.</td></tr>
+            <tr><td><code>target has_any ("openai.azure.com", "services.ai.azure.com")</code></td><td>Picks out Foundry model calls among all dependencies.</td></tr>
+            <tr><td><code>extract(@"deployments/([^/]+)/", 1, data)</code></td><td>Gets the deployment name from the request URL when <code>gen_ai.request.model</code> is missing.</td></tr>
+            <tr><td><code>sum(itemCount)</code></td><td>Corrects for sampling. A sampled row with <code>itemCount = 10</code> stands for 10 real requests.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout tip">
+        <div class="callout-title">Using these in Grafana</div>
+        <p>In a Grafana panel with the <strong>Azure Monitor</strong> data source, choose <strong>Logs</strong>, paste the query, and replace <code>timestamp &gt; ago(1h)</code> with <code>$__timeFilter(timestamp)</code> so the panel follows the dashboard's time picker. Use <code>bin(timestamp, $__interval)</code> for time series.</p>
+      </div>
+
+      <h2 id="latency">Latency</h2>
+
+      <div class="code-card" id="q-latency-by-feature">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Latency by feature experience, now vs yesterday<span class="answers">Which feature got slower, and by how much?</span></span></div>
+<pre><code>let window = 1h;
+requests
+| where timestamp > ago(window) or timestamp between (ago(1d + window) .. ago(1d))
+| extend period = iff(timestamp > ago(window), "cur", "base")
+| extend feature = coalesce(tostring(customDimensions["feature.experience"]), cloud_RoleName)
+| summarize p95_ms = percentile(duration, 95) by feature, period
+| evaluate pivot(period, any(p95_ms))
+| extend ratio = round(todouble(cur) / todouble(base), 2)
+| order by ratio desc</code></pre>
+      </div>
+
+      <div class="code-card" id="q-latency-timechart">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">P50 / P95 / P99 over time for one feature<span class="answers">When did it start? Is it getting better or worse?</span></span></div>
+<pre><code>let role = "writing-assist-svc";   // cloud_RoleName of the service
+requests
+| where timestamp > ago(6h) and cloud_RoleName == role
+| summarize p50 = percentile(duration, 50), p95 = percentile(duration, 95), p99 = percentile(duration, 99)
+    by bin(timestamp, 5m)
+| render timechart</code></pre>
+      </div>
+
+      <div class="code-card" id="q-dependency-breakdown">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Dependency breakdown for one feature<span class="answers">Is time going to the model, retrieval, Graph, or our own code?</span></span></div>
+<pre><code>let role = "writing-assist-svc";
+let window = 1h;
+requests
+| where timestamp > ago(window) and cloud_RoleName == role
+| project operation_Id, request_ms = duration
+| join kind=leftouter (
+    dependencies
+    | where timestamp > ago(window) and cloud_RoleName == role
+    | extend hop = case(
+        target has_any ("openai.azure.com", "services.ai.azure.com"), "model",
+        target has "search.windows.net", "retrieval",
+        target has "graph.microsoft.com", "graph",
+        "other")
+    | summarize hop_ms = sum(duration) by operation_Id, hop
+  ) on operation_Id
+| summarize p50_hop_ms = percentile(hop_ms, 50), p95_hop_ms = percentile(hop_ms, 95),
+            p95_request_ms = percentile(request_ms, 95) by hop
+| order by p95_hop_ms desc</code></pre>
+      </div>
+      <div class="callout warn">
+        <div class="callout-title">Parallel calls overlap</div>
+        <p>If a service calls retrieval and the model in parallel, the hop times add up to more than the request time. If <code>p95_request_ms</code> is much larger than every hop, the time is going to the service's own code or to dependencies that aren't instrumented.</p>
+      </div>
+
+      <div class="code-card" id="q-ttft">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Time to first token vs total model duration<span class="answers">Is it queueing (TTFT up) or longer outputs (total up, TTFT flat)?</span></span></div>
+<pre><code>// nimbus.ttft_ms is emitted by Writing Assist only (see Environment → conventions)
+dependencies
+| where timestamp > ago(6h)
+| where isnotempty(customDimensions["nimbus.ttft_ms"])
+| extend ttft_ms = todouble(customDimensions["nimbus.ttft_ms"])
+| summarize ttft_p50 = percentile(ttft_ms, 50), ttft_p95 = percentile(ttft_ms, 95),
+            total_p95 = percentile(duration, 95) by bin(timestamp, 5m)
+| render timechart</code></pre>
+      </div>
+
+      <h2 id="errors">Errors</h2>
+
+      <div class="code-card" id="q-error-rate">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Error rate by feature and result code<span class="answers">Which feature is failing, and with what?</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1h)
+| extend feature = coalesce(tostring(customDimensions["feature.experience"]), cloud_RoleName)
+| summarize total = sum(itemCount), failed = sumif(itemCount, success == false) by feature
+| extend error_pct = round(100.0 * failed / total, 2)
+| join kind=leftouter (
+    requests
+    | where timestamp > ago(1h) and success == false
+    | extend feature = coalesce(tostring(customDimensions["feature.experience"]), cloud_RoleName)
+    | summarize n = sum(itemCount) by feature, resultCode
+    | summarize codes = make_bag(bag_pack(resultCode, n)) by feature
+  ) on feature
+| project feature, total, failed, error_pct, codes
+| order by error_pct desc</code></pre>
+      </div>
+
+      <div class="code-card" id="q-top-exceptions">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Top exceptions<span class="answers">What is our code actually throwing?</span></span></div>
+<pre><code>exceptions
+| where timestamp > ago(1h)
+| summarize occurrences = sum(itemCount), sample_message = any(outerMessage),
+            first_seen = min(timestamp) by cloud_RoleName, type, problemId
+| top 15 by occurrences</code></pre>
+      </div>
+
+      <div class="code-card" id="q-content-filter">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Content-filter blocks by feature<span class="answers">Are safety filters suddenly blocking more?</span></span></div>
+<pre><code>dependencies
+| where timestamp > ago(24h)
+| where target has_any ("openai.azure.com", "services.ai.azure.com")
+| extend feature = coalesce(tostring(customDimensions["feature.experience"]), cloud_RoleName),
+         finish = tostring(customDimensions["gen_ai.response.finish_reasons"])
+| summarize calls = sum(itemCount),
+            output_filtered = sumif(itemCount, finish has "content_filter"),
+            http_400 = sumif(itemCount, resultCode == "400")   // includes prompt blocks AND bad requests
+    by feature, bin(timestamp, 15m)
+| render timechart</code></pre>
+      </div>
+
+      <h2 id="foundry-quota-and-tokens">Foundry, quota, and tokens</h2>
+
+      <div class="code-card" id="q-model-latency">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Model latency and failures by deployment<span class="answers">Is one deployment or region slow, or all of them?</span></span></div>
+<pre><code>dependencies
+| where timestamp > ago(1h)
+| where target has_any ("openai.azure.com", "services.ai.azure.com")
+| extend deployment = coalesce(tostring(customDimensions["gen_ai.request.model"]),
+                               extract(@"deployments/([^/]+)/", 1, data))
+| summarize calls = sum(itemCount), p50_ms = percentile(duration, 50), p95_ms = percentile(duration, 95),
+            failed = sumif(itemCount, success == false) by deployment, target
+| extend fail_pct = round(100.0 * failed / calls, 2)
+| order by p95_ms desc</code></pre>
+      </div>
+
+      <div class="code-card" id="q-429">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">429 throttling by deployment and caller<span class="answers">Who is getting throttled, and on which deployment?</span></span></div>
+<pre><code>dependencies
+| where timestamp > ago(1h)
+| where target has_any ("openai.azure.com", "services.ai.azure.com")
+| extend deployment = coalesce(tostring(customDimensions["gen_ai.request.model"]),
+                               extract(@"deployments/([^/]+)/", 1, data)),
+         caller = coalesce(tostring(customDimensions["feature.experience"]), cloud_RoleName)
+| summarize calls = sum(itemCount), throttled = sumif(itemCount, resultCode == "429") by deployment, caller
+| extend throttle_pct = round(100.0 * throttled / calls, 2)
+| order by throttled desc</code></pre>
+      </div>
+
+      <div class="code-card" id="q-token-share">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Token consumption per minute by caller<span class="answers">Who is using up the shared quota (the noisy neighbor)?</span></span></div>
+<pre><code>dependencies
+| where timestamp > ago(3h)
+| where target has_any ("openai.azure.com", "services.ai.azure.com")
+| extend deployment = coalesce(tostring(customDimensions["gen_ai.request.model"]),
+                               extract(@"deployments/([^/]+)/", 1, data)),
+         caller = coalesce(tostring(customDimensions["feature.experience"]), cloud_RoleName),
+         tokens = toint(customDimensions["gen_ai.usage.input_tokens"]) + toint(customDimensions["gen_ai.usage.output_tokens"])
+| where deployment == "chat-small"
+| summarize tokens_per_min = sum(tokens * itemCount) by caller, bin(timestamp, 1m)
+| render areachart kind=stacked</code></pre>
+      </div>
+
+      <div class="code-card" id="q-token-growth">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Prompt and completion size over 7 days<span class="answers">Did prompts quietly grow (more context, bigger retrieval chunks)?</span></span></div>
+<pre><code>dependencies
+| where timestamp > ago(7d)
+| where isnotempty(customDimensions["gen_ai.usage.input_tokens"])
+| extend feature = coalesce(tostring(customDimensions["feature.experience"]), cloud_RoleName),
+         in_tok = toint(customDimensions["gen_ai.usage.input_tokens"]),
+         out_tok = toint(customDimensions["gen_ai.usage.output_tokens"])
+| summarize p95_input = percentile(in_tok, 95), p95_output = percentile(out_tok, 95) by feature, bin(timestamp, 1h)
+| render timechart</code></pre>
+      </div>
+
+      <div class="code-card" id="q-retry">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Model calls per operation (retry detector)<span class="answers">Are we retrying hard enough to amplify the problem?</span></span></div>
+<pre><code>dependencies
+| where timestamp > ago(3h)
+| where target has_any ("openai.azure.com", "services.ai.azure.com")
+| summarize attempts = count(), throttled = countif(resultCode == "429")
+    by operation_Id, cloud_RoleName, bin(timestamp, 5m)
+| summarize avg_calls_per_op = avg(attempts), p99_calls_per_op = percentile(attempts, 99),
+            ops_with_429 = countif(throttled > 0) by cloud_RoleName, timestamp
+| render timechart</code></pre>
+      </div>
+      <p>Device Care legitimately makes several model calls per operation because of its multi-step tool use, so compare against that service's own baseline. What matters is a <em>jump</em> in calls per operation.</p>
+
+      <h2 id="tracing">Tracing</h2>
+
+      <div class="code-card" id="q-slow-ops">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Find the slowest operations<span class="answers">Give me some operation_Ids to inspect.</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1h) and cloud_RoleName == "writing-assist-svc"
+| top 20 by duration desc
+| project timestamp, operation_Id, name, duration, resultCode,
+          client_version = tostring(customDimensions["client.version"])</code></pre>
+      </div>
+
+      <div class="code-card" id="q-trace-walk">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Walk one trace end to end<span class="answers">What happened, in order, for this request?</span></span></div>
+<pre><code>let op = "PASTE_OPERATION_ID";
+union requests, dependencies, exceptions, traces
+| where timestamp > ago(1d) and operation_Id == op
+| project timestamp, itemType, cloud_RoleName, name, target, duration, resultCode, success,
+          detail = coalesce(message, outerMessage)
+| order by timestamp asc</code></pre>
+      </div>
+      <div class="callout tip">
+        <div class="callout-title">Visual alternative</div>
+        <p>In App Insights, open <strong>Transaction search</strong>, paste the operation ID, and open the <strong>end-to-end transaction details</strong> view for a Gantt chart of every span.</p>
+      </div>
+
+      <h2 id="change-and-cohorts">Change and cohorts</h2>
+
+      <div class="code-card" id="q-deploy-correlation">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Errors and latency by service version over time<span class="answers">Did it start when a new version went out?</span></span></div>
+<pre><code>let role = "writing-assist-svc";
+requests
+| where timestamp > ago(24h) and cloud_RoleName == role
+| summarize failed_pct = round(100.0 * sumif(itemCount, success == false) / sum(itemCount), 2)
+    by application_Version, bin(timestamp, 15m)
+| render timechart</code></pre>
+      </div>
+
+      <div class="code-card" id="q-version-first-seen">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">When did each service version first appear?<span class="answers">A deploy timeline even when nobody announced the deploy.</span></span></div>
+<pre><code>requests
+| where timestamp > ago(7d)
+| summarize first_seen = min(timestamp), last_seen = max(timestamp), requests = sum(itemCount)
+    by cloud_RoleName, application_Version
+| order by first_seen desc</code></pre>
+      </div>
+
+      <div class="code-card" id="q-client-version">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Errors and latency by desktop client version<span class="answers">Is a new desktop build the problem?</span></span></div>
+<pre><code>requests
+| where timestamp > ago(6h)
+| extend client = tostring(customDimensions["client.version"])
+| where isnotempty(client)
+| summarize total = sum(itemCount), failed = sumif(itemCount, success == false),
+            p95_ms = percentile(duration, 95) by client
+| extend error_pct = round(100.0 * failed / total, 2)
+| order by total desc</code></pre>
+      </div>
+
+      <h2 id="telemetry-health">Telemetry health</h2>
+
+      <div class="code-card" id="q-telemetry-volume">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Telemetry volume by type<span class="answers">Did data stop arriving? (Dashboards look "green" when there's no data.)</span></span></div>
+<pre><code>union requests, dependencies, traces, exceptions, customEvents
+| where timestamp > ago(2d)
+| summarize items = sum(itemCount) by itemType, bin(timestamp, 15m)
+| render timechart</code></pre>
+      </div>
+
+      <div class="code-card" id="q-role-inventory">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Service inventory and attribute coverage<span class="answers">Which services report, and which set our conventions?</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1d)
+| summarize requests = sum(itemCount),
+            has_feature = round(100.0 * countif(isnotempty(customDimensions["feature.experience"])) / count(), 0),
+            has_owner = round(100.0 * countif(isnotempty(customDimensions["cft.owner"])) / count(), 0),
+            sampled = max(itemCount) > 1
+    by cloud_RoleName
+| order by requests desc</code></pre>
+      </div>
+
+      <h2 id="slos">SLOs</h2>
+
+      <div class="code-card" id="q-burn-rate">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Multi-window burn rate for one service<span class="answers">Are we burning error budget fast enough to page?</span></span></div>
+<pre><code>let slo = 0.995;
+let role = "writing-assist-svc";
+let err_rate = (w: timespan) {
+    requests
+    | where timestamp > ago(w) and cloud_RoleName == role
+    | summarize bad = sumif(itemCount, success == false), total = sum(itemCount)
+    | project rate = todouble(bad) / todouble(total)
+};
+let b1h  = toscalar(err_rate(1h))  / (1 - slo);
+let b5m  = toscalar(err_rate(5m))  / (1 - slo);
+let b6h  = toscalar(err_rate(6h))  / (1 - slo);
+let b30m = toscalar(err_rate(30m)) / (1 - slo);
+print burn_1h = round(b1h, 1), burn_5m = round(b5m, 1), burn_6h = round(b6h, 1), burn_30m = round(b30m, 1)
+| extend page_fast = burn_1h > 14.4 and burn_5m > 14.4,
+         page_slow = burn_6h > 6 and burn_30m > 6</code></pre>
+      </div>
+      <p>See <a href="fundamentals.html#alert-on-burn-rate">Fundamentals → burn-rate alerts</a> for where the thresholds come from. To turn this into an alert, use it as an Azure Monitor log search alert that fires when <code>page_fast or page_slow</code> is true.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Nimbus Environment · Nimbus SRE</title>
+  <meta name="description" content="Architecture, ownership, and telemetry of Nimbus, a desktop AI companion on Azure AI Foundry.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="environment">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Start</div>
+      <div class="eyebrow">Start here</div>
+      <h1>The Nimbus environment</h1>
+      <p class="lede">Before you can troubleshoot Nimbus you need a picture of how it works: how a request moves through the system, who owns each piece, and where the telemetry is good, patchy, or missing.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Nimbus is a <strong>desktop AI companion</strong>. A Windows client sends requests through an <strong>APIM gateway</strong> to per-feature <strong>orchestration services</strong>, which call <strong>Azure AI Foundry</strong>.</li>
+          <li>Five <strong>CFTs</strong> each own one <strong>feature experience</strong>. A <strong>Platform</strong> team owns the gateway and Foundry capacity, which every CFT shares.</li>
+          <li>Telemetry flows <strong>OpenTelemetry → Application Insights → Grafana</strong>. Fewer than 10% of services have a usable dashboard, so be ready to write KQL.</li>
+        </ul>
+      </div>
+
+      <aside class="leader" aria-label="For senior managers">
+        <div class="leader-head">For senior managers <small>· understanding the risk in this setup</small></div>
+        <div class="leader-grid">
+          <div><h4>What matters to you</h4><ul>
+            <li>Every CFT depends on one shared AI backbone. A problem there affects all features at once.</li>
+            <li>Ownership between CFTs and Platform has gray zones, and those gray zones slow incidents down.</li>
+            <li>Less than 10% dashboard coverage means diagnosis depends on a few experts.</li>
+          </ul></div>
+          <div class="ask"><h4>Questions to ask</h4><ul>
+            <li>Which features matter most to the business, and are they protected from the others?</li>
+            <li>Where do teams share capacity, and who decides priority when it runs out?</li>
+            <li>For each feature, who gets paged? Is that written down?</li>
+            <li>Could we diagnose a problem if our one expert were on vacation?</li>
+          </ul></div>
+        </div>
+      </aside>
+
+      <h2>What Nimbus is</h2>
+      <p>Nimbus ships pre-installed on Windows PCs. Users open it with a hotkey or from the taskbar, then ask it to search their files, rewrite text, recap meetings, or fix device settings. A local <strong>Nimbus Agent</strong> service gathers device context and handles lightweight tasks on the device. Anything generative goes to the cloud.</p>
+      <p>Two things make Nimbus harder to run than a typical web service:</p>
+      <ul>
+        <li><strong>The client is on the user's machine.</strong> You don't control its network, its version, or whether its telemetry arrives. Rollouts are staged over days, so several client versions are always live at once.</li>
+        <li><strong>The backend is LLM inference.</strong> Latency depends on token counts, model capacity, and quota, not only on your code. A healthy model call can still take several seconds.</li>
+      </ul>
+
+      <h2>Architecture</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 900 400" role="img" aria-labelledby="arch-title arch-desc">
+          <title id="arch-title">Nimbus architecture</title>
+          <desc id="arch-desc">The desktop client calls the APIM gateway, which routes to per-feature orchestration services. These call retrieval and tool services and Azure AI Foundry model deployments. Telemetry flows from OpenTelemetry SDKs to Application Insights and then to Grafana, which has under 10 percent dashboard coverage.</desc>
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="d-arrow"/></marker>
+          </defs>
+          <rect class="d-box" x="20" y="60" width="150" height="110" rx="10"/>
+          <text class="d-text" x="95" y="92" text-anchor="middle">Desktop client</text>
+          <text class="d-sub" x="95" y="112" text-anchor="middle">Nimbus app (UI)</text>
+          <text class="d-sub" x="95" y="130" text-anchor="middle">Nimbus Agent</text>
+          <text class="d-sub" x="95" y="148" text-anchor="middle">many versions live</text>
+
+          <rect class="d-box-accent" x="210" y="80" width="130" height="70" rx="10"/>
+          <text class="d-text" x="275" y="110" text-anchor="middle">APIM gateway</text>
+          <text class="d-sub" x="275" y="129" text-anchor="middle">auth · routing · quota</text>
+
+          <rect class="d-box" x="380" y="30" width="210" height="180" rx="10"/>
+          <text class="d-text" x="485" y="56" text-anchor="middle">Orchestration services</text>
+          <text class="d-sub" x="485" y="80" text-anchor="middle">one per feature experience</text>
+          <text class="d-sub" x="485" y="104" text-anchor="middle">Smart Search · Search CFT</text>
+          <text class="d-sub" x="485" y="124" text-anchor="middle">Writing Assist · Create CFT</text>
+          <text class="d-sub" x="485" y="144" text-anchor="middle">Meeting Recap · Collab CFT</text>
+          <text class="d-sub" x="485" y="164" text-anchor="middle">Device Care · Device CFT</text>
+          <text class="d-sub" x="485" y="184" text-anchor="middle">Proactive Tips · Insights CFT</text>
+
+          <rect class="d-box-accent" x="630" y="30" width="250" height="180" rx="10"/>
+          <text class="d-text" x="755" y="56" text-anchor="middle">Azure AI Foundry</text>
+          <text class="d-sub" x="755" y="80" text-anchor="middle">shared · Platform-owned</text>
+          <text class="d-sub" x="755" y="108" text-anchor="middle">chat-large-ptu (provisioned)</text>
+          <text class="d-sub" x="755" y="128" text-anchor="middle">chat-large-paygo (overflow)</text>
+          <text class="d-sub" x="755" y="148" text-anchor="middle">chat-small (shared)</text>
+          <text class="d-sub" x="755" y="168" text-anchor="middle">embeddings</text>
+          <text class="d-sub" x="755" y="192" text-anchor="middle">East US 2 · Sweden Central</text>
+
+          <rect class="d-box" x="380" y="240" width="210" height="56" rx="10"/>
+          <text class="d-text" x="485" y="263" text-anchor="middle">Retrieval &amp; tools</text>
+          <text class="d-sub" x="485" y="282" text-anchor="middle">AI Search · Graph · device APIs</text>
+
+          <path class="d-line" d="M170 115 H206" marker-end="url(#arr)"/>
+          <path class="d-line" d="M340 115 H376" marker-end="url(#arr)"/>
+          <path class="d-line" d="M590 120 H626" marker-end="url(#arr)"/>
+          <path class="d-line" d="M485 210 V236" marker-end="url(#arr)"/>
+          <text class="d-reality-text" x="95" y="192" text-anchor="middle">⚠ trace context often lost</text>
+
+          <rect class="d-box" x="20" y="330" width="200" height="54" rx="10"/>
+          <text class="d-text" x="120" y="353" text-anchor="middle">OpenTelemetry SDKs</text>
+          <text class="d-sub" x="120" y="372" text-anchor="middle">client + services</text>
+          <rect class="d-box" x="330" y="330" width="230" height="54" rx="10"/>
+          <text class="d-text" x="445" y="353" text-anchor="middle">Application Insights</text>
+          <text class="d-sub" x="445" y="372" text-anchor="middle">requests · dependencies · traces</text>
+          <rect class="d-box-reality" x="660" y="330" width="220" height="54" rx="10"/>
+          <text class="d-text" x="770" y="353" text-anchor="middle">Grafana</text>
+          <text class="d-reality-text" x="770" y="372" text-anchor="middle">&lt;10% dashboard coverage</text>
+          <path class="d-line" d="M220 357 H326" marker-end="url(#arr)"/>
+          <path class="d-line" d="M560 357 H656" marker-end="url(#arr)"/>
+          <text class="d-sub" x="20" y="320">Telemetry pipeline</text>
+        </svg>
+        <figcaption>Request path (top) and telemetry pipeline (bottom). Pink dashed outlines and ⚠ labels mark known maturity gaps.</figcaption>
+      </figure>
+
+      <h3>A request, step by step</h3>
+      <ol class="steps">
+        <li><strong>Desktop client</strong>The user asks something. The Nimbus app collects context through the local Agent and sends an HTTPS request carrying a feature identifier and client version.</li>
+        <li><strong>APIM gateway</strong>Azure API Management authenticates the device, applies per-feature rate limits, and routes to the right orchestration service.</li>
+        <li><strong>Orchestration</strong>The CFT's service builds the prompt. It may first call retrieval or tools (AI Search, Microsoft Graph, device APIs), then calls a Foundry model deployment.</li>
+        <li><strong>Azure AI Foundry</strong>The model generates a response. Interactive features stream tokens back. PTU deployments have fixed capacity, and requests over that limit spill to pay-as-you-go or get 429s.</li>
+        <li><strong>Back to the user</strong>The response streams through orchestration and APIM to the client, which renders it. The user feels <em>time to first token</em> most of all.</li>
+      </ol>
+
+      <h2>Feature experiences and CFTs</h2>
+      <p>A <strong>CFT</strong> (cross-functional team) owns a <strong>feature experience</strong> end to end: its prompts, orchestration code, and on-call rotation. Every CFT shares the gateway and the Foundry backbone.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature experience</th><th>CFT</th><th>What it does</th><th>Mode</th><th>Foundry deployments</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Smart Search</strong></td><td>Search</td><td>Natural-language search across files, mail, and settings</td><td>Interactive</td><td><code>embeddings</code>, <code>chat-large-ptu</code></td></tr>
+            <tr><td><strong>Writing Assist</strong></td><td>Create</td><td>Rewrite, summarize, and draft text in any app</td><td>Interactive, streaming</td><td><code>chat-large-ptu</code> → <code>chat-large-paygo</code></td></tr>
+            <tr><td><strong>Meeting Recap</strong></td><td>Collab</td><td>Summaries and action items after meetings</td><td>Near-real-time</td><td><code>chat-large-paygo</code>, <code>chat-small</code></td></tr>
+            <tr><td><strong>Device Care</strong></td><td>Device</td><td>Diagnoses and fixes PC issues using tool calls</td><td>Interactive, multi-step</td><td><code>chat-small</code></td></tr>
+            <tr><td><strong>Proactive Tips</strong></td><td>Insights</td><td>Background suggestions based on usage</td><td>Background, bursty</td><td><code>chat-small</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout reality">
+        <div class="callout-title">Reality check: shared quota</div>
+        <p>Device Care (interactive) and Proactive Tips (background) share <code>chat-small</code>. When Proactive Tips runs a big batch, Device Care users can get throttled. This "noisy neighbor" pattern causes many of our 429 incidents. See <a href="troubleshooting/advanced.html#noisy-neighbor-on-shared-foundry-quota">Advanced troubleshooting</a>.</p>
+      </div>
+
+      <h2 id="who-owns-what">Who owns what</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Layer</th><th>Owner</th><th>On-call</th><th>Page them when…</th></tr></thead>
+          <tbody>
+            <tr><td>Desktop app &amp; Agent</td><td>Client CFT</td><td>Business hours + Sev 1 pager</td><td>Problem is limited to some client versions, crash spikes, telemetry missing from clients</td></tr>
+            <tr><td>APIM gateway</td><td>Platform</td><td>24/7</td><td>All features affected, auth failures, gateway latency</td></tr>
+            <tr><td>Orchestration (per feature)</td><td>Owning CFT</td><td>24/7 for interactive features, business hours for background ones</td><td>Problem is limited to one feature experience</td></tr>
+            <tr><td>Retrieval &amp; tools</td><td>Owning CFT (shared AI Search: Platform)</td><td>Varies</td><td>Dependency errors or latency on retrieval calls</td></tr>
+            <tr><td>Foundry deployments &amp; quota</td><td>Platform</td><td>24/7</td><td>429s, model 5xx, model latency across features, quota or PTU decisions</td></tr>
+            <tr><td>Telemetry &amp; Grafana</td><td>Platform (Observability, 2 engineers)</td><td>Business hours</td><td>Telemetry pipeline broken, data missing everywhere</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <div class="callout-title">Gray zones</div>
+        <p>When a feature's model calls get slow, is that the CFT's problem (their prompt grew) or Platform's (capacity)? The working rule: <strong>the CFT whose feature is affected owns the incident until the evidence points to shared infrastructure</strong>, and then Platform joins. Nobody waits for ownership to be settled before mitigating.</p>
+      </div>
+
+      <h2 id="telemetry-pipeline">Telemetry pipeline</h2>
+      <p>Services and the desktop client use OpenTelemetry SDKs with the Azure Monitor exporter. Data lands in one workspace-based Application Insights resource. Grafana reads it through the Azure Monitor data source, so <strong>anything you can query in KQL, you can chart in Grafana</strong>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>What you want</th><th>App Insights table</th><th>Key fields</th></tr></thead>
+          <tbody>
+            <tr><td>Incoming requests to a service</td><td><code>requests</code></td><td><code>cloud_RoleName</code>, <code>name</code>, <code>duration</code>, <code>resultCode</code>, <code>success</code></td></tr>
+            <tr><td>Outgoing calls (Foundry, Search, Graph)</td><td><code>dependencies</code></td><td><code>target</code>, <code>type</code>, <code>duration</code>, <code>resultCode</code>, <code>success</code></td></tr>
+            <tr><td>Exceptions</td><td><code>exceptions</code></td><td><code>type</code>, <code>problemId</code>, <code>outerMessage</code></td></tr>
+            <tr><td>Logs</td><td><code>traces</code></td><td><code>message</code>, <code>severityLevel</code></td></tr>
+            <tr><td>Metrics</td><td><code>customMetrics</code></td><td><code>name</code>, <code>value</code></td></tr>
+            <tr><td>Client events</td><td><code>customEvents</code></td><td><code>name</code>, <code>client.version</code></td></tr>
+            <tr><td>Correlation</td><td>all</td><td><code>operation_Id</code> (trace ID), <code>operation_ParentId</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Nimbus attribute conventions</h3>
+      <p>OpenTelemetry attributes show up in <code>customDimensions</code>. These are the conventions we've agreed on. Adoption varies by CFT.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Attribute</th><th>Example</th><th>Adoption</th></tr></thead>
+          <tbody>
+            <tr><td><code>feature.experience</code></td><td><code>writing-assist</code></td><td>3 of 5 CFTs</td></tr>
+            <tr><td><code>cft.owner</code></td><td><code>create</code></td><td>2 of 5 CFTs</td></tr>
+            <tr><td><code>client.version</code></td><td><code>4.12.1</code></td><td>Client and APIM only</td></tr>
+            <tr><td><code>gen_ai.request.model</code></td><td><code>chat-large-ptu</code></td><td>OTel GenAI semantic convention; 4 of 5 CFTs</td></tr>
+            <tr><td><code>gen_ai.usage.input_tokens</code> / <code>output_tokens</code></td><td><code>2140</code> / <code>310</code></td><td>4 of 5 CFTs</td></tr>
+            <tr><td><code>nimbus.ttft_ms</code></td><td><code>820</code></td><td>Writing Assist only</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="known-maturity-gaps">Known maturity gaps</h2>
+      <div class="callout reality">
+        <div class="callout-title">Reality check: plan around these, don't be surprised by them</div>
+        <ul>
+          <li><strong>Grafana coverage is under 10%.</strong> Most services have no dashboard, and some of the ones that exist chart the wrong thing.</li>
+          <li><strong>Inconsistent naming.</strong> <code>cloud_RoleName</code> might be <code>recap-svc</code>, <code>MeetingRecap.Api</code>, or the default <code>unknown_service</code>.</li>
+          <li><strong>Broken trace propagation.</strong> The desktop client often doesn't send <code>traceparent</code>, so client and server spans don't join up.</li>
+          <li><strong>Aggressive sampling.</strong> Some services sample at 10%, which hides rare failures. Use <code>itemCount</code> when you count things.</li>
+          <li><strong>No agreed SLOs.</strong> Alerts are raw thresholds, such as "error count &gt; 50", that don't reflect user impact.</li>
+          <li><strong>Ownership gaps.</strong> Some alerts route to channels nobody watches.</li>
+        </ul>
+        <p>The <a href="observability-maturity.html">observability maturity</a> page has the plan for fixing these.</p>
+      </div>
+
+      <h2 id="what-normal-looks-like">What normal looks like</h2>
+      <p>Use these illustrative baselines to judge whether something is abnormal. Before you trust a number, always compare with the same time yesterday or last week.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>P50 end-to-end</th><th>P95 end-to-end</th><th>Time to first token (P95)</th><th>Error rate</th></tr></thead>
+          <tbody>
+            <tr><td>Smart Search</td><td>1.4 s</td><td>3.5 s</td><td>n/a (not streamed)</td><td>&lt; 0.5%</td></tr>
+            <tr><td>Writing Assist</td><td>2.5 s</td><td>6 s</td><td>1.2 s</td><td>&lt; 0.5%</td></tr>
+            <tr><td>Meeting Recap</td><td>12 s</td><td>30 s</td><td>n/a</td><td>&lt; 1%</td></tr>
+            <tr><td>Device Care</td><td>3 s</td><td>9 s</td><td>1.5 s</td><td>&lt; 1%</td></tr>
+            <tr><td>Proactive Tips</td><td>4 s</td><td>15 s</td><td>n/a</td><td>&lt; 2% (retried)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

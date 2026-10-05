@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Observability Maturity · Nimbus SRE</title>
+  <meta name="description" content="Maturity model, self-assessment scorecard, and a 90-day roadmap from under 10% dashboard coverage to SLO-driven operations.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="observability-maturity">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><a href="index.html">Home</a></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Toolkit</div>
+      <div class="eyebrow">Toolkit</div>
+      <h1>Observability maturity</h1>
+      <p class="lede">Nimbus has telemetry, but very little of it is usable during an incident. This page covers where we are, where we're going, and a practical order for getting there.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>We're at <strong>Level 1 (Reactive)</strong>: data exists, but names are inconsistent, dashboards are rare, and alerts are raw thresholds.</li>
+          <li>The biggest win is cheap: <strong>standard resource attributes</strong> on every service, and <strong>one golden-signals dashboard template</strong> applied to every feature.</li>
+          <li>Then move to <strong>SLOs and burn-rate alerts</strong>, starting with the two most-used interactive features.</li>
+        </ul>
+      </div>
+
+      <aside class="leader" aria-label="For senior managers">
+        <div class="leader-head">For senior managers <small>· where leadership matters most</small></div>
+        <div class="leader-grid">
+          <div><h4>Your role</h4><ul>
+            <li>Make the roadmap a funded priority, not a side project for two Platform engineers.</li>
+            <li>Require the shared standards from every CFT. Optional standards won't be adopted.</li>
+            <li>Set targets and review them monthly, for example 100% dashboard coverage for customer-facing features in 90 days.</li>
+          </ul></div>
+          <div class="ask"><h4>Questions to ask</h4><ul>
+            <li>What share of our customer-facing features have a dashboard and a reliability target?</li>
+            <li>How were our last five incidents detected: alerts or customers?</li>
+            <li>How long does it take to work out which team owns a problem?</li>
+            <li>What's blocking the next roadmap item?</li>
+          </ul></div>
+          <div><h4>The business case</h4><ul>
+            <li>Faster diagnosis means shorter outages and fewer affected users.</li>
+            <li>Less dependence on a few experts, and less on-call burnout.</li>
+            <li>Better capacity data means less AI spend wasted on over-provisioning.</li>
+          </ul></div>
+        </div>
+      </aside>
+
+      <h2 id="maturity-levels">Maturity levels</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 900 230" role="img" aria-labelledby="ml-title ml-desc">
+          <title id="ml-title">Observability maturity ladder</title>
+          <desc id="ml-desc">Five ascending steps: Level 0 Dark, Level 1 Reactive (Nimbus today), Level 2 Standardized, Level 3 SLO-driven, Level 4 Proactive.</desc>
+          <rect class="d-box" x="20" y="170" width="160" height="44" rx="8"/><text class="d-text" x="100" y="197" text-anchor="middle">0 · Dark</text>
+          <rect class="d-box-reality" x="195" y="130" width="160" height="84" rx="8"/><text class="d-text" x="275" y="160" text-anchor="middle">1 · Reactive</text><text class="d-reality-text" x="275" y="182" text-anchor="middle">◀ Nimbus today</text>
+          <rect class="d-box-accent" x="370" y="90" width="160" height="124" rx="8"/><text class="d-text" x="450" y="120" text-anchor="middle">2 · Standardized</text><text class="d-accent-text" x="450" y="142" text-anchor="middle">90-day target</text>
+          <rect class="d-box" x="545" y="50" width="160" height="164" rx="8"/><text class="d-text" x="625" y="80" text-anchor="middle">3 · SLO-driven</text>
+          <rect class="d-box" x="720" y="10" width="160" height="204" rx="8"/><text class="d-text" x="800" y="40" text-anchor="middle">4 · Proactive</text>
+        </svg>
+      </figure>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Level</th><th>What it looks like</th><th>How incidents go</th></tr></thead>
+          <tbody>
+            <tr><td><strong>0 · Dark</strong></td><td>Little or no telemetry</td><td>Users report outages. Diagnosis is guesswork.</td></tr>
+            <tr><td><strong>1 · Reactive</strong></td><td>Telemetry in App Insights, inconsistent naming, &lt;10% dashboards, threshold alerts, unclear owners</td><td>Detected late, slow to scope, KQL written from scratch every time</td></tr>
+            <tr><td><strong>2 · Standardized</strong></td><td>Standard attributes everywhere, a golden-signals dashboard per feature from a template, every alert has an owner, client traces connected</td><td>Scoped in minutes, the right CFT paged first time</td></tr>
+            <tr><td><strong>3 · SLO-driven</strong></td><td>SLOs per feature, burn-rate alerts, error budget policy, tail-based sampling, GenAI metrics everywhere</td><td>Alerts mean user impact. Priorities follow the budgets.</td></tr>
+            <tr><td><strong>4 · Proactive</strong></td><td>Game days, capacity forecasting, evals in CI, automated mitigations</td><td>Many incidents prevented or self-healed</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="self-assessment-scorecard">Self-assessment scorecard</h2>
+      <p>Tick what's true for <strong>your service or feature</strong> today. Your answers stay in your browser.</p>
+      <ul class="checklist" data-key="scorecard" id="scorecard">
+        <li><code>service.name</code> is set and meaningful (not <code>unknown_service</code>)</li>
+        <li><code>service.version</code> is set, so <code>application_Version</code> shows deploys</li>
+        <li><code>feature.experience</code> and <code>cft.owner</code> appear in <code>customDimensions</code></li>
+        <li>Foundry calls carry GenAI attributes (model, input and output tokens)</li>
+        <li>Trace context propagates from the desktop client through to Foundry</li>
+        <li>Sampling is understood, and queries use <code>itemCount</code></li>
+        <li>A golden-signals dashboard exists (traffic, errors, latency, saturation)</li>
+        <li>Every alert routes to a named owner who acts on it</li>
+        <li>At least one SLO is defined and visible</li>
+        <li>Alerts use burn rate instead of raw thresholds</li>
+        <li>A playbook exists for the top 2 failure modes</li>
+        <li>A game day has been run in the last quarter</li>
+      </ul>
+      <div class="score-out" aria-live="polite">
+        <b id="score-num">0/12</b>
+        <div class="meter" aria-hidden="true"><i id="score-bar"></i></div>
+        <span id="score-level">Level 1 · Reactive</span>
+      </div>
+
+      <h2 id="roadmap">Roadmap: from under 10% to Standardized</h2>
+      <p>The order matters. Each phase makes the next one cheaper.</p>
+
+      <h3 id="days-0-30-foundations">Days 0–30: Foundations <span class="badge beginner">quick wins</span></h3>
+      <ul class="checklist" data-key="roadmap-30">
+        <li><strong>Paved-road OTel package.</strong> Platform ships a small shared library or config that sets resource attributes, the exporter, and sampling the same way for every service.</li>
+        <li><strong>Standard attributes everywhere:</strong> <code>service.name</code>, <code>service.version</code>, <code>feature.experience</code>, <code>cft.owner</code>, <code>deployment.environment.name</code>.</li>
+        <li><strong>Every alert has an owner.</strong> Delete or reroute alerts that nobody acts on.</li>
+        <li><strong>A golden-signals dashboard template</strong>, provisioned as code with a <code>$feature</code> variable, so one template covers every feature.</li>
+        <li><strong>A telemetry-volume alert</strong>, so silence is never mistaken for health.</li>
+      </ul>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Env</span><span class="title">Standard OpenTelemetry configuration per service<span class="answers">The same five settings in every CFT's deployment</span></span></div>
+<pre><code>OTEL_SERVICE_NAME=writing-assist-svc
+OTEL_RESOURCE_ATTRIBUTES=service.version=1.8.2,feature.experience=writing-assist,cft.owner=create,deployment.environment.name=prod
+OTEL_TRACES_SAMPLER=parentbased_traceidratio
+OTEL_TRACES_SAMPLER_ARG=0.25
+APPLICATIONINSIGHTS_CONNECTION_STRING=&lt;from Key Vault&gt;</code></pre>
+      </div>
+      <div class="callout warn">
+        <div class="callout-title">Resource attributes vs customDimensions</div>
+        <p>The Azure Monitor exporter maps <code>service.name</code> to <code>cloud_RoleName</code> and <code>service.version</code> to <code>application_Version</code>. Custom resource attributes such as <code>feature.experience</code> may not reach <code>customDimensions</code> on every row. The paved-road package should include a small span processor that copies them onto each span, so the queries in this guide can find them.</p>
+      </div>
+
+      <h3 id="days-31-60-connect-the-dots">Days 31–60: Connect the dots <span class="badge intermediate">medium effort</span></h3>
+      <ul class="checklist" data-key="roadmap-60">
+        <li><strong>Client trace propagation:</strong> the desktop client sends <code>traceparent</code>, and APIM forwards it.</li>
+        <li><strong>GenAI semantic conventions</strong> on every Foundry call, including token usage and finish reasons.</li>
+        <li><strong>A TTFT metric</strong> for every streaming feature, not only Writing Assist.</li>
+        <li><strong>A Platform saturation dashboard:</strong> tokens per minute against quota per deployment, PTU utilization, and 429s by caller.</li>
+        <li><strong>First SLOs in shadow mode</strong> for Writing Assist and Device Care. Measure for 4 weeks before alerting on them.</li>
+      </ul>
+
+      <h3 id="days-61-90-slo-driven">Days 61–90: SLO-driven <span class="badge advanced">bigger lift</span></h3>
+      <ul class="checklist" data-key="roadmap-90">
+        <li><strong>Burn-rate alerts</strong> replace raw threshold alerts for features with SLOs.</li>
+        <li><strong>Tail-based sampling</strong> in an OpenTelemetry Collector, keeping 100% of errors and slow traces.</li>
+        <li><strong>An error budget policy</strong> agreed with CFT leads: what happens when the budget runs out.</li>
+        <li><strong>Dashboard coverage: 100% of interactive features</strong>, all generated from the template.</li>
+        <li><strong>First game day</strong> (throttle <code>chat-small</code> in staging).</li>
+      </ul>
+
+      <h2 id="golden-signals-dashboard-template">Golden-signals dashboard template</h2>
+      <p>One Grafana dashboard, provisioned as code, with variables for <code>$feature</code> and <code>$role</code>. Each panel is a query from the <a href="queries.html">library</a>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Row</th><th>Panels</th><th>Source query</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Overview</strong></td><td>SLO attainment, budget remaining, current burn rate</td><td><a href="queries.html#q-burn-rate">Burn rate</a></td></tr>
+            <tr><td><strong>Traffic</strong></td><td>Requests/min, tokens/min</td><td><a href="queries.html#q-token-share">Token consumption</a></td></tr>
+            <tr><td><strong>Errors</strong></td><td>Error %, failures by result code, top exceptions</td><td><a href="queries.html#q-error-rate">Error rate</a>, <a href="queries.html#q-top-exceptions">exceptions</a></td></tr>
+            <tr><td><strong>Latency</strong></td><td>P50/P95/P99, TTFT, per-hop breakdown</td><td><a href="queries.html#q-latency-timechart">Latency timechart</a>, <a href="queries.html#q-ttft">TTFT</a></td></tr>
+            <tr><td><strong>Saturation</strong></td><td>Deployment TPM % of quota, 429 rate, calls per operation</td><td><a href="queries.html#q-429">429s</a>, <a href="queries.html#q-retry">retries</a></td></tr>
+            <tr><td><strong>Change</strong></td><td>Error % by version, client version mix</td><td><a href="queries.html#q-deploy-correlation">Deploy correlation</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="measuring-progress">Measuring progress</h2>
+      <ul>
+        <li><strong>Attribute coverage:</strong> the share of services with standard attributes (<a href="queries.html#q-role-inventory">service inventory query</a>).</li>
+        <li><strong>Dashboard coverage:</strong> the share of feature experiences with a template-based dashboard. Today it's under 10%.</li>
+        <li><strong>Alert ownership:</strong> the share of alerts with a named owner, and the share of pages acted on (versus ignored).</li>
+        <li><strong>Time to scope:</strong> minutes from page to knowing the feature and owner, taken from incident timelines.</li>
+        <li><strong>Detection source:</strong> the share of incidents detected by alerts rather than by users.</li>
+      </ul>
+      <div class="callout tip">
+        <div class="callout-title">Careful with MTTR</div>
+        <p>Mean time to resolve is noisy and easy to game, and incidents vary too much for an average to mean much. Use it as a rough trend at most. Time to scope and detection source tell you more about observability maturity.</p>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="assets/site.js"></script>
+<script>
+  (function () {
+    var list = document.getElementById("scorecard");
+    if (!list) return;
+    var levels = [[0, "Level 1 · Reactive"], [5, "Level 2 · Standardized (partly)"], [8, "Level 2 · Standardized"], [10, "Level 3 · SLO-driven"], [12, "Level 4 · Proactive"]];
+    function update() {
+      var boxes = list.querySelectorAll("input"), n = 0;
+      Array.prototype.forEach.call(boxes, function (b) { if (b.checked) n++; });
+      document.getElementById("score-num").textContent = n + "/" + boxes.length;
+      document.getElementById("score-bar").style.width = Math.round(100 * n / boxes.length) + "%";
+      var label = levels[0][1];
+      levels.forEach(function (l) { if (n >= l[0]) label = l[1]; });
+      document.getElementById("score-level").textContent = label;
+    }
+    list.addEventListener("change", update);
+    var reset = list.nextElementSibling && list.nextElementSibling.querySelector("button");
+    if (reset) reset.addEventListener("click", function () { setTimeout(update, 0); });
+    update();
+  })();
+</script>
+</body>
+</html>
