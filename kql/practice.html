@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KQL Quiz & Cheat Sheet · Nimbus SRE</title>
+  <meta name="description" content="Test your KQL with a 12-question interactive quiz (read the query, spot the bug, pick the operator) and keep a printable KQL cheat sheet.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="kql-practice">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">KQL Training</a></div>
+      <div class="eyebrow">KQL Training · Practice</div>
+      <h1>Quiz &amp; Cheat Sheet</h1>
+      <p class="lede">Twelve questions that check what matters in an incident: can you read a query, spot the bug that makes the numbers wrong, and pick the right operator? Then keep the cheat sheet next to you.</p>
+
+      <h2 id="quiz">Quiz</h2>
+      <p>Click an answer to see whether it's right, and why. Your score is saved in this browser.</p>
+      <div id="quiz-app" aria-live="polite"><noscript><p>JavaScript is off. Work through the lessons' exercises and answers instead.</p></noscript></div>
+
+      <h2 id="cheat-sheet">Cheat Sheet</h2>
+      <div class="hero-actions no-print"><button type="button" class="btn" onclick="window.print()">Print Cheat Sheet</button></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>I want to…</th><th>Write</th></tr></thead>
+          <tbody>
+            <tr><td>See some rows</td><td><code>requests | take 10</code></td></tr>
+            <tr><td>Last hour only</td><td><code>| where timestamp &gt; ago(1h)</code> (workspace tables: <code>TimeGenerated</code>)</td></tr>
+            <tr><td>One service</td><td><code>| where cloud_RoleName == "name"</code></td></tr>
+            <tr><td>Failed only</td><td><code>| where success == false</code></td></tr>
+            <tr><td>Text contains a word</td><td><code>| where target has "zoom"</code></td></tr>
+            <tr><td>Any of a list</td><td><code>| where resultCode in ("401", "403")</code> · <code>target has_any (dynamic(["a", "b"]))</code></td></tr>
+            <tr><td>Keep some columns</td><td><code>| project timestamp, name, duration</code></td></tr>
+            <tr><td>Add a column</td><td><code>| extend seconds = duration / 1000</code></td></tr>
+            <tr><td>A custom field</td><td><code>tostring(customDimensions["client.version"])</code></td></tr>
+            <tr><td>Real count (sampling)</td><td><code>sum(itemCount)</code></td></tr>
+            <tr><td>Count where</td><td><code>sumif(itemCount, success == false)</code></td></tr>
+            <tr><td>Per group</td><td><code>| summarize … by cloud_RoleName</code></td></tr>
+            <tr><td>P50 / P95</td><td><code>percentile(duration, 50)</code>, <code>percentile(duration, 95)</code></td></tr>
+            <tr><td>Error rate</td><td><code>| extend error_pct = round(100.0 * failed / total, 2)</code></td></tr>
+            <tr><td>Over time</td><td><code>| summarize … by bin(timestamp, 5m) | render timechart</code></td></tr>
+            <tr><td>Biggest first</td><td><code>| order by x desc</code> · <code>| top 10 by x desc</code></td></tr>
+            <tr><td>Vs yesterday</td><td><code>| extend period = iff(timestamp &gt; ago(1h), "now", "yesterday")</code></td></tr>
+            <tr><td>Name a value</td><td><code>let window = 1h;</code></td></tr>
+            <tr><td>Connect request + calls</td><td><code>| join kind=leftouter (dependencies …) on operation_Id</code></td></tr>
+            <tr><td>Stack tables</td><td><code>union requests, dependencies, exceptions</code></td></tr>
+            <tr><td>Column may not exist</td><td><code>column_ifexists("httpStatusCode_s", "")</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="common-mistakes">Common Mistakes</h2>
+      <div class="card-grid">
+        <div class="card"><h3>No Time Filter</h3><p>Slow, and it mixes today with last week. Filter on time first.</p></div>
+        <div class="card"><h3>Count() on Sampled Data</h3><p>Undercounts. Use <code>sum(itemCount)</code> on Application Insights tables.</p></div>
+        <div class="card"><h3>Whole-Number Division</h3><p><code>failed / total</code> becomes 0. Write <code>100.0 * failed / total</code>.</p></div>
+        <div class="card"><h3>Averages for Latency</h3><p>They hide the slow tail. Use P50 and P95.</p></div>
+        <div class="card"><h3>Wrong Table Spelling</h3><p><code>requests</code>/<code>timestamp</code> (classic) vs <code>AppRequests</code>/<code>TimeGenerated</code> (workspace).</p></div>
+        <div class="card"><h3>No Baseline</h3><p>A number alone means nothing. Compare with yesterday or last week.</p></div>
+      </div>
+
+      <h2 id="next-steps">Next Steps</h2>
+      <ul>
+        <li>NOC: run the <a href="../noc/detect.html#shift-health-sweep">shift health sweep</a> yourself every shift for a week.</li>
+        <li>SRE: work through <a href="../sre/investigate.html">Investigate</a>, and rewrite one playbook query from memory.</li>
+        <li>Everyone: set your environment's names in <a href="../queries.html#make-it-yours">Make It Yours</a>, then browse <a href="../queries.html">Nimbus KQL</a> and the <a href="https://github.com/LemonadeVodka/kql-toolkit">KQL toolkit</a>.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+<script src="../assets/kql-quiz.js"></script>
+</body>
+</html>

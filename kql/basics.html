@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KQL Module 1: Basics · Nimbus SRE</title>
+  <meta name="description" content="KQL basics for incident response: tables and pipes, filtering by time, choosing columns, counting and grouping. Plain English with exercises.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="kql-basics">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">KQL Training</a></div>
+      <span class="badge beginner">Module 1 · Basics</span>
+      <h1>Module 1: Basics</h1>
+      <p class="lede">Four lessons that cover most of what you'll ever type: pick a table, filter it, choose columns, and count. Run each exercise in the <a href="index.html#where-to-practice">demo workspace</a> before you open the answer.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>A query starts with a <strong>table</strong>, and each <code>|</code> passes rows to the next step.</li>
+          <li><code>where</code> keeps rows. <code>project</code> keeps columns. <code>extend</code> adds columns. <code>summarize</code> counts and groups.</li>
+          <li>Always limit time first, with <code>where timestamp &gt; ago(1h)</code>.</li>
+          <li>Count with <code>sum(itemCount)</code>, not <code>count()</code>, on Application Insights tables (sampling).</li>
+        </ul>
+      </div>
+
+      <h2 id="lesson-1">Lesson 1: Tables and Pipes</h2>
+      <p><strong>Concept.</strong> Telemetry lives in <strong>tables</strong>. Each row is one event, such as one request. The most useful tables for us are <code>requests</code> (calls into our services), <code>dependencies</code> (calls our services make to others: the model, partners, search), and <code>exceptions</code> (errors in our code). The pipe <code>|</code> means "then".</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Look at a Few Rows<span class="answers">Always start by looking at the data</span></span></div>
+<pre><code>requests
+| take 10</code></pre>
+      </div>
+      <p><code>take 10</code> shows any 10 rows. Use it to see which columns exist before writing a real query.</p>
+      <div class="panel"><b>Exercise 1.</b> In the demo workspace, show 10 rows from <code>AppRequests</code>. Which column holds the service name? Which holds the duration?</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 1</span></div><pre><code>AppRequests
+| take 10</code></pre></div>
+        <p>Service name: <code>AppRoleName</code>. Duration: <code>DurationMs</code> (milliseconds). In our classic tables these are <code>cloud_RoleName</code> and <code>duration</code>.</p>
+      </div></details>
+
+      <h2 id="lesson-2">Lesson 2: Filtering and Time</h2>
+      <p><strong>Concept.</strong> <code>where</code> keeps only the rows that match. <strong>Always filter on time first.</strong> It makes queries fast and keeps you looking at the right moment. <code>ago(1h)</code> means "one hour before now". Other units: <code>m</code> (minutes), <code>d</code> (days).</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Failed Requests for One Service, Last Hour<span class="answers">Filtering by time, by service, and by outcome</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1h)
+| where cloud_RoleName == "writing-assist-svc"
+| where success == false
+| take 20</code></pre>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>You write</th><th>It means</th></tr></thead>
+          <tbody>
+            <tr><td><code>==</code> / <code>!=</code></td><td>Equals / not equals (case-sensitive for text)</td></tr>
+            <tr><td><code>=~</code></td><td>Equals, ignoring upper or lower case</td></tr>
+            <tr><td><code>has "zoom"</code></td><td>Contains the whole word "zoom". Fast, and the usual choice.</td></tr>
+            <tr><td><code>contains "zo"</code></td><td>Contains the letters anywhere. Slower.</td></tr>
+            <tr><td><code>in ("401", "403")</code></td><td>Equals any value in the list</td></tr>
+            <tr><td><code>and</code> / <code>or</code></td><td>Combine conditions</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel"><b>Exercise 2.</b> In <code>AppRequests</code>, show 20 <strong>failed</strong> requests from the last <strong>30 minutes</strong>.</div>
+      <details><summary>Hint</summary><div class="details-body"><p>The demo uses <code>TimeGenerated</code> and <code>Success</code>. Thirty minutes is <code>30m</code>.</p></div></details>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 2</span></div><pre><code>AppRequests
+| where TimeGenerated > ago(30m)
+| where Success == false
+| take 20</code></pre></div>
+        <p>If nothing comes back, widen the window to <code>ago(1d)</code>. Demo data can be quiet.</p>
+      </div></details>
+      <div class="callout warn"><div class="callout-title">Common Mistake</div><p>Forgetting the time filter. The query scans days of data, runs slowly, and mixes today's incident with last week's normal.</p></div>
+
+      <h2 id="lesson-3">Lesson 3: Choosing and Computing Columns</h2>
+      <p><strong>Concept.</strong> <code>project</code> keeps only the columns you list, so results are readable. <code>extend</code> adds a new column, computed from others. Many of our custom fields live inside <code>customDimensions</code>. Pull one out with <code>tostring(customDimensions["name"])</code>.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Slow Requests With Their Client Version<span class="answers">project, extend, and a custom field</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1h)
+| extend client = tostring(customDimensions["client.version"])
+| extend seconds = duration / 1000
+| project timestamp, name, seconds, resultCode, client
+| top 10 by seconds desc</code></pre>
+      </div>
+      <p><code>top 10 by seconds desc</code> sorts and keeps the 10 largest. <code>desc</code> means biggest first.</p>
+      <div class="panel"><b>Exercise 3.</b> From <code>AppRequests</code> in the last day, show the 10 slowest requests with only these columns: time, name, duration in <strong>seconds</strong>, result code.</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 3</span></div><pre><code>AppRequests
+| where TimeGenerated > ago(1d)
+| extend seconds = DurationMs / 1000
+| project TimeGenerated, Name, seconds, ResultCode
+| top 10 by seconds desc</code></pre></div>
+      </div></details>
+
+      <h2 id="lesson-4">Lesson 4: Counting and Grouping</h2>
+      <p><strong>Concept.</strong> <code>summarize</code> collapses many rows into a few numbers. <code>by</code> makes one result per group: per service, per result code, per feature. Application Insights may <strong>sample</strong> data, keeping 1 row to stand for several. The <code>itemCount</code> column says how many, so count with <code>sum(itemCount)</code> to get the true number.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Requests and Failures per Service<span class="answers">summarize with by, using itemCount</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1h)
+| summarize total = sum(itemCount), failed = sumif(itemCount, success == false) by cloud_RoleName
+| order by failed desc</code></pre>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Function</th><th>Gives you</th></tr></thead>
+          <tbody>
+            <tr><td><code>count()</code></td><td>Number of rows (wrong if the data is sampled)</td></tr>
+            <tr><td><code>sum(itemCount)</code></td><td>The real number of events</td></tr>
+            <tr><td><code>sumif(itemCount, condition)</code></td><td>The real number where the condition is true</td></tr>
+            <tr><td><code>dcount(column)</code></td><td>The number of distinct values (for example, distinct users)</td></tr>
+            <tr><td><code>avg</code>, <code>max</code>, <code>min</code></td><td>Average, largest, and smallest. Don't use the average for latency (see Lesson 5).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel"><b>Exercise 4.</b> From <code>AppRequests</code> in the last day: for each <strong>result code</strong>, how many requests were there? Biggest first.</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 4</span></div><pre><code>AppRequests
+| where TimeGenerated > ago(1d)
+| summarize requests = sum(ItemCount) by ResultCode
+| order by requests desc</code></pre></div>
+      </div></details>
+
+      <div class="callout ok"><div class="callout-title">You Can Now</div><p>Read the <a href="../noc/detect.html#shift-health-sweep">shift health sweep</a> queries line by line. Next: <a href="latency-and-errors.html">Module 2: Latency &amp; Errors</a>.</p></div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KQL Module 3: Across Layers · Nimbus SRE</title>
+  <meta name="description" content="Advanced KQL for SRE: parameter blocks with let, joining requests and dependencies, Log Analytics tables for edge and gateway, and patterns like anomaly detection and burn rate.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="kql-advanced">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">KQL Training</a></div>
+      <span class="badge advanced">Module 3 · Across Layers</span>
+      <h1>Module 3: Across Layers</h1>
+      <p class="lede">For SRE engineers and ambitious NOC members. Write reusable queries, connect a request to everything it called, query the edge and gateway logs in Log Analytics, and use the patterns behind our burn-rate and anomaly queries.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><code>let</code> names a value once at the top. That's our <strong>parameter block</strong> convention.</li>
+          <li><code>join</code> on <code>operation_Id</code> connects a request to its dependencies. <code>union</code> stacks several tables.</li>
+          <li>Edge and gateway logs live in Log Analytics (<code>AzureDiagnostics</code>, <code>ApiManagementGatewayLogs</code>). Use <code>column_ifexists</code> when column names vary.</li>
+          <li><code>make-series</code> + <code>series_decompose_anomalies</code> finds unusual spikes automatically.</li>
+        </ul>
+      </div>
+
+      <h2 id="lesson-9">Lesson 9: Parameters With <code>let</code></h2>
+      <p><strong>Concept.</strong> <code>let name = value;</code> defines a value once. We put every environment-specific value at the top in a <strong>parameter block</strong>, tagged <code>[NIMBUS]</code> (must change), <code>[TUNE]</code> (adjust), or <code>[AZURE]</code> (real schema), so anyone can reuse the query safely.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Our Parameter-Block Convention<span class="answers">Change the top, leave the body alone</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let role = "writing-assist-svc";   // [NIMBUS] cloud_RoleName of the service
+let window = 1h;                   // [TUNE] how far back to look
+// ── Query ──────────────────────────────────
+requests
+| where timestamp > ago(window) and cloud_RoleName == role
+| summarize p50 = percentile(duration, 50), p95 = percentile(duration, 95) by bin(timestamp, 5m)
+| render timechart</code></pre>
+      </div>
+      <div class="panel"><b>Exercise 9.</b> Rewrite Exercise 6 (error rate per role) with a parameter block for the time window, and run it for 6 hours.</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 9</span></div><pre><code>// ── Parameters ─────────────────────────────
+let window = 6h;   // [TUNE] how far back to look
+// ── Query ──────────────────────────────────
+AppRequests
+| where TimeGenerated > ago(window)
+| summarize total = sum(ItemCount), failed = sumif(ItemCount, Success == false) by AppRoleName
+| extend error_pct = round(100.0 * failed / total, 2)
+| order by error_pct desc</code></pre></div>
+      </div></details>
+
+      <h2 id="lesson-10">Lesson 10: Joining Requests and Dependencies</h2>
+      <p><strong>Concept.</strong> Every request has an <code>operation_Id</code> (the trace ID), and its dependency calls share it. <code>join</code> lines them up, so you can see how much of a request's time went to each layer. <code>union</code> stacks tables, which is useful for walking one trace end to end.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">How Much of Each Request Is the Model?<span class="answers">Join on operation_Id</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1h) and cloud_RoleName == "writing-assist-svc"
+| project operation_Id, request_ms = duration
+| join kind=leftouter (
+    dependencies
+    | where timestamp > ago(1h) and target has "openai.azure.com"
+    | summarize model_ms = sum(duration) by operation_Id
+  ) on operation_Id
+| summarize p95_request = percentile(request_ms, 95), p95_model = percentile(model_ms, 95)</code></pre>
+      </div>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Walk One Trace<span class="answers">Everything that happened for one request, in order</span></span></div>
+<pre><code>union requests, dependencies, exceptions, traces
+| where timestamp > ago(1d) and operation_Id == "PASTE_OPERATION_ID"
+| project timestamp, itemType, cloud_RoleName, name, target, duration, resultCode
+| order by timestamp asc</code></pre>
+      </div>
+      <div class="panel"><b>Exercise 10.</b> Find the slowest <code>AppRequests</code> row in the last day and copy its <code>OperationId</code>. Then list every <code>AppDependencies</code> row with that <code>OperationId</code>.</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 10, Step 1</span></div><pre><code>AppRequests
+| where TimeGenerated > ago(1d)
+| top 1 by DurationMs desc
+| project OperationId, Name, DurationMs</code></pre></div>
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 10, Step 2</span></div><pre><code>AppDependencies
+| where TimeGenerated > ago(1d) and OperationId == "PASTE_FROM_STEP_1"
+| project TimeGenerated, Target, Name, DurationMs, Success
+| order by TimeGenerated asc</code></pre></div>
+      </div></details>
+
+      <h2 id="lesson-11">Lesson 11: Edge and Gateway Logs</h2>
+      <p><strong>Concept.</strong> Our CDN (Front Door) and gateway (APIM) write to <strong>Log Analytics</strong>, not Application Insights. Front Door logs sit in <code>AzureDiagnostics</code> with a <code>Category</code>. Column names vary by setup, so <code>column_ifexists("name", "")</code> keeps a query from breaking when a column is missing.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Edge Status Codes Over Time<span class="answers">Log Analytics workspace</span></span></div>
+<pre><code>AzureDiagnostics
+| where TimeGenerated > ago(6h) and Category == "FrontDoorAccessLog"
+| extend status = toint(column_ifexists("httpStatusCode_s", ""))
+| summarize ok = countif(status < 400), c4xx = countif(status between (400 .. 499)), c5xx = countif(status >= 500)
+    by bin(TimeGenerated, 5m)
+| render timechart</code></pre>
+      </div>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">401s at the Gateway by API<span class="answers">Log Analytics workspace</span></span></div>
+<pre><code>ApiManagementGatewayLogs
+| where TimeGenerated > ago(6h)
+| summarize total = count(), unauthorized = countif(ResponseCode == 401) by ApiId
+| extend pct_401 = round(100.0 * unauthorized / total, 2)
+| order by pct_401 desc</code></pre>
+      </div>
+      <p>Log tables like these are not sampled, so <code>count()</code> is correct here. To compare all layers side by side, see the <a href="../sre/investigate.html#which-layer-returned-the-error">errors-by-layer query</a>.</p>
+
+      <h2 id="lesson-12">Lesson 12: Patterns</h2>
+      <p><strong>Concept.</strong> A few reusable patterns turn raw numbers into answers. <strong>Anomaly detection</strong> flags unusual points against a learned pattern. <strong>Top movers</strong> shows what changed most. <strong>Burn rate</strong> says whether we're using up the error budget fast enough to page someone.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Anomalies in Failures<span class="answers">make-series + series_decompose_anomalies</span></span></div>
+<pre><code>requests
+| where timestamp > ago(7d)
+| make-series failures = sumif(itemCount, success == false) default = 0 on timestamp step 15m
+| extend (anomaly, score, baseline) = series_decompose_anomalies(failures, 2.5)
+| mv-expand timestamp to typeof(datetime), failures to typeof(long), anomaly to typeof(int)
+| where anomaly != 0</code></pre>
+      </div>
+      <div class="panel"><b>Exercise 12.</b> Adapt the anomaly query to <code>AppRequests</code> over 7 days and list the anomalous 15-minute buckets.</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 12</span></div><pre><code>AppRequests
+| where TimeGenerated > ago(7d)
+| make-series failures = sumif(ItemCount, Success == false) default = 0 on TimeGenerated step 15m
+| extend (anomaly, score, baseline) = series_decompose_anomalies(failures, 2.5)
+| mv-expand TimeGenerated to typeof(datetime), failures to typeof(long), anomaly to typeof(int)
+| where anomaly != 0</code></pre></div>
+      </div></details>
+      <p>More patterns (top movers, baseline vs now, burn rate, errors by layer) are in the <a href="https://github.com/LemonadeVodka/kql-toolkit">KQL toolkit</a> and on <a href="../queries.html">Nimbus KQL</a>.</p>
+
+      <div class="callout ok"><div class="callout-title">You Can Now</div><p>Read every query in this guide, write investigation queries from scratch, and adapt the toolkit to any environment. Test yourself with the <a href="practice.html">quiz</a>.</p></div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

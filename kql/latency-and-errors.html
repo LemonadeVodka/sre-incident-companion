@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KQL Module 2: Latency & Errors · Nimbus SRE</title>
+  <meta name="description" content="KQL for latency and error rates: P50 and P95 percentiles, error-rate math, time charts, comparing with yesterday, and finding the layer with dependencies.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="kql-latency-errors">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">KQL Training</a></div>
+      <span class="badge intermediate">Module 2 · Latency &amp; Errors</span>
+      <h1>Module 2: Latency &amp; Errors</h1>
+      <p class="lede">The two signals behind most of our incidents. After this module you can measure P50 and P95, calculate an error rate correctly, see when something started, compare it with yesterday, and tell which layer the time or the errors come from.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Latency: <code>percentile(duration, 50)</code> and <code>percentile(duration, 95)</code>. Never <code>avg</code>.</li>
+          <li>Error rate: <code>100.0 * failed / total</code>, with both counted using <code>itemCount</code>.</li>
+          <li><code>bin(timestamp, 5m)</code> + <code>render timechart</code> shows <em>when</em>. Comparing with yesterday shows <em>whether it's unusual</em>.</li>
+          <li>The <code>dependencies</code> table shows calls to other layers: the model, partners, search.</li>
+        </ul>
+      </div>
+
+      <h2 id="lesson-5">Lesson 5: P50 and P95</h2>
+      <p><strong>Concept.</strong> <strong>P50</strong> (the median) is the typical wait: half of requests are faster. <strong>P95</strong> is the bad-day wait: 1 in 20 requests is slower. Averages hide slow requests, so we always use percentiles.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">P50 / P95 per Service, Last Hour<span class="answers">The two numbers we always report</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1h)
+| summarize p50_ms = percentile(duration, 50),
+            p95_ms = percentile(duration, 95),
+            requests = sum(itemCount)
+    by cloud_RoleName
+| order by p95_ms desc</code></pre>
+      </div>
+      <div class="callout tip"><div class="callout-title">Reading the Result</div><p>P50 normal but P95 high means a <em>subset</em> is slow (one region, instance, partner, or long prompts). Both high means something <em>broad</em> (capacity, a dependency, a deploy).</p></div>
+      <div class="panel"><b>Exercise 5.</b> From <code>AppRequests</code> (last day), show P50 and P95 duration per <strong>operation name</strong>, slowest P95 first.</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 5</span></div><pre><code>AppRequests
+| where TimeGenerated > ago(1d)
+| summarize p50_ms = percentile(DurationMs, 50), p95_ms = percentile(DurationMs, 95) by Name
+| order by p95_ms desc</code></pre></div>
+      </div></details>
+
+      <h2 id="lesson-6">Lesson 6: Error Rate</h2>
+      <p><strong>Concept.</strong> The error rate is failed ÷ total × 100. Two traps: KQL does whole-number division if both sides are whole numbers, so write <code>100.0</code> to get decimals, and count with <code>itemCount</code>. Then look at <strong>which</strong> result codes are failing, because 401, 429, and 5xx mean very different things.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Error Rate per Service, With Failing Codes<span class="answers">The correct way to calculate a percentage</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1h)
+| summarize total = sum(itemCount),
+            failed = sumif(itemCount, success == false),
+            failing_codes = make_set_if(resultCode, success == false)
+    by cloud_RoleName
+| extend error_pct = round(100.0 * failed / total, 2)
+| order by error_pct desc</code></pre>
+      </div>
+      <p><code>make_set_if</code> lists the distinct failing codes, so you can see at a glance whether it's <code>401</code>, <code>429</code>, or <code>500</code>. The <a href="../leaders/latency-and-errors.html#error-rates">primer</a> explains what each one means.</p>
+      <div class="panel"><b>Exercise 6.</b> From <code>AppRequests</code> (last day), calculate the error rate per <code>AppRoleName</code>, to 2 decimals, highest first.</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 6</span></div><pre><code>AppRequests
+| where TimeGenerated > ago(1d)
+| summarize total = sum(ItemCount), failed = sumif(ItemCount, Success == false) by AppRoleName
+| extend error_pct = round(100.0 * failed / total, 2)
+| order by error_pct desc</code></pre></div>
+      </div></details>
+      <div class="callout warn"><div class="callout-title">Common Mistake</div><p><code>failed / total * 100</code> with whole numbers gives <strong>0</strong>. Start with <code>100.0 *</code> so the maths uses decimals.</p></div>
+
+      <h2 id="lesson-7">Lesson 7: Over Time, and Compared With Yesterday</h2>
+      <p><strong>Concept.</strong> <code>bin(timestamp, 5m)</code> groups rows into 5-minute buckets, and <code>render timechart</code> draws them. That shows <em>when</em> it started. To know if a number is <em>unusual</em>, compare it with the same hour yesterday.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">P95 Over Time for One Service<span class="answers">When did it start? Getting better or worse?</span></span></div>
+<pre><code>requests
+| where timestamp > ago(6h) and cloud_RoleName == "writing-assist-svc"
+| summarize p50 = percentile(duration, 50), p95 = percentile(duration, 95) by bin(timestamp, 5m)
+| render timechart</code></pre>
+      </div>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Now vs the Same Hour Yesterday<span class="answers">Is this normal?</span></span></div>
+<pre><code>requests
+| where timestamp > ago(1h) or timestamp between (ago(25h) .. ago(24h))
+| extend period = iff(timestamp > ago(1h), "now", "yesterday")
+| summarize p95_ms = percentile(duration, 95),
+            error_pct = round(100.0 * sumif(itemCount, success == false) / sum(itemCount), 2)
+    by cloud_RoleName, period
+| order by cloud_RoleName asc, period asc</code></pre>
+      </div>
+      <div class="panel"><b>Exercise 7.</b> Draw the number of failed <code>AppRequests</code> per 15 minutes over the last day as a time chart.</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 7</span></div><pre><code>AppRequests
+| where TimeGenerated > ago(1d)
+| summarize failed = sumif(ItemCount, Success == false) by bin(TimeGenerated, 15m)
+| render timechart</code></pre></div>
+      </div></details>
+
+      <h2 id="lesson-8">Lesson 8: Dependencies and Layers</h2>
+      <p><strong>Concept.</strong> The <code>dependencies</code> table records calls <em>from</em> our services <em>to</em> other layers. The <code>target</code> column says where the call went: the AI model host, a partner API, the search service. This is how you <a href="../leaders/ai-product-layers.html">locate the layer</a>.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Which Downstream Layer Is Slow or Failing?<span class="answers">P95 and failures by dependency target</span></span></div>
+<pre><code>dependencies
+| where timestamp > ago(1h)
+| summarize calls = sum(itemCount),
+            p95_ms = percentile(duration, 95),
+            failed = sumif(itemCount, success == false)
+    by target, type
+| extend fail_pct = round(100.0 * failed / calls, 2)
+| order by p95_ms desc</code></pre>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>If <code>target</code> contains…</th><th>The layer is…</th></tr></thead>
+          <tbody>
+            <tr><td><code>openai.azure.com</code>, <code>services.ai.azure.com</code></td><td>The model provider (Azure AI Foundry)</td></tr>
+            <tr><td><code>search.windows.net</code></td><td>Retrieval (AI Search)</td></tr>
+            <tr><td><code>api.zoom.us</code>, <code>graph.microsoft.com</code>, OEM hosts</td><td>Partner integrations</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel"><b>Exercise 8.</b> From <code>AppDependencies</code> (last day), which <code>Target</code> has the highest failure rate? Show calls, failures, and the percentage.</div>
+      <details><summary>Answer</summary><div class="details-body">
+        <div class="code-card"><div class="code-head"><span class="lang">KQL · Answer</span><span class="title">Exercise 8</span></div><pre><code>AppDependencies
+| where TimeGenerated > ago(1d)
+| summarize calls = sum(ItemCount), failed = sumif(ItemCount, Success == false) by Target
+| extend fail_pct = round(100.0 * failed / calls, 2)
+| order by fail_pct desc</code></pre></div>
+      </div></details>
+
+      <div class="callout ok"><div class="callout-title">You Can Now</div><p>Run and adapt every <a href="../noc/detect.html#shift-health-sweep">sweep query</a>, and answer the <strong>Assess</strong> and <strong>Locate</strong> steps of <a href="../leaders/layers-framework.html">LAYERS</a> with data. Next: <a href="advanced.html">Module 3: Across Layers</a>.</p></div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

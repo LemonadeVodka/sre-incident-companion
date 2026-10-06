@@ -459,3 +459,16 @@ figure.diagram figcaption { margin-top: 10px; font-size: .86rem; color: var(--mu
   .track-banner { background: #fff; color: #000; border-color: #000; }
   .card { border-top-color: #000; }
 }
+
+/* KQL quiz */
+.quiz-code { margin: 10px 0; border: 1px solid var(--border); }
+.quiz-opts { display: grid; grid-template-columns: 1fr; margin-top: 10px; width: 100%; }
+.quiz-opts button { text-align: left; text-transform: none; letter-spacing: 0; font: 500 .92rem var(--font); padding: 9px 12px; }
+.quiz-opts button + button { border-left: 0; border-top: 1px solid var(--rule); }
+.quiz-opts button.right { background: var(--ok-soft); color: var(--ok); }
+.quiz-opts button.wrong { background: var(--danger-soft); color: var(--danger); }
+.quiz-opts button[disabled] { cursor: default; }
+.quiz-why { margin: 10px 0 0; }
+
+/* Show operators exactly as typed (no == / => ligatures) */
+code, pre, kbd { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }

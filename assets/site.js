@@ -48,6 +48,13 @@
       { id: "pm-example", href: "postmortems/example.html", title: "Worked Example" },
       { id: "pm-actions", href: "postmortems/action-items.html", title: "Action Items" }
     ]},
+    { group: "KQL Training", track: "kql", items: [
+      { id: "kql", href: "kql/index.html", title: "Start Here" },
+      { id: "kql-basics", href: "kql/basics.html", title: "1 · Basics" },
+      { id: "kql-latency-errors", href: "kql/latency-and-errors.html", title: "2 · Latency & Errors" },
+      { id: "kql-advanced", href: "kql/advanced.html", title: "3 · Across Layers" },
+      { id: "kql-practice", href: "kql/practice.html", title: "Quiz & Cheat Sheet" }
+    ]},
     { group: "Practice", track: "practice", items: [
       { id: "tabletop", href: "tabletop.html", title: "Tabletop Exercise Kit" },
       { id: "cards", href: "cards/index.html", title: "Printable Role Cards" }

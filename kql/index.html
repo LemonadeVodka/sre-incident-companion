@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KQL Training · Nimbus SRE</title>
+  <meta name="description" content="Learn KQL for incident response: plain-English lessons on latency, error rates, and layers, with free practice in the Log Analytics demo workspace.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="kql">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / KQL Training</div>
+      <div class="eyebrow">KQL Training · All Roles</div>
+      <h1>KQL Training</h1>
+      <p class="lede">KQL (Kusto Query Language) is how we ask questions of our telemetry. Most of our services have no dashboard, so being able to write a few simple queries is what lets you see the problem yourself instead of waiting for someone else. This training starts from zero and builds up to the queries in our playbooks.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><strong>Three modules, 12 lessons:</strong> Basics, Latency &amp; Errors, Across Layers. Each lesson takes 10–15 minutes.</li>
+          <li>Every lesson has a <strong>plain-English concept</strong>, a <strong>worked example</strong>, an <strong>exercise</strong> you can run for free, and an <strong>answer</strong>.</li>
+          <li>Finish with the <a href="practice.html">quiz and cheat sheet</a>.</li>
+        </ul>
+      </div>
+
+      <h2 id="where-to-practice">Where to Practice</h2>
+      <div class="card-grid wide">
+        <div class="card"><h3>Log Analytics Demo Workspace</h3><p>Free, real-looking application telemetry from Microsoft. Sign in with any Microsoft account, then open <strong>Azure portal → Log Analytics → Demo</strong> (search for "Log Analytics demo"). The exercises use its <code>AppRequests</code>, <code>AppDependencies</code>, and <code>AppExceptions</code> tables.</p></div>
+        <div class="card"><h3>Our Application Insights</h3><p>Once you have access: open the Nimbus Application Insights resource, then <strong>Logs</strong>. Our examples use these tables: <code>requests</code>, <code>dependencies</code>, <code>exceptions</code>.</p></div>
+        <div class="card"><h3>Azure Data Explorer Help Cluster</h3><p>For pure KQL practice: <code>dataexplorer.azure.com</code>, cluster <code>help</code>, database <code>Samples</code> (for example the <code>StormEvents</code> table). Good for learning the language itself.</p></div>
+      </div>
+      <div class="callout tip">
+        <div class="callout-title">Two Spellings of the Same Tables</div>
+        <p>Application Insights data appears in two schemas. Our examples use the <strong>classic</strong> names. The demo workspace uses the <strong>workspace</strong> names. Same data, different column names:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Classic (Nimbus examples)</th><th>Workspace (demo exercises)</th></tr></thead>
+            <tbody>
+              <tr><td><code>requests</code></td><td><code>AppRequests</code></td></tr>
+              <tr><td><code>dependencies</code></td><td><code>AppDependencies</code></td></tr>
+              <tr><td><code>exceptions</code></td><td><code>AppExceptions</code></td></tr>
+              <tr><td><code>timestamp</code></td><td><code>TimeGenerated</code></td></tr>
+              <tr><td><code>duration</code> (ms)</td><td><code>DurationMs</code></td></tr>
+              <tr><td><code>success</code>, <code>resultCode</code></td><td><code>Success</code>, <code>ResultCode</code></td></tr>
+              <tr><td><code>cloud_RoleName</code></td><td><code>AppRoleName</code></td></tr>
+              <tr><td><code>itemCount</code></td><td><code>ItemCount</code></td></tr>
+              <tr><td><code>customDimensions</code></td><td><code>Properties</code></td></tr>
+              <tr><td><code>operation_Id</code></td><td><code>OperationId</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h2 id="learning-paths">Learning Paths by Role</h2>
+      <div class="card-grid">
+        <div class="card t-noc"><h3>NOC</h3><p>Modules 1 and 2 (Lessons 1–8). Goal: run and adapt the <a href="../noc/detect.html#shift-health-sweep">shift health sweep</a>, and read the numbers correctly.</p></div>
+        <div class="card t-sre"><h3>SRE Engineers</h3><p>All three modules. Goal: write investigation queries from scratch, across App Insights and Log Analytics tables.</p></div>
+        <div class="card t-lead"><h3>Senior Managers</h3><p>Lessons 1, 4, 5, and 6, plus the quiz's "read the query" questions. Goal: read a query, and know what to ask about its numbers.</p></div>
+      </div>
+
+      <h2 id="the-modules">The Modules</h2>
+      <div class="card-grid wide">
+        <a class="card" href="basics.html"><span class="badge beginner">Module 1</span><h3>Basics</h3><p>Lesson 1: tables and pipes · 2: filtering and time · 3: choosing and computing columns · 4: counting and grouping.</p></a>
+        <a class="card" href="latency-and-errors.html"><span class="badge intermediate">Module 2</span><h3>Latency &amp; Errors</h3><p>5: P50 and P95 · 6: error rates · 7: over time and vs yesterday · 8: dependencies and layers.</p></a>
+        <a class="card" href="advanced.html"><span class="badge advanced">Module 3</span><h3>Across Layers</h3><p>9: parameters with <code>let</code> · 10: joining requests and dependencies · 11: Log Analytics tables (edge, gateway) · 12: patterns (anomalies, burn rate).</p></a>
+        <a class="card" href="practice.html"><span class="badge neutral">Practice</span><h3>Quiz &amp; Cheat Sheet</h3><p>An interactive quiz (read the query, spot the bug, pick the operator) and a printable cheat sheet.</p></a>
+      </div>
+
+      <h2 id="how-a-query-reads">How a Query Reads</h2>
+      <p>A KQL query reads top to bottom, like a recipe. Start with a <strong>table</strong>, then each <code>|</code> (pipe) passes the rows to the next step.</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">KQL · Lesson</span><span class="title">Read It Like a Sentence<span class="answers">"From requests, keep the last hour, count them per service, biggest first."</span></span></div>
+<pre><code>requests                                   // 1. start with a table
+| where timestamp > ago(1h)                // 2. keep only the last hour
+| summarize total = sum(itemCount) by cloud_RoleName   // 3. count per service
+| order by total desc                      // 4. biggest first</code></pre>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

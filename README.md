@@ -32,6 +32,7 @@ Nimbus is a fictional desktop AI companion:
 | **SRE · Technical Lead** | `sre/`: role (incl. centralized SRE) · investigate · deep dives · leading the technical response |
 | **Senior Manager** | `leaders/`: **Be the Expert in the Room** · Know the Layers · Latency & Errors Primer · **The LAYERS Framework** (Question Builder) · Enabling the NOC · Enabling SRE Engineers · **Updating Executives** (SITREP builder) · During an Incident · **Post-Incident Actions** (After Action Review) · Scenarios · Operating Rhythm · Investing · Jargon |
 | **Post-Incident** | `postmortems/`: process · template & writer · running the review · worked example · action items |
+| **KQL Training** | `kql/`: start here · Module 1 Basics · Module 2 Latency & Errors · Module 3 Across Layers · quiz & cheat sheet (12 lessons, free demo-workspace exercises) |
 | **Practice** | Tabletop exercise kit (timed injects, scored debrief) · printable role cards (`cards/`) |
 | **Shared Toolkit** | Fundamentals · incident process · ways of working · starter playbooks · Nimbus KQL · observability maturity · references |
 
