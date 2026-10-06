@@ -3,98 +3,81 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Onboarding Paths · Nimbus SRE</title>
-  <meta name="description" content="Week 1, month 1, and month 3 onboarding paths for NOC coordinators, SRE technical leads, and senior managers, with progress tracking.">
+  <title>Hiring & Onboarding · Reliability Ops Playbook</title>
+  <meta name="description" content="Hiring and onboarding plans a reliability operations manager uses: your own first 90 days, onboarding contract NOC staff through the vendor, new SREs in the US and India, and your Ops lead.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body data-root="./" data-page="onboarding">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./playbook/index.html">Frameworks</a><a href="./operate/incident-operations.html">Incident Operations</a><a href="./team/contract-noc.html">Lead the Team</a><a href="./politics/index.html">Manage Up &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Start</div>
-      <div class="eyebrow">Start · Onboarding</div>
-      <h1>Onboarding Paths</h1>
-      <p class="lede">A structured path for each role, from first-week reading to running real incidents. Tick items off as you go. Progress is saved in this browser only.</p>
+      <div class="breadcrumb"><a href="index.html">Home</a> / Lead the Team</div>
+      <div class="eyebrow">Lead the Team · Hiring &amp; Onboarding</div>
+      <h1>Hiring &amp; Onboarding</h1>
+      <p class="lede">Plans you run as the manager: your own first 90 days, plus onboarding for contract NOC staff, new SREs, and your Ops lead. Tick items off as you go. Progress is saved in this browser only.</p>
 
-      <div class="tldr">
-        <ul>
-          <li>Each path mixes <strong>reading</strong>, <strong>practice</strong> (tabletops, shadowing), and <strong>doing</strong>.</li>
-          <li>Pair every new person with a buddy from the same role.</li>
-          <li>Managers: check in at the end of week 1, month 1, and month 3.</li>
-        </ul>
-      </div>
+      <div class="tldr"><ul>
+        <li>Each plan mixes <strong>reading</strong>, <strong>practice</strong> (tabletops, shadowing), and <strong>doing</strong>.</li>
+        <li>Pair every new person with a buddy. For SREs, pick a buddy in the <strong>other region</strong> too.</li>
+        <li>Contract NOC onboarding runs <strong>through the vendor</strong>: you set the outcomes, and they manage their people.</li>
+      </ul></div>
 
-      <h2 id="noc-path">NOC: Incident Coordinator</h2>
-      <h3 id="noc-week-1">Week 1</h3>
-      <ul class="checklist" data-key="onb-noc-1">
-        <li>Read <a href="environment.html">Background: Nimbus</a>. Draw the request path from memory, including both orchestrators.</li>
-        <li>Read the <a href="noc/index.html">NOC role</a> and the Good column for your role on <a href="response-quality.html">What Good Looks Like</a>.</li>
-        <li>Complete <a href="kql/basics.html">KQL Module 1: Basics</a> (exercises in the demo workspace).</li>
-        <li>Run the <a href="noc/detect.html#shift-health-sweep">shift health sweep</a> alongside your buddy on three shifts.</li>
-        <li>Check that PagerDuty, Slack, and Teams access all work. Join the Collab and Device CFT Teams channels.</li>
-        <li>Print the <a href="cards/noc.html">NOC role card</a>.</li>
-      </ul>
-      <h3 id="noc-month-1">Month 1</h3>
-      <ul class="checklist" data-key="onb-noc-2">
-        <li>Complete <a href="kql/latency-and-errors.html">KQL Module 2: Latency &amp; Errors</a> and score 9/12 or better on the <a href="kql/practice.html">quiz</a>.</li>
-        <li>Read <a href="noc/triage-and-escalate.html">Triage &amp; Escalate</a>, <a href="noc/coordinate.html">Coordinate</a>, and <a href="noc/action-requests.html">Requesting Actions</a>.</li>
-        <li>Play the Coordinator in a <a href="tabletop.html">tabletop exercise</a> that includes Morgan.</li>
-        <li>Shadow a real incident as scribe or bridge.</li>
-        <li>Write up one confusing alert as a runbook draft.</li>
-      </ul>
-      <h3 id="noc-month-3">Month 3</h3>
-      <ul class="checklist" data-key="onb-noc-3">
-        <li>Coordinate a Sev 3 as IC, with your buddy as backup.</li>
-        <li>Hand over a postmortem-ready timeline, and attend the review.</li>
-        <li>Coordinate a Sev 2 tabletop scoring "Good" or better on Coordination and Stakeholder Pressure.</li>
+      <h2 id="hiring">Hiring</h2>
+      <ul class="checklist" data-key="hiring">
+        <li>Agree the bar before interviews with the <a href="templates.html#hiring-scorecard-sre">SRE hiring scorecard</a>.</li>
+        <li>Use the same interview loop in the US and India, so the bar is identical in both regions.</li>
+        <li>Include a troubleshooting exercise based on a <a href="tech/failure-catalog.html">real-shaped failure</a>.</li>
+        <li>For the NOC vendor, evaluate with the <a href="templates.html#noc-vendor-evaluation">vendor evaluation</a>, not individual interviews (<a href="team/contract-noc.html#co-employment-boundaries">why</a>).</li>
       </ul>
 
-      <h2 id="sre-path">SRE: Technical Lead</h2>
-      <h3 id="sre-week-1">Week 1</h3>
-      <ul class="checklist" data-key="onb-sre-1">
-        <li>Read <a href="environment.html">Background</a>, <a href="sre/index.html">SRE role</a>, and <a href="ways-of-working.html">Ways of Working</a>.</li>
-        <li>Complete all three <a href="kql/index.html">KQL Training</a> modules.</li>
-        <li>Run every query on <a href="queries.html">Nimbus KQL</a> once, and note which ones return nothing (telemetry gaps).</li>
-        <li>Meet your CFT liaison counterparts, and read their service cards.</li>
-      </ul>
-      <h3 id="sre-month-1">Month 1</h3>
-      <ul class="checklist" data-key="onb-sre-2">
-        <li>Read <a href="sre/investigate.html">Investigate</a> and <a href="sre/technical-lead.html">Leading the Technical Response</a>.</li>
-        <li>Shadow two incidents as a second investigator.</li>
-        <li>Play Technical Lead in a tabletop, including the fallback-surge scenario.</li>
-        <li>Write the technical analysis for one postmortem.</li>
-      </ul>
-      <h3 id="sre-month-3">Month 3</h3>
-      <ul class="checklist" data-key="onb-sre-3">
-        <li>Primary on-call with a backup. Be Technical Lead for a Sev 2.</li>
-        <li>Read <a href="sre/deep-dives.html">Deep Dives</a>, and run a game day with one CFT.</li>
-        <li>Close one postmortem action item that changes the system.</li>
-      </ul>
-
-      <h2 id="manager-path">Senior Manager</h2>
-      <h3 id="manager-week-1">Week 1</h3>
+      <h2 id="your-first-90-days">Your First 90 Days</h2>
+      <h3 id="manager-days-1-30">Days 1–30: Listen and Learn</h3>
       <ul class="checklist" data-key="onb-lead-1">
-        <li>Read the <a href="leaders/index.html">manager path</a>, <a href="leaders/during-an-incident.html">During an Incident</a>, and the <a href="leaders/jargon.html">jargon decoder</a>.</li>
-        <li>Read <a href="leaders/during-an-incident.html#when-other-leaders-dive-in">When Other Leaders Dive In</a>.</li>
-        <li>Print the <a href="cards/manager.html">manager role card</a>.</li>
+        <li>Read <a href="environment.html">Background: Nimbus</a> and <a href="leaders/ai-product-layers.html">Know the Layers</a>.</li>
+        <li>1:1 with every SRE (both regions), your Ops lead, the NOC delivery manager, and each CFT and Cloud Infrastructure lead.</li>
+        <li>Map your stakeholders (<a href="templates.html#stakeholder-map">template</a>), including your director.</li>
+        <li>Read the last five postmortems. Count open actions.</li>
       </ul>
-      <h3 id="manager-month-1">Month 1</h3>
+      <h3 id="manager-days-31-60">Days 31–60: Set the Rhythm</h3>
       <ul class="checklist" data-key="onb-lead-2">
-        <li>Join a tabletop as the manager, and practice being the comms buffer for Morgan.</li>
-        <li>Chair one postmortem review using the <a href="postmortems/review-meeting.html">agenda</a>.</li>
-        <li>Meet the Cloud Infrastructure and CFT leads about response expectations.</li>
+        <li>Start the <a href="templates.html#weekly-reliability-note">weekly reliability note</a> and the vendor scorecard.</li>
+        <li>Chair a postmortem review using the <a href="postmortems/review-meeting.html">agenda</a>.</li>
+        <li>Run a tabletop as facilitator, including Morgan's injects.</li>
+        <li>Agree RACI and severity with CFT and Cloud Infrastructure leads (<a href="playbook/raci-and-severity.html">framework</a>).</li>
       </ul>
-      <h3 id="manager-month-3">Month 3</h3>
+      <h3 id="manager-days-61-90">Days 61–90: Make Your First Bets</h3>
       <ul class="checklist" data-key="onb-lead-3">
+        <li>Score the team on <a href="response-quality.html">Weak / Good / Best</a>, and pick one dimension to improve.</li>
+        <li>Get one investment funded with a <a href="playbook/decision-memo.html">decision memo</a> (for example, NOC tooling).</li>
         <li>Run the first monthly <a href="postmortems/action-items.html#the-monthly-review">action-item review</a>.</li>
-        <li>Pick one <a href="leaders/investing.html#tooling-and-process-asks">tooling ask</a> (for example, NOC tooling) and get it funded.</li>
-        <li>Score the team on <a href="response-quality.html">What Good Looks Like</a>, and set one dimension to improve this quarter.</li>
       </ul>
+
+      <h2 id="contract-noc-staff">New Contract NOC Staff</h2>
+      <p>Share this plan with the vendor's delivery manager as the expected outcome. The vendor schedules and coaches its people.</p>
+      <ul class="checklist" data-key="onb-noc">
+        <li><strong>Week 1:</strong> <a href="environment.html">Background: Nimbus</a>, the request path, and access to PagerDuty, Slack, and Teams.</li>
+        <li><strong>Week 1:</strong> <a href="kql/basics.html">KQL Module 1</a>, and the <a href="team/contract-noc.html#shift-health-sweep">shift health sweep</a> alongside a buddy for three shifts.</li>
+        <li><strong>Month 1:</strong> <a href="playbook/triage-or-incident.html">Triage or Incident?</a>, <a href="operate/incident-operations.html">Incident Operations</a>, and <a href="kql/latency-and-errors.html">KQL Module 2</a> with 9/12 or better on the <a href="kql/practice.html">quiz</a>.</li>
+        <li><strong>Month 1:</strong> play Coordinator in a <a href="tabletop.html">tabletop</a>.</li>
+        <li><strong>Month 3:</strong> coordinate a Sev 3 as IC with backup, and hand over a postmortem-ready timeline.</li>
+      </ul>
+
+      <h2 id="new-sres">New SREs (US and India)</h2>
+      <ul class="checklist" data-key="onb-sre">
+        <li><strong>Week 1:</strong> <a href="environment.html">Background</a>, <a href="ways-of-working.html">Ways of Working</a>, and <a href="team/global-sre.html">how the global team works</a>. Meet your buddy in the other region.</li>
+        <li><strong>Week 1:</strong> all three <a href="kql/index.html">KQL modules</a>. Run every query on <a href="queries.html">Nimbus KQL</a> once and note the telemetry gaps.</li>
+        <li><strong>Month 1:</strong> <a href="tech/troubleshooting.html">Troubleshooting Walkthrough</a> and <a href="operate/incident-operations.html">Incident Operations</a>. Shadow two incidents.</li>
+        <li><strong>Month 1:</strong> play Technical Lead in a tabletop, and write the technical analysis for one postmortem.</li>
+        <li><strong>Month 3:</strong> primary on-call with backup. Read <a href="tech/deep-dives.html">Deep Dives</a> and close one action item that changes the system.</li>
+      </ul>
+
+      <h2 id="your-ops-lead">Your Ops Lead</h2>
+      <p>Use the dedicated plan on <a href="team/ops-lead.html">Developing Your Ops Lead</a>, with the <a href="templates.html#ops-lead-30-60-90">30/60/90 template</a>.</p>
     </article>
     <nav class="pager" id="pager"></nav>
   </main>

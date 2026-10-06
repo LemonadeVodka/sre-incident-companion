@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nimbus KQL · Nimbus SRE</title>
+  <title>Nimbus KQL · Reliability Ops Playbook</title>
   <meta name="description" content="Copy-ready KQL for Nimbus incidents with every Nimbus-specific value highlighted, plus a form to swap in your own names.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
@@ -11,9 +11,9 @@
 </head>
 <body data-root="./" data-page="queries">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./playbook/index.html">Frameworks</a><a href="./operate/incident-operations.html">Incident Operations</a><a href="./team/contract-noc.html">Lead the Team</a><a href="./politics/index.html">Manage Up &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
@@ -120,7 +120,7 @@ dependencies
             failed = sumif(itemCount, success == false) by target, type
 | order by p95_ms desc</code></pre>
       </div>
-      <p>For a per-hop split of one request (model vs retrieval vs our own code), see <a href="sre/investigate.html#q-hops">P50/P95 per hop</a>.</p>
+      <p>For a per-hop split of one request (model vs retrieval vs our own code), see <a href="tech/troubleshooting.html#q-hops">P50/P95 per hop</a>.</p>
 
       <div class="code-card" id="q-ttft">
         <div class="code-head"><span class="lang">KQL</span><span class="title">Time to first token vs total model time<span class="answers">Queueing (first token up) or longer outputs (total up)?</span></span></div>
@@ -300,7 +300,7 @@ requests
 | extend pct_401 = round(100.0 * unauthorized / total, 2)
 | order by unauthorized desc</code></pre>
       </div>
-      <p>More auth checks (managed identity, token validation errors, clock skew) are on <a href="sre/investigate.html#401-investigation">SRE investigate</a>.</p>
+      <p>More auth checks (managed identity, token validation errors, clock skew) are on <a href="tech/troubleshooting.html#401-investigation">SRE investigate</a>.</p>
 
       <h2 id="foundry-quota-and-tokens">Foundry, Quota, and Tokens</h2>
       <div class="code-card" id="q-model-latency">

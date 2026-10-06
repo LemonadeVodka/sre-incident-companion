@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Managing a Contract NOC · Reliability Ops Playbook</title>
+  <meta name="description" content="How a senior manager runs a fully contracted, offshore NOC: managing through the vendor, SOW and SLAs, scorecards and QBRs, co-employment boundaries, knowledge retention, and what to ask the NOC to run every shift.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="team-noc">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Lead the Team</div>
+      <div class="eyebrow">Lead the Team · Contract NOC</div>
+      <h1>Managing a Contract NOC</h1>
+      <p class="lede">Your NOC is fully contracted. That changes how you lead it. You don't manage the people directly. You manage <strong>the outcomes, through the vendor</strong>: what the contract says, how performance is measured, and how the relationship runs. Get that structure right and the contract NOC can be excellent. Get it wrong and you end up with a demotivated team you can't legally manage and a vendor you can't hold accountable.</p>
+
+      <div class="tldr"><ul>
+        <li>Lead through <strong>three levers</strong>: the <strong>SOW</strong> (what they do), the <strong>SLAs and KPIs</strong> (how well), and the <strong>governance rhythm</strong> (weekly ops review, monthly scorecard, quarterly QBR).</li>
+        <li>Respect <strong>co-employment boundaries</strong>: direct the work and the outcomes, not the people's employment. Confirm the specifics with your HR and procurement.</li>
+        <li>Protect yourself from <strong>attrition</strong>: runbooks, recorded training, and knowledge that lives with you, not only with the vendor.</li>
+        <li>Give them the <strong>shift health sweep</strong> (below) and the <a href="../playbook/triage-or-incident.html">Triage or Incident?</a> check as required runbooks.</li>
+      </ul></div>
+
+      <h2 id="the-three-levers">The Three Levers</h2>
+      <div class="card-grid wide">
+        <div class="card t-noc"><h3>1. The SOW</h3><p>The scope of work: monitoring hours, which systems, the incident coordinator role, escalation duties, runbook execution, reporting, language and shift coverage, and named key personnel (shift leads). If it isn't in the SOW, you can't hold them to it.</p></div>
+        <div class="card t-noc"><h3>2. SLAs &amp; KPIs</h3><p>Measurable targets with consequences (service credits) and improvement plans. Keep them few and meaningful. A short list follows below.</p></div>
+        <div class="card t-noc"><h3>3. Governance</h3><p>A weekly ops review (your Ops lead plus the vendor shift lead), a monthly scorecard, and a quarterly business review (QBR) with the vendor's account manager.</p></div>
+      </div>
+
+      <h3 id="slas-and-kpis-that-matter">SLAs and KPIs That Matter</h3>
+      <div class="table-wrap"><table><thead><tr><th>Measure</th><th>Target (example)</th><th>Why</th></tr></thead><tbody>
+        <tr><td>Page acknowledgement</td><td>≤ 5 min, 99%</td><td>The basics of being on watch</td></tr>
+        <tr><td>Time from first signal to declare</td><td>≤ 15 min (Sev 1–2)</td><td>Measures the Triage-or-Incident judgment</td></tr>
+        <tr><td>First page to the right owner</td><td>≥ 80%</td><td>Measures layer and ownership knowledge</td></tr>
+        <tr><td>Update cadence met</td><td>≥ 95% of updates on time</td><td>Coordination quality, and what executives notice</td></tr>
+        <tr><td>Handoff and record completeness</td><td>Pinned record complete for 100% of Sev 1–2</td><td>Postmortems depend on it</td></tr>
+        <tr><td>Shift sweep completion</td><td>100% of shifts</td><td>Detection, given the lack of dashboards</td></tr>
+        <tr><td>Missed declarations</td><td>0 per month (each reviewed)</td><td>The costliest failure</td></tr>
+        <tr><td>Staff stability</td><td>Key-personnel changes notified 30 days ahead</td><td>Attrition is your biggest risk</td></tr>
+      </tbody></table></div>
+      <div class="callout warn"><div class="callout-title">Avoid Vanity KPIs</div><p>"Tickets closed" and "alerts handled" reward speed over judgment. Measure outcomes (declared on time, routed correctly, records complete), not activity.</p></div>
+
+      <h2 id="co-employment-boundaries">Co-Employment Boundaries</h2>
+      <p>With contractors, <strong>what you direct</strong> matters legally as well as operationally. The general principle: the vendor employs and manages the people, and you specify and evaluate the <em>work</em>. Rules vary by country and contract, so <strong>confirm with your HR, legal, and procurement teams</strong>.</p>
+      <div class="table-wrap"><table><thead><tr><th>Generally fine: direct the work</th><th>Generally the vendor's job: manage the people</th></tr></thead><tbody>
+        <tr><td>Defining runbooks, processes, quality standards</td><td>Hiring, firing, performance reviews, discipline</td></tr>
+        <tr><td>Giving feedback on <em>work output</em> to the vendor lead</td><td>Individual compensation, promotions, bonuses</td></tr>
+        <tr><td>Training on your systems and processes</td><td>Setting individual schedules and leave (beyond coverage requirements)</td></tr>
+        <tr><td>Including them in incident channels, tabletop exercises, and postmortems</td><td>Including them in your FTE team events, perks, and internal performance processes</td></tr>
+        <tr><td>Recognizing great work, via the vendor and in the channel</td><td>Treating them as your direct reports in org charts and 1:1 performance management</td></tr>
+      </tbody></table></div>
+      <div class="callout tip"><div class="callout-title">Route Feedback Through the Vendor Lead</div><p>Coaching on the work ("the declare message needed numbers") is fine in the moment. Anything about a person's performance or conduct goes to the vendor shift lead or account manager, so they can act on it.</p></div>
+
+      <h2 id="knowledge-retention">Knowledge Retention Under Attrition</h2>
+      <ul class="checklist" data-key="noc-retention">
+        <li>Runbooks live in <strong>your</strong> repository, not the vendor's. The vendor contributes, and you own them.</li>
+        <li>Record the training: walkthroughs of the layers, the sweep, and the Triage-or-Incident check.</li>
+        <li>Require overlap shifts and a sign-off checklist for new NOC staff before they work solo (<a href="../onboarding.html">onboarding plans</a>).</li>
+        <li>Key personnel (shift leads) are named in the SOW, with notice periods for changes.</li>
+        <li>Run a monthly tabletop where the NOC coordinates. It's practice, and it shows you who is ready.</li>
+      </ul>
+
+      <h2 id="what-to-ask-your-noc-to-run">What to Ask Your NOC to Run Every Shift</h2>
+      <p>Put these in the SOW runbooks. Because fewer than 10% of services have dashboards, this sweep <em>is</em> the NOC's detection. Your Ops lead reviews completion weekly.</p>
+<h3 id="signals-to-watch">Signals to Watch</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>Where</th><th>Normal</th><th>Act when</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Error rate</strong> per feature</td><td>App Insights <code>requests</code></td><td>&lt; 0.5–1%</td><td>&gt; 2× baseline for 10 min</td></tr>
+            <tr><td><strong>P50 / P95 latency</strong> per feature</td><td>App Insights <code>requests</code></td><td><a href="../environment.html#what-normal-looks-like">See baselines</a></td><td>P95 &gt; 1.5× same hour yesterday for 10 min</td></tr>
+            <tr><td><strong>Edge 5xx</strong> (CDN)</td><td>Log Analytics, Front Door logs</td><td>&lt; 0.1%</td><td>&gt; 0.5% for 5 min</td></tr>
+            <tr><td><strong>401s</strong> at the gateway</td><td>Log Analytics, APIM logs</td><td>&lt; 0.3%</td><td>&gt; 1% or a sudden step up</td></tr>
+            <tr><td><strong>429s</strong> from Foundry</td><td>App Insights <code>dependencies</code></td><td>&lt; 0.5%</td><td>&gt; 2% on any deployment</td></tr>
+            <tr><td><strong>Telemetry volume</strong></td><td>App Insights, all tables</td><td>Matches the daily pattern</td><td>Drops by more than 30%. Data loss looks "green".</td></tr>
+            <tr><td><strong>Client crashes</strong></td><td>App Insights <code>customEvents</code></td><td>Flat across versions</td><td>Spike tied to one <code>client.version</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+<h3 id="shift-health-sweep">Shift Health Sweep</h3>
+      <p>Run these in order. Each takes a few seconds. Values highlighted in <mark class="p-nimbus">amber</mark> are Nimbus-specific: replace them with your environment's names, or set them once on the <a href="../queries.html#make-it-yours">query page</a>.</p>
+      <ul class="checklist" data-key="noc-sweep">
+        <li>1. Error rate by feature, now vs yesterday</li>
+        <li>2. P50 / P95 by feature, now vs yesterday</li>
+        <li>3. Edge (Front Door) status codes</li>
+        <li>4. 401s at the gateway</li>
+        <li>5. 429s on Foundry deployments</li>
+        <li>6. Telemetry volume</li>
+        <li>7. Local vs cloud routing (device orchestrator)</li>
+      </ul>
+
+      <div class="code-card" id="sweep-1">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">1 · Error rate by feature, now vs yesterday<span class="answers">App Insights → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+let featureKey = "feature.experience";   // [NIMBUS] custom attribute holding the feature name
+// ── Query ──────────────────────────────────
+requests
+| where timestamp > ago(window) or timestamp between (ago(1d + window) .. ago(1d))
+| extend period = iff(timestamp > ago(window), "now", "yesterday")
+| extend feature = coalesce(tostring(customDimensions[featureKey]), cloud_RoleName)
+| summarize total = sum(itemCount), failed = sumif(itemCount, success == false) by feature, period
+| extend error_pct = round(100.0 * failed / total, 2)
+| project feature, period, error_pct, total
+| order by feature asc, period asc</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-2">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">2 · P50 / P95 by feature, now vs yesterday<span class="answers">App Insights → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+let featureKey = "feature.experience";   // [NIMBUS] custom attribute holding the feature name
+// ── Query ──────────────────────────────────
+requests
+| where timestamp > ago(window) or timestamp between (ago(1d + window) .. ago(1d))
+| extend period = iff(timestamp > ago(window), "now", "yesterday")
+| extend feature = coalesce(tostring(customDimensions[featureKey]), cloud_RoleName)
+| summarize p50_ms = percentile(duration, 50), p95_ms = percentile(duration, 95) by feature, period
+| order by feature asc, period asc</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-3">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">3 · Edge (Front Door) status codes<span class="answers">Log Analytics workspace → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+let fdCategory = "FrontDoorAccessLog";   // [AZURE] Front Door access log category
+// ── Query ──────────────────────────────────
+AzureDiagnostics
+| where TimeGenerated > ago(window) and Category == fdCategory
+| extend status = toint(column_ifexists("httpStatusCode_s", ""))
+| summarize requests = count(), edge_5xx = countif(status >= 500), blocked_403 = countif(status == 403)
+    by bin(TimeGenerated, 5m)
+| extend edge_5xx_pct = round(100.0 * edge_5xx / requests, 2)
+| render timechart</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-4">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">4 · 401s at the gateway, by API<span class="answers">Log Analytics workspace → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+// ── Query ──────────────────────────────────
+ApiManagementGatewayLogs
+| where TimeGenerated > ago(window)
+| summarize requests = count(), unauthorized = countif(ResponseCode == 401) by ApiId
+| extend pct_401 = round(100.0 * unauthorized / requests, 2)
+| order by pct_401 desc</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-5">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">5 · 429s on Foundry deployments<span class="answers">App Insights → Logs</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                                                          // [TUNE] how far back to look
+let modelHosts = dynamic(["openai.azure.com", "services.ai.azure.com"]);  // [AZURE] Foundry / Azure OpenAI hostnames
+// ── Query ──────────────────────────────────
+dependencies
+| where timestamp > ago(window) and target has_any (modelHosts)
+| extend deployment = coalesce(tostring(customDimensions["gen_ai.request.model"]), extract(@"deployments/([^/]+)/", 1, data))
+| summarize calls = sum(itemCount), throttled = sumif(itemCount, resultCode == "429") by deployment
+| extend throttle_pct = round(100.0 * throttled / calls, 2)
+| order by throttle_pct desc</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-6">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">6 · Telemetry volume<span class="answers">App Insights → Logs · a drop means data loss, not health</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 2d;                         // [TUNE] long enough to see yesterday's shape
+// ── Query ──────────────────────────────────
+union requests, dependencies, customEvents
+| where timestamp > ago(window)
+| summarize items = sum(itemCount) by itemType, bin(timestamp, 15m)
+| render timechart</code></pre>
+      </div>
+
+      <div class="code-card" id="sweep-7">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">7 · Local vs Cloud Routing by Client Version<span class="answers">App Insights → Logs · a drop in local answers means a cloud surge is coming</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 2h;                         // [TUNE] how far back to look
+let routingEvent = "routing.decision";   // [NIMBUS] client event emitted by the device orchestrator
+let routeKey = "route";                  // [NIMBUS] attribute: "local" or "cloud"
+let clientVersionKey = "client.version"; // [NIMBUS] attribute holding the desktop client version
+// ── Query ──────────────────────────────────
+customEvents
+| where timestamp > ago(window) and name == routingEvent
+| extend route = tostring(customDimensions[routeKey]), client = tostring(customDimensions[clientVersionKey])
+| summarize decisions = sum(itemCount), local = sumif(itemCount, route == "local") by client
+| extend local_pct = round(100.0 * local / decisions, 1)
+| order by decisions desc</code></pre>
+      </div>
+
+      <div class="callout tip">
+        <div class="callout-title">Save the Sweep</div>
+        <p>Save these as <strong>shared queries</strong> in the Log Analytics workspace, or pin them to an Azure dashboard. Until Grafana coverage improves, that saved set <em>is</em> the NOC dashboard.</p>
+      </div>
+
+<h3 id="noise-or-signal">Noise or Signal?</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Question</th><th>Probably noise</th><th>Probably real</th></tr></thead>
+          <tbody>
+            <tr><td>Compared to the same hour yesterday?</td><td>Same shape (for example, the Next Step morning burst)</td><td>Clearly above</td></tr>
+            <tr><td>How long?</td><td>One 5-minute spike</td><td>10+ minutes and continuing</td></tr>
+            <tr><td>How broad?</td><td>Tiny volume (a handful of requests)</td><td>A real share of traffic, or several features</td></tr>
+            <tr><td>User reports?</td><td>None</td><td>Support tickets or CFT reports match</td></tr>
+            <tr><td>Recent change?</td><td>None</td><td>A rollout or deploy lines up with the start</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout ok">
+        <div class="callout-title">When in doubt, open a channel</div>
+        <p>Opening an <code>#inc-</code> channel for something that turns out to be nothing costs a minute. Missing a real incident costs far more. Nobody will blame you for being careful.</p>
+      </div>
+
+
+      <h2 id="weekly-monthly-quarterly">Weekly, Monthly, Quarterly</h2>
+      <div class="table-wrap"><table><thead><tr><th>Cadence</th><th>Who</th><th>What</th></tr></thead><tbody>
+        <tr><td>Weekly (30 min)</td><td>Ops lead + vendor shift lead</td><td>Triage-thread review, sweep completion, open action requests, staffing changes</td></tr>
+        <tr><td>Monthly (45 min)</td><td>You + vendor delivery manager</td><td>The scorecard (<a href="../templates.html#vendor-scorecard">template</a>): SLA results, misses and why, improvement actions</td></tr>
+        <tr><td>Quarterly QBR</td><td>You + vendor account team (+ procurement)</td><td>Trend, service credits, roadmap (for example, NOC executable tooling), training plan, contract changes</td></tr>
+      </tbody></table></div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

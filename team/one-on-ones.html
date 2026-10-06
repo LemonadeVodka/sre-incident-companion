@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1:1s, Feedback & Performance · Reliability Ops Playbook</title>
+  <meta name="description" content="Running 1:1s, giving SBI feedback, coaching with GROW, career conversations, and handling underperformance for an SRE and operations team.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="team-1on1">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Lead the Team</div>
+      <div class="eyebrow">Lead the Team · People Management</div>
+      <h1>1:1s, Feedback &amp; Performance</h1>
+      <p class="lede">The basics of people management matter more in operations than almost anywhere else. On-call is stressful, incidents expose people, and your director's style adds pressure. Regular 1:1s, clear feedback, and visible growth are what keep good engineers.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>1:1s are theirs:</strong> their agenda first, yours second, and a career topic monthly.</li>
+        <li><strong>SBI feedback</strong> (Situation, Behavior, Impact) for praise and correction. Make it specific, timely, and private.</li>
+        <li><strong>GROW</strong> (Goal, Reality, Options, Will) for coaching, instead of giving answers.</li>
+        <li>Underperformance: <strong>clear expectations, documented, with support and time</strong>. No surprises at review time.</li>
+      </ul></div>
+
+      <h2 id="one-on-ones">1:1s</h2>
+      <div class="table-wrap"><table><thead><tr><th>Who</th><th>Cadence</th><th>Focus</th></tr></thead><tbody>
+        <tr><td>SREs (US and India)</td><td>Weekly or biweekly, 30 min, at times that rotate fairly</td><td>Blockers, on-call load, growth, morale after hard incidents</td></tr>
+        <tr><td>Ops lead</td><td>Weekly, 45 min</td><td>Vendor, process, the 30/60/90 technical plan</td></tr>
+        <tr><td>Vendor shift lead (NOC)</td><td>Weekly ops review, not a 1:1</td><td>Work outcomes only (see <a href="contract-noc.html#co-employment-boundaries">co-employment</a>)</td></tr>
+      </tbody></table></div>
+      <p>Use the <a href="../templates.html#one-on-one">1:1 template</a>. Ask monthly: "How is on-call feeling?" and "Is anything about how leadership is treating the team affecting you?"</p>
+
+      <h2 id="sbi-feedback">SBI Feedback</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Situation</h3><p>When and where. "In yesterday's Sev 2 bridge…"</p></div>
+        <div class="card"><h3>Behavior</h3><p>What they did, observable and specific. "…you posted the layer comparison and named the owner within 10 minutes…"</p></div>
+        <div class="card"><h3>Impact</h3><p>What it caused. "…which cut our diagnosis time in half and helped me brief the director quickly."</p></div>
+      </div>
+      <p>The same structure works for correction: "In the 14:00 update (S), the impact numbers were missing (B), which meant leadership asked three follow-up questions and pulled you off the fix (I). What would make it easier to include them?"</p>
+
+      <h2 id="grow-coaching">GROW Coaching</h2>
+      <ol class="steps">
+        <li><strong>Goal</strong>"What do you want to get out of this?"</li>
+        <li><strong>Reality</strong>"What's happening now? What have you tried?"</li>
+        <li><strong>Options</strong>"What could you do? What else?" Get at least three before you offer one.</li>
+        <li><strong>Will</strong>"What will you do, and by when? How will I know?"</li>
+      </ol>
+
+      <h2 id="career-conversations">Career Conversations</h2>
+      <p>Quarterly, separate from status: "Where do you want to be in two years? What skills does that need? What project here would build them?" Write down the answer and revisit it. Use the <a href="../templates.html#career-conversation">template</a>.</p>
+
+      <h2 id="underperformance">Underperformance</h2>
+      <ol class="steps">
+        <li><strong>Check yourself first.</strong>Are expectations clear and written? Are they getting the support and training they need? Is something outside work going on?</li>
+        <li><strong>Name it early and privately.</strong>Use SBI, with specific examples, and agree on what "good" looks like.</li>
+        <li><strong>Agree a plan.</strong>Two or three measurable expectations, support offered, and a review date (typically 30–60 days).</li>
+        <li><strong>Document as you go.</strong>Short notes after each check-in. Involve HR early for anything formal.</li>
+        <li><strong>Follow through.</strong>Recognize improvement clearly. If there's none, escalate formally with HR.</li>
+      </ol>
+      <div class="callout warn"><div class="callout-title">Not for Contractors</div><p>For NOC contractors, raise performance concerns with the vendor, not with the individual. See <a href="contract-noc.html#co-employment-boundaries">co-employment boundaries</a>.</p></div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

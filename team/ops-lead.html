@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Developing Your Ops Lead · Reliability Ops Playbook</title>
+  <meta name="description" content="Growing an Operations lead who is strong on process but still building technical depth: skill/will assessment, a 30/60/90 plan, pairing, and a technical learning path.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="team-ops-lead">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Lead the Team</div>
+      <div class="eyebrow">Lead the Team · Ops Lead</div>
+      <h1>Developing Your Ops Lead</h1>
+      <p class="lede">Your Operations lead keeps the machine running: rotations, the vendor relationship day to day, reporting, follow-ups. They're organized and committed, and they're working on the technical side. Developing them is one of your highest-leverage investments. A technically confident Ops lead takes a whole layer of work off your plate and earns credibility with SREs and your director.</p>
+
+      <div class="tldr"><ul>
+        <li>Assess <strong>skill and will</strong> for each responsibility, and lead differently for each.</li>
+        <li>Give them a <strong>30/60/90 technical plan</strong> built on the Technical Corner and KQL Training, with real deliverables.</li>
+        <li><strong>Pair them with an SRE</strong> weekly, and have them shadow incidents as a learner, not a coordinator.</li>
+        <li><strong>Make their progress visible</strong>, especially to a technical director.</li>
+      </ul></div>
+
+      <h2 id="skill-will">Skill / Will Assessment</h2>
+      <p>For each part of the role, decide where they are, and lead accordingly (situational leadership):</p>
+      <div class="table-wrap"><table><thead><tr><th></th><th>High will</th><th>Low will</th></tr></thead><tbody>
+        <tr><td><strong>High skill</strong></td><td><b>Delegate.</b> Give ownership and stay out of the way. Example: vendor governance.</td><td><b>Excite.</b> Find the meaning, connect it to their goals.</td></tr>
+        <tr><td><strong>Low skill</strong></td><td><b>Guide.</b> Teach, pair, and check in often. Example: reading latency and error charts.</td><td><b>Direct.</b> Give clear instructions and short loops, and find out what's behind the low will.</td></tr>
+      </tbody></table></div>
+
+      <h2 id="thirty-sixty-ninety">30 / 60 / 90 Technical Plan</h2>
+      <h3 id="first-30-days">First 30 Days: Understand</h3>
+      <ul class="checklist" data-key="opslead-30">
+        <li>Complete <a href="../leaders/ai-product-layers.html">Know the Layers</a> and the <a href="../leaders/latency-and-errors.html">Latency &amp; Errors Primer</a>. Explain the layers back to you from memory.</li>
+        <li>Complete <a href="../kql/basics.html">KQL Module 1</a>, and run the <a href="contract-noc.html#shift-health-sweep">shift sweep</a> themselves three times.</li>
+        <li>Shadow two incidents as an observer, and write down which layer it was and how the team knew.</li>
+      </ul>
+      <h3 id="days-31-60">Days 31–60: Apply</h3>
+      <ul class="checklist" data-key="opslead-60">
+        <li>Complete <a href="../kql/latency-and-errors.html">KQL Module 2</a>, and score 9/12 or better on the <a href="../kql/practice.html">quiz</a>.</li>
+        <li>Build the weekly latency and error summary by layer yourself, and present it in the <a href="../leaders/after-and-between.html#weekly-review">weekly review</a>.</li>
+        <li>Pair weekly with an SRE. Ask them to explain one investigation using LAYERS.</li>
+      </ul>
+      <h3 id="days-61-90">Days 61–90: Lead</h3>
+      <ul class="checklist" data-key="opslead-90">
+        <li>Run the NOC vendor's monthly scorecard review on your own.</li>
+        <li>Draft the executive SITREP for a Sev 2 (you review it before it goes out).</li>
+        <li>Lead a tabletop as facilitator, using the <a href="../tabletop.html">kit</a>.</li>
+        <li>Present one technical topic to the team, for example "how 429s happen on shared model capacity".</li>
+      </ul>
+
+      <h2 id="pairing-and-shadowing">Pairing and Shadowing</h2>
+      <ul>
+        <li><strong>Weekly 30-minute SRE pairing.</strong> Rotate SREs across both regions, so they also build relationships.</li>
+        <li><strong>In incidents:</strong> the Ops lead watches the Technical Lead's workstream and writes notes. Afterwards, the SRE spends 10 minutes on "what were you looking at and why?"</li>
+        <li><strong>Learning log.</strong> Each week, one thing learned and one question. Review it in your 1:1.</li>
+      </ul>
+
+      <h2 id="making-progress-visible">Making Progress Visible</h2>
+      <p>A highly technical director may underrate a less technical Ops lead. Change that perception with evidence, not argument:</p>
+      <ul>
+        <li>Have the Ops lead present the weekly latency and error summary in a leadership review, with your support.</li>
+        <li>Credit them by name for operational wins in your SITREPs and reports.</li>
+        <li>Let them own a visible improvement, such as a vendor KPI moving the right way.</li>
+      </ul>
+      <p>Use the <a href="../templates.html#ops-lead-30-60-90">30/60/90 template</a> to track it.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

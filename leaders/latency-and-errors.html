@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Latency & Errors Primer · Nimbus SRE</title>
+  <title>Latency & Errors Primer · Reliability Ops Playbook</title>
   <meta name="description" content="What senior managers need to know about latency (P50, P95, time to first token) and error rates (401, 403, 429, 5xx, timeouts) in an AI product, and which layer each comes from.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,9 +11,9 @@
 </head>
 <body data-root="../" data-page="lead-primer">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
@@ -62,7 +62,7 @@
       </div>
 
       <h3 id="latency-budget">The Latency Budget</h3>
-      <p>Every layer spends part of the user's patience. In a typical Nimbus Writing Assist request at P95 (about 6 seconds), the model takes roughly 70%, retrieval about 10%, and everything else shares the rest. When P95 grows, ask: <strong>"Which layer's share grew?"</strong> The engineers can show this with a per-hop breakdown (<a href="../sre/investigate.html#decomposing-latency">example</a>).</p>
+      <p>Every layer spends part of the user's patience. In a typical Nimbus Writing Assist request at P95 (about 6 seconds), the model takes roughly 70%, retrieval about 10%, and everything else shares the rest. When P95 grows, ask: <strong>"Which layer's share grew?"</strong> The engineers can show this with a per-hop breakdown (<a href="../tech/troubleshooting.html#decomposing-latency">example</a>).</p>
 
       <details class="deeper">
         <summary>Why AI Latency Behaves Differently</summary>
@@ -110,9 +110,9 @@
         <table>
           <thead><tr><th>Feature</th><th>P50</th><th>P95</th><th>Error rate</th></tr></thead>
           <tbody>
-            <tr><td>Smart Search</td><td>1.4 s</td><td>3.5 s</td><td>&lt; 0.5%</td></tr>
+            <tr><td>Ask Nimbus</td><td>1.4 s</td><td>3.5 s</td><td>&lt; 0.5%</td></tr>
             <tr><td>Writing Assist</td><td>2.5 s</td><td>6 s (first token 1.2 s)</td><td>&lt; 0.5%</td></tr>
-            <tr><td>Meeting Recap</td><td>12 s</td><td>30 s</td><td>&lt; 1%</td></tr>
+            <tr><td>Catch Up</td><td>12 s</td><td>30 s</td><td>&lt; 1%</td></tr>
             <tr><td>Device Care</td><td>3 s</td><td>9 s</td><td>&lt; 1%</td></tr>
           </tbody>
         </table>

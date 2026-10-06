@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Investing in Reliability · Nimbus SRE</title>
+  <title>Investing in Reliability · Reliability Ops Playbook</title>
   <meta name="description" content="Reliability targets as business decisions, the maturity roadmap business case, and the tooling and process asks for Nimbus senior managers.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,9 +11,9 @@
 </head>
 <body data-root="../" data-page="lead-invest">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
@@ -30,15 +30,15 @@
       </div>
 
       <h2 id="reliability-targets-are-business-decisions">Reliability Targets Are Business Decisions</h2>
-      <p>An <strong>SLO</strong> (service level objective) is a reliability target, such as "99.5% of Writing Assist requests succeed" or "95% of Smart Search results arrive within 3.5 seconds". Every extra "9" costs more engineering time and money, so targets should differ by feature:</p>
+      <p>An <strong>SLO</strong> (service level objective) is a reliability target, such as "99.5% of Writing Assist requests succeed" or "95% of Ask Nimbus results arrive within 3.5 seconds". Every extra "9" costs more engineering time and money, so targets should differ by feature:</p>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Feature</th><th>Who notices failure</th><th>Suggested starting target</th></tr></thead>
           <tbody>
-            <tr><td>Writing Assist, Smart Search</td><td>Users immediately, many times a day</td><td>99.5% success, P95 within baseline</td></tr>
+            <tr><td>Writing Assist, Ask Nimbus</td><td>Users immediately, many times a day</td><td>99.5% success, P95 within baseline</td></tr>
             <tr><td>Device Care</td><td>Users with a problem, at a frustrating moment</td><td>99% task success</td></tr>
-            <tr><td>Meeting Recap</td><td>Users after meetings. A short delay is tolerable.</td><td>99% delivered within 5 minutes</td></tr>
-            <tr><td>Proactive Tips</td><td>Barely, because it runs in the background</td><td>98% delivered within 15 minutes</td></tr>
+            <tr><td>Catch Up</td><td>Users after meetings. A short delay is tolerable.</td><td>99% delivered within 5 minutes</td></tr>
+            <tr><td>Next Step</td><td>Barely, because it runs in the background</td><td>98% delivered within 15 minutes</td></tr>
           </tbody>
         </table>
       </div>

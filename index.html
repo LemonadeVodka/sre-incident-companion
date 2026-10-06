@@ -3,99 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nimbus SRE Incident Companion</title>
-  <meta name="description" content="A role-based incident companion for NOC coordinators, SRE technical leads, and senior managers, with triage, playbooks, postmortems, tabletop exercises, and KQL. Worked example: Nimbus, a desktop AI product.">
+  <title>Reliability Ops Manager's Playbook</title>
+  <meta name="description" content="A playbook for senior managers of reliability and service operations: frameworks, copy-paste templates, leading a contract NOC and global SRE team, managing up and politics, and a Technical Corner on cloud AI infrastructure. Worked example: Nimbus, a hybrid AI assistant.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body data-root="./" data-page="index">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./playbook/index.html">Frameworks</a><a href="./operate/incident-operations.html">Incident Operations</a><a href="./team/contract-noc.html">Lead the Team</a><a href="./politics/index.html">Manage Up &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <section class="hero">
-        <div class="eyebrow">The Incident Companion · Worked Example: Nimbus</div>
-        <h1 data-notoc>Make Every Role Strong in an Incident</h1>
-        <p class="lede">A practical guide to running incidents well, organized by role: the <strong>NOC as Incident Coordinator</strong>, <strong>SRE as Technical Lead</strong>, and the <strong>Senior Manager</strong>. Every page uses Nimbus, a Rust desktop AI product on Azure AI Foundry, as a worked example in an immature environment. The practices apply anywhere.</p>
+        <div class="eyebrow">Reliability &amp; Service Operations · Worked Example: Nimbus</div>
+        <h1 data-notoc>The Reliability Operations Manager's Playbook</h1>
+        <p class="lede">Frameworks, copy-paste templates, and technical depth for the senior manager who runs reliability for an AI product: leading a <strong>contract NOC</strong>, <strong>SREs across the US and India</strong>, and an <strong>Ops lead who's still growing</strong>, while managing up to a demanding, highly technical director. Every page uses Nimbus, a hybrid on-device and cloud AI assistant, as its worked example. The practices apply anywhere.</p>
         <div class="hero-actions">
-          <a class="btn danger" href="#triage">I'm in an Incident</a>
-          <a class="btn primary" href="how-to-use.html">How to Use This Guide</a>
-          <a class="btn" href="environment.html">Read the Background</a>
+          <a class="btn danger" href="#in-an-incident">I'm in an Incident</a>
+          <a class="btn primary" href="templates.html">Template Library</a>
+          <a class="btn" href="how-to-use.html">How to Use This Playbook</a>
+          <a class="btn" href="environment.html">Background: Nimbus</a>
         </div>
       </section>
 
-      <h2 id="choose-your-role">Choose Your Role</h2>
-      <div class="role-grid">
-        <a class="role-card t-noc" href="noc/index.html" data-choose-role="noc">
-          <span class="role-kicker">First Line · Incident Coordinator</span>
-          <h3>NOC</h3>
-          <p>You see it first, and you run it once it's declared: channel, roles, cadence, comms, timers. No production tooling yet, so you request actions from owners.</p>
-          <ul><li>Shift health sweep</li><li>Declare and coordinate</li><li>Requesting actions</li></ul>
-          <span class="go">Open the NOC Track →</span>
-        </a>
-        <a class="role-card t-sre" href="sre/index.html" data-choose-role="sre">
-          <span class="role-kicker">Centralized SRE · Technical Lead</span>
-          <h3>SRE On-Call</h3>
-          <p>Find the failing layer, from device to model, recommend mitigations, and give owners the evidence to act.</p>
-          <ul><li>Layer-by-layer investigation</li><li>Orchestrators, CDN, 401, Rust</li><li>Leading the technical response</li></ul>
-          <span class="go">Open the SRE Track →</span>
-        </a>
-        <a class="role-card t-lead" href="leaders/index.html" data-choose-role="lead">
-          <span class="role-kicker">Decide · Unblock · Follow Through</span>
-          <h3>Senior Manager</h3>
-          <p>Plain language, no queries. What to ask, what only you can decide, and how not to dive into the weeds.</p>
-          <ul><li>During an incident</li><li>Scenarios in plain English</li><li>Investing in reliability</li></ul>
-          <span class="go">Open the Manager Track →</span>
-        </a>
-      </div>
+      <h2 id="in-an-incident">In an Incident</h2>
+      <ol class="steps">
+        <li><strong>Is It an Incident?</strong>If your NOC is unsure, use the <a href="playbook/triage-or-incident.html">Triage or Incident?</a> checker. When in doubt, declare.</li>
+        <li><strong>Find the Scenario</strong>Use the triage tool below to see what you should ask and decide, and what your NOC and SREs should be doing.</li>
+        <li><strong>Ask the Right Questions</strong>Work through <a href="leaders/layers-framework.html">LAYERS</a>: Locate, Assess, Yesterday, Evidence, Response, Sustain. Keep the <a href="cards/manager.html">pocket card</a> open.</li>
+        <li><strong>Update Upward</strong>Build an executive update with the <a href="leaders/executive-updates.html#sitrep-builder">SITREP builder</a>. Bottom line first.</li>
+        <li><strong>Afterwards</strong>Chair the <a href="leaders/post-incident.html">post-incident review</a> and follow the actions through.</li>
+      </ol>
 
-      <h2 id="how-the-roles-work-together">How the Roles Work Together</h2>
-      <figure class="diagram">
-        <svg viewBox="0 0 900 250" role="img" aria-labelledby="ho-title ho-desc">
-          <title id="ho-title">How the Roles Work Together</title>
-          <desc id="ho-desc">The NOC detects, declares, and coordinates the incident and requests actions from owners. SRE is the Technical Lead, recommending mitigations to the NOC. Owners, meaning CFTs and Cloud Infrastructure, execute changes. The senior manager decides on spend and priorities and unblocks stalled teams.</desc>
-          <defs><marker id="arrh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="d-arrow"/></marker></defs>
-          <rect x="330" y="10" width="240" height="96" rx="8" fill="var(--noc-soft)" stroke="var(--noc)" stroke-width="1.5"/>
-          <text class="d-text" x="450" y="40" text-anchor="middle">NOC · Incident Coordinator</text>
-          <text class="d-sub" x="450" y="64" text-anchor="middle">detect · declare · coordinate</text>
-          <text class="d-sub" x="450" y="84" text-anchor="middle">page · bridge · request actions</text>
-          <rect x="20" y="140" width="240" height="96" rx="8" fill="var(--sre-soft)" stroke="var(--sre)" stroke-width="1.5"/>
-          <text class="d-text" x="140" y="170" text-anchor="middle">SRE · Technical Lead</text>
-          <text class="d-sub" x="140" y="194" text-anchor="middle">investigate · find the layer</text>
-          <text class="d-sub" x="140" y="214" text-anchor="middle">recommend mitigations</text>
-          <rect x="330" y="140" width="240" height="96" rx="8" class="d-box"/>
-          <text class="d-text" x="450" y="170" text-anchor="middle">Owners</text>
-          <text class="d-sub" x="450" y="194" text-anchor="middle">feature CFTs · Client CFT</text>
-          <text class="d-sub" x="450" y="214" text-anchor="middle">Cloud Infrastructure · execute</text>
-          <rect x="640" y="140" width="240" height="96" rx="8" fill="var(--lead-soft)" stroke="var(--lead)" stroke-width="1.5"/>
-          <text class="d-text" x="760" y="170" text-anchor="middle">Senior Manager</text>
-          <text class="d-sub" x="760" y="194" text-anchor="middle">decide · unblock</text>
-          <text class="d-sub" x="760" y="214" text-anchor="middle">comms buffer · follow through</text>
-          <path class="d-line" d="M330 70 H140 V136" marker-start="url(#arrh)" marker-end="url(#arrh)"/>
-          <text class="d-sub" x="235" y="62" text-anchor="middle">brief ↔ recommend</text>
-          <path class="d-line" d="M450 106 V136" marker-end="url(#arrh)"/>
-          <text class="d-sub" x="458" y="126">requests</text>
-          <path class="d-line" d="M570 70 H760 V136" marker-start="url(#arrh)" marker-end="url(#arrh)"/>
-          <text class="d-sub" x="665" y="62" text-anchor="middle">decisions · escalations</text>
-          <path class="d-line-dash" d="M640 188 H574" marker-end="url(#arrh)"/>
-          <text class="d-sub" x="607" y="180" text-anchor="middle">unblocks</text>
-        </svg>
-        <figcaption>Everyone works from the Slack incident channel, and PagerDuty does the paging. Details are on <a href="ways-of-working.html">Ways of Working</a>.</figcaption>
-      </figure>
-
-<h2 id="not-sure-yet">Not Sure It's an Incident Yet?</h2>
       <div class="states">
         <div><div class="state-title"><i class="light green"></i>Watch</div><p>Odd, but inside normal ranges and no user impact. Log it and re-check.</p></div>
         <div><div class="state-title"><i class="light amber"></i>Triage</div><p>Maybe affecting users. Open a triage thread and time-box 15 minutes.</p></div>
-        <div><div class="state-title"><i class="light red"></i>Incident</div><p>Users affected, a shared layer, or you need help. Declare now.</p></div>
+        <div><div class="state-title"><i class="light red"></i>Incident</div><p>Users affected, a shared layer, or the team needs help. Declare now.</p></div>
       </div>
-      <p>Answer four yes/no questions with the <a href="noc/triage-and-escalate.html#triage-or-incident">Triage or Incident? checker</a>. When in doubt, declare.</p>
 
-      <h2 id="triage">Triage: Find Your Next Step</h2>
-      <p>Answer a few questions. You'll get separate next steps for the <strong>NOC Coordinator</strong> and the <strong>SRE Technical Lead</strong>, plus links to the right playbook and queries.</p>
+      <h2 id="triage">Triage: What to Ask and Decide</h2>
+      <p>Answer a few questions. You'll get <strong>your questions and decisions</strong> first, then what <strong>your NOC</strong> and <strong>your SREs</strong> should be doing, so you can check the response is on track without taking it over.</p>
       <div class="triage">
         <div class="triage-head"><h2 data-notoc>Incident Triage</h2><span class="badge sev1">Live</span></div>
         <div class="triage-body" id="triage-app" aria-live="polite">
@@ -116,33 +65,56 @@
         </div>
       </div>
 
-      <h2 id="use-it-for">Use It For</h2>
+      <h2 id="this-week">This Week</h2>
+      <p>A weekly rhythm that keeps the operation healthy, the team growing, and your director informed. Tick items off as you go. The list resets in your browser only.</p>
+      <ul class="checklist" data-key="this-week">
+        <li><strong>Monday:</strong> send the <a href="templates.html#weekly-reliability-note">weekly reliability note</a> (or review your Ops lead's draft).</li>
+        <li><strong>Vendor sync</strong> with the NOC delivery manager: scorecard trends, staffing, one improvement (<a href="team/contract-noc.html">how</a>).</li>
+        <li><strong>1:1s</strong> with SREs in both regions and your Ops lead. Their agenda first (<a href="templates.html#one-on-one">template</a>).</li>
+        <li><strong>Postmortem actions:</strong> review overdue items and unblock one with its owner's leader.</li>
+        <li><strong>Follow-the-sun:</strong> read the handoffs. Is one region carrying the pain? (<a href="team/global-sre.html#on-call-fairness">fairness</a>)</li>
+        <li><strong>Managing up:</strong> send your director a <a href="templates.html#technical-pre-read">technical pre-read</a> before any review.</li>
+        <li><strong>Stakeholders:</strong> one deposit with a CFT or Cloud Infrastructure leader (<a href="politics/index.html">political capital</a>).</li>
+        <li><strong>Learn:</strong> one <a href="tech/index.html">Technical Corner</a> module, ideally with your Ops lead.</li>
+        <li><strong>Recognize:</strong> thank one person by name, in public, for specific work (<a href="team/morale.html">morale</a>).</li>
+      </ul>
+
+      <h2 id="your-playbook">Your Playbook</h2>
       <div class="card-grid">
-        <a class="card" href="#triage"><h3>A Live Incident</h3><p>Triage, then your role's checklist. Paste section links into Slack or Teams.</p></a>
-        <a class="card" href="onboarding.html"><h3>Onboarding</h3><p>Week 1, month 1, and month 3 paths for each role, with progress tracking.</p></a>
-        <a class="card" href="kql/index.html"><h3>KQL Training</h3><p>Twelve plain-English lessons on latency, error rates, and layers, with free practice and a quiz.</p></a>
-        <a class="card" href="tabletop.html"><h3>Tabletop Exercises</h3><p>Pick a scenario, reveal timed injects (Morgan the director included), and score the debrief.</p></a>
-        <a class="card" href="postmortems/index.html"><h3>Postmortems</h3><p>Process, a template with a built-in writer, how to run the review, and action items.</p></a>
-        <a class="card" href="response-quality.html"><h3>What Good Looks Like</h3><p>Weak, Good, and Best in Class responses, by role and by dimension.</p></a>
-        <a class="card" href="cards/index.html"><h3>Printable Role Cards</h3><p>A one-page quick reference for each role.</p></a>
+        <a class="card t-lead" href="playbook/index.html"><h3>Frameworks</h3><p>LAYERS, Triage or Incident, SITREP, After Action Review, Decision Memo, RACI and severity, Weak/Good/Best.</p></a>
+        <a class="card t-lead" href="operate/service-model.html"><h3>Run the Operation</h3><p>Incident, problem, change, capacity, and vendor management. Metrics that matter, and the ones that mislead.</p></a>
+        <a class="card t-noc" href="team/contract-noc.html"><h3>Lead the Team</h3><p>A contract NOC, SREs across the US and India, your Ops lead, 1:1s, hiring, and morale.</p></a>
+        <a class="card t-sre" href="politics/index.html"><h3>Manage Up &amp; Politics</h3><p>Stakeholder maps, pre-wiring, a highly technical low-EQ director, escalation, and owning the narrative.</p></a>
+        <a class="card t-sre" href="tech/index.html"><h3>Technical Corner</h3><p>Cloud AI infrastructure at manager depth: serving, quota, RAG, agents, network, identity, observability, KQL.</p></a>
+        <a class="card t-lead" href="templates.html"><h3>Template Library</h3><p>SITREPs, reports, vendor scorecard, 1:1s, 30/60/90 plans, decision memo, pre-wire and escalation emails.</p></a>
       </div>
 
-      <h2 id="shared-toolkit">Shared Toolkit</h2>
+      <h2 id="quick-templates">Quick Templates</h2>
       <div class="card-grid">
-        <a class="card" href="playbooks.html"><h3>Starter Playbooks</h3><p>Nine scenarios with coordinator, tech lead, and manager actions.</p></a>
-        <a class="card" href="queries.html"><h3>Nimbus KQL</h3><p>Copy-ready queries with Nimbus-specific values highlighted, and a form to swap in your own.</p></a>
-        <a class="card" href="https://github.com/LemonadeVodka/kql-toolkit"><h3>KQL Toolkit (Repo)</h3><p>Generic, parameterized KQL for any Azure environment.</p></a>
-        <a class="card" href="ways-of-working.html"><h3>Ways of Working</h3><p>PagerDuty, Slack and Teams, records without Jira, slow CFTs, Cloud Infrastructure.</p></a>
-        <a class="card" href="adapt.html"><h3>Using This Guide Anywhere</h3><p>Map Nimbus terms to your own organization.</p></a>
-        <a class="card" href="observability-maturity.html"><h3>Observability Maturity</h3><p>A scorecard and roadmap out of under 10% dashboard coverage.</p></a>
+        <a class="card" href="templates.html#exec-sitrep"><h3>Executive SITREP</h3><p>Bottom line first, during Sev 1–2.</p></a>
+        <a class="card" href="templates.html#weekly-reliability-note"><h3>Weekly Note</h3><p>Five lines for your director, every week.</p></a>
+        <a class="card" href="templates.html#decision-memo"><h3>Decision Memo</h3><p>One page to get a yes.</p></a>
+        <a class="card" href="templates.html#pre-wire-message"><h3>Pre-Wire Message</h3><p>No surprises in the room.</p></a>
+        <a class="card" href="templates.html#vendor-scorecard"><h3>Vendor Scorecard</h3><p>Hold the NOC vendor to outcomes.</p></a>
+        <a class="card" href="templates.html#sbi-feedback"><h3>SBI Feedback</h3><p>Down, sideways, and up.</p></a>
       </div>
 
-      <h2 id="how-this-guide-thinks">How This Guide Thinks</h2>
+      <h2 id="your-team-at-a-glance">Your Team at a Glance</h2>
+      <div class="table-wrap"><table><thead><tr><th>Who</th><th>Their job in incidents</th><th>Your job for them</th><th>Read</th></tr></thead><tbody>
+        <tr><td><strong>Contract NOC</strong> (offshore vendor)</td><td>Detect, declare, coordinate, request actions. No production tooling yet.</td><td>Clear outcomes through the vendor, training, a fair scorecard</td><td><a href="team/contract-noc.html">Managing a Contract NOC</a> · <a href="leaders/enabling-the-noc.html">Enabling the NOC</a></td></tr>
+        <tr><td><strong>SREs</strong> (FTE, US and India)</td><td>Technical Lead: find the layer, recommend mitigations</td><td>Fair on-call, interesting work in both regions, career paths</td><td><a href="team/global-sre.html">Leading Global SREs</a> · <a href="leaders/enabling-sre.html">Enabling SREs</a></td></tr>
+        <tr><td><strong>Ops lead</strong></td><td>Process, reporting, vendor operations</td><td>A 30/60/90 plan to build technical depth</td><td><a href="team/ops-lead.html">Developing Your Ops Lead</a></td></tr>
+        <tr><td><strong>Your director</strong> (highly technical, low EQ)</td><td>Often dives in</td><td>Use their strength, buffer the team, pre-wire</td><td><a href="politics/managing-up.html">Managing Up</a></td></tr>
+      </tbody></table></div>
+
+      <h2 id="how-this-playbook-thinks">How This Playbook Thinks</h2>
       <div class="card-grid">
-        <div class="card"><h3>Coordinate and Investigate Separately</h3><p>One person runs the room, and another runs the problem.</p></div>
+        <div class="card"><h3>Ask, Don't Grab the Keyboard</h3><p>Your leverage is the right question at the right layer, not doing the investigation yourself.</p></div>
         <div class="card"><h3>Mitigate, Then Debug</h3><p>Stop the bleeding first. Root cause can wait until users are unblocked.</p></div>
-        <div class="card"><h3>Layer First</h3><p>Device, edge, gateway, orchestrator, service, or model? The answer tells you the owner.</p></div>
-        <div class="card"><h3>Learn Every Time</h3><p>Every incident leaves a runbook, and serious ones get a blameless postmortem.</p></div>
+        <div class="card"><h3>Absorb Pressure, Pass On Clarity</h3><p>Shield the team from noise without hiding information they need.</p></div>
+        <div class="card"><h3>No Surprises</h3><p>Pre-wire decisions, update on a cadence, and tell bad news early.</p></div>
+        <div class="card"><h3>Learn Every Time</h3><p>Blameless postmortems, owned actions, and follow-through you can show.</p></div>
+        <div class="card"><h3>Grow Everyone</h3><p>Contractors, SREs in both regions, and your Ops lead all get a path.</p></div>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>

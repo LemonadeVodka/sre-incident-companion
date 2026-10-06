@@ -9,13 +9,13 @@
 
   var S = [
     { id: "noisy-neighbor", title: "Device Care Throttled by a Background Batch", sev: "Sev 2", playbook: "pb-429-surge",
-      setup: "09:05 on a Monday. Device Care users report \"Nimbus is busy\". The Proactive Tips batch started at 09:00 on the shared chat-small deployment.",
+      setup: "09:05 on a Monday. Device Care users report \"Nimbus is busy\". The Next Step batch started at 09:00 on the shared chat-small deployment.",
       objectives: ["Declare and coordinate within 10 minutes", "Prove the noisy neighbor with evidence", "Get the batch paused through a pre-agreed request", "Keep Morgan from derailing the Technical Lead"],
       injects: [
         { t: 0, text: "NOC sweep: 429s at 9% on chat-small. Device Care error rate 8% (baseline 0.6%)." },
         { t: 5, text: "Device CFT is on Teams and hasn't acknowledged the page." },
         { t: 10, text: "Morgan (director) DMs the SRE: \"What query are you running? Why isn't this fixed yet?\"", morgan: true },
-        { t: 15, text: "Token-share query: Proactive Tips is using 70% of chat-small tokens per minute." },
+        { t: 15, text: "Token-share query: Next Step is using 70% of chat-small tokens per minute." },
         { t: 20, text: "Insights CFT acknowledges the pause request but asks, \"Who approved this?\"" },
         { t: 25, text: "Morgan opens a separate Teams call with the Device CFT and asks them to roll back their last deploy.", morgan: true },
         { t: 30, text: "Batch paused. 429s drop to 1%. Do you resolve? What's next?" }
@@ -30,7 +30,7 @@
         { t: 12, text: "Morgan joins the channel: \"Can someone walk me through the architecture? I want to understand the root cause now.\"", morgan: true },
         { t: 18, text: "The Client CFT says halting the rollout needs release manager approval, who is in a meeting." },
         { t: 22, text: "Cloud Infrastructure can enable spillover at about $900/hour, and wants a manager to approve." },
-        { t: 30, text: "Errors spread to Smart Search. Do you raise the severity?" }
+        { t: 30, text: "Errors spread to Ask Nimbus. Do you raise the severity?" }
       ] },
     { id: "edge-outage", title: "Everything Fails at the Edge", sev: "Sev 1", playbook: "pb-cdn-edge",
       setup: "14:02. Support reports that Nimbus \"can't connect\" for many users. App Insights looks unusually quiet.",

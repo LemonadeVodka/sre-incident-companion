@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Observability for AI · Reliability Ops Playbook</title>
+  <meta name="description" content="Observability for AI products: OpenTelemetry traces across layers, GenAI semantic conventions for model calls, token metrics, sampling pitfalls, and the dashboards a reliability manager should demand.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="tech-obs">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Technical Corner</a></div>
+      <div class="eyebrow">Technical Corner · Module 5</div>
+      <h1>Observability for AI</h1>
+      <p class="lede">You can't run what you can't see, and AI products need a few signals traditional services don't: tokens, model versions, finish reasons, retries against quota, and the split between device and cloud. This module tells you what good looks like and what to ask your team to build.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>One trace across all layers</strong> (device → edge → gateway → orchestrator → retrieval → model) is the single most valuable investment.</li>
+        <li><strong>Model calls need AI-specific attributes:</strong> model and version, input and output tokens, finish reason, and status, using the OpenTelemetry GenAI conventions.</li>
+        <li><strong>Sampling can hide incidents.</strong> Know what's sampled and how.</li>
+        <li>Demand <strong>five dashboards</strong>, each owned by someone.</li>
+      </ul></div>
+
+      <h2 id="traces">Traces Across Layers</h2>
+      <p>A <strong>trace</strong> follows one request through every service. Each step is a <strong>span</strong> with a duration and status. With traces, "which layer is slow?" takes one query (<a href="troubleshooting.html#decomposing-latency">decomposing latency</a>). Without them, every incident becomes a debate between teams.</p>
+      <ul class="checklist" data-key="trace-health">
+        <li>Trace context propagates across every hop, including the gateway and partner calls.</li>
+        <li>The device client starts the trace, or at least sends a request ID the cloud records.</li>
+        <li>Model calls, retrieval, and tool calls are separate spans.</li>
+        <li>Retries are visible as separate spans, not hidden inside one.</li>
+      </ul>
+
+      <h2 id="genai-conventions">GenAI Semantic Conventions</h2>
+      <p>OpenTelemetry defines standard attribute names for generative AI calls, so every team's telemetry looks the same. The ones to insist on:</p>
+      <div class="table-wrap"><table><thead><tr><th>Attribute</th><th>Why you care</th></tr></thead><tbody>
+        <tr><td><code>gen_ai.operation.name</code></td><td>Chat, embeddings, and so on, to separate model call types</td></tr>
+        <tr><td><code>gen_ai.request.model</code> / <code>gen_ai.response.model</code></td><td>Which model and version actually answered. Catches silent upgrades.</td></tr>
+        <tr><td><code>gen_ai.usage.input_tokens</code> / <code>gen_ai.usage.output_tokens</code></td><td>Explains latency, cost, and quota changes</td></tr>
+        <tr><td><code>gen_ai.response.finish_reasons</code></td><td>Stop, length limit, or content filter: quality and safety signals</td></tr>
+        <tr><td><code>error.type</code></td><td>Groups failures, for example 429 vs timeout vs 400</td></tr>
+      </tbody></table></div>
+      <p>The conventions are still evolving, so the exact names may change. The point is consistency across teams.</p>
+      <div class="callout tip"><div class="callout-title">Privacy</div><p>Prompt and answer content is often sensitive, and Nimbus's local-first design promises users privacy. Record counts and metadata by default, and only capture content with explicit approval.</p></div>
+
+      <h2 id="sampling">Sampling</h2>
+      <ul>
+        <li><strong>Head sampling</strong> keeps a fixed percentage of traces, decided at the start. It's cheap, but may drop the rare failing requests you need.</li>
+        <li><strong>Adaptive sampling</strong> (common in Application Insights) lowers the rate as volume rises. Counts need adjusting, or charts under-report during peaks.</li>
+        <li><strong>Tail sampling</strong> (in an OpenTelemetry collector) decides after the request finishes, keeping all errors and slow requests. It's best for incidents, but costs more to run.</li>
+      </ul>
+      <div class="script"><strong>Ask:</strong> "What's our sampling rate during peaks, and do we keep 100% of errors and slow requests?"</div>
+      <p>More in the deep dive on <a href="deep-dives.html#sampling-bias-and-broken-trace-propagation">sampling bias</a>.</p>
+
+      <h2 id="dashboards-to-demand">Dashboards to Demand</h2>
+      <div class="card-grid wide">
+        <div class="card"><h3>1. Feature Health</h3><p>P50, P95, and error rate per feature, against last week and the SLO. This is the NOC's home screen.</p></div>
+        <div class="card"><h3>2. Layer Breakdown</h3><p>Errors and latency by layer: edge, gateway, orchestrator, retrieval, model, partner.</p></div>
+        <div class="card"><h3>3. Model Capacity</h3><p>TPM used vs quota, 429s (including retried), TTFT, and tokens per request per deployment.</p></div>
+        <div class="card"><h3>4. Device &amp; Sync</h3><p>Local vs cloud split, fallback rate, client versions, relay success and sync lag.</p></div>
+        <div class="card"><h3>5. Partners</h3><p>Success rate and latency per partner and per integration platform connector.</p></div>
+      </div>
+      <p>Assess where you stand with the <a href="../observability-maturity.html">Observability Maturity</a> model.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

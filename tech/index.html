@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Technical Corner · Reliability Ops Playbook</title>
+  <meta name="description" content="A manager-depth course in cloud AI infrastructure troubleshooting: the AI request lifecycle, LLM serving and capacity, RAG and agents, networking and identity, observability, a failure catalog, and KQL.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="tech">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Technical Corner</div>
+      <div class="eyebrow">Technical Corner</div>
+      <h1>Technical Corner</h1>
+      <p class="lede">You don't need to be the best engineer in the room. You need enough depth to ask the question that unlocks the investigation, to spot a weak explanation, and to hold your own with a deeply technical director. This course gets you there for cloud-side AI infrastructure.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>Goal:</strong> manager depth. You can explain each layer, recognize how it fails, read the chart, and ask the next question.</li>
+        <li>Each module covers: <strong>what it is → how it fails → what the charts look like → questions to ask → go deeper</strong>.</li>
+        <li>Allow about <strong>30–45 minutes per module</strong>. Do one a week with your Ops lead.</li>
+      </ul></div>
+
+      <h2 id="learning-path">Learning Path</h2>
+      <ol class="steps">
+        <li><strong>Foundations</strong><a href="../leaders/ai-product-layers.html">Know the Layers</a> and the <a href="../leaders/latency-and-errors.html">Latency &amp; Errors Primer</a>. The mental model everything else builds on.</li>
+        <li><strong>AI Serving &amp; Capacity</strong><a href="ai-serving.html">How models are served</a>: tokens, first-token latency, quota, 429s, PTU vs pay-as-you-go, model lifecycle, cost.</li>
+        <li><strong>RAG, Agents &amp; Model Changes</strong><a href="rag-and-agents.html">Retrieval, tool calls, and evals</a>. Why AI systems regress with no code change.</li>
+        <li><strong>Network &amp; Identity</strong><a href="network-and-identity.html">Edge, gateway, DNS, TLS, tokens</a>. Where 401s, 403s, and 5xx at the edge come from.</li>
+        <li><strong>Observability for AI</strong><a href="observability.html">Traces, GenAI telemetry, sampling</a>, and the dashboards to demand.</li>
+        <li><strong>Troubleshooting</strong><a href="troubleshooting.html">The layer-by-layer walkthrough</a>, then <a href="deep-dives.html">system-level deep dives</a>.</li>
+        <li><strong>Failure Catalog</strong><a href="failure-catalog.html">Fifteen real-shaped failures</a>, each with its signature and first questions. Use it as flashcards.</li>
+        <li><strong>KQL</strong><a href="../kql/index.html">KQL Training</a>, so you can check a claim yourself in two minutes.</li>
+      </ol>
+
+      <h2 id="the-method">The Method</h2>
+      <p>Every module follows the same troubleshooting habit, which is also how you coach others:</p>
+      <div class="card-grid">
+        <div class="card"><h3>1. Where?</h3><p>Which layer returned the error or added the time? Use one trace, not a theory.</p></div>
+        <div class="card"><h3>2. Since When?</h3><p>Compare with the same hour last week. Find the change point.</p></div>
+        <div class="card"><h3>3. What Changed?</h3><p>Deploys, config, model versions, prompts, quota, partners, traffic.</p></div>
+        <div class="card"><h3>4. Who Exactly?</h3><p>Region, client version, feature, partner, tenant. A narrow cohort is a clue.</p></div>
+        <div class="card"><h3>5. What Would Prove It Wrong?</h3><p>Ask for the disconfirming check before acting on a single hypothesis.</p></div>
+      </div>
+      <div class="callout tip"><div class="callout-title">Use This with Your Director</div><p>A highly technical director respects precise questions far more than broad reassurance. "Did the P95 rise in prefill or decode?" earns more trust than "the team is on it". See <a href="../politics/managing-up.html">Managing Up</a>.</p></div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

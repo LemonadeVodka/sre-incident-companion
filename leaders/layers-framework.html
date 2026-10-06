@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The LAYERS Framework · Nimbus SRE</title>
+  <title>The LAYERS Framework · Reliability Ops Playbook</title>
   <meta name="description" content="A six-step question framework for senior managers (Locate, Assess, Yesterday, Evidence, Response, Sustain) with NOC, SRE, and executive versions for latency and error rates at every layer of an AI product.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,9 +11,9 @@
 </head>
 <body data-root="../" data-page="lead-framework">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
@@ -131,6 +131,11 @@
               <td><ul><li>Did the share of local answers drop (sweep 7)?</li><li>Is a client or local model rollout in progress right now?</li><li>Did 429s start at the same time as a client rollout?</li></ul></td>
               <td><ul><li>What's the fallback rate by local model version? Does the rise follow the rollout curve?</li><li>Is the cloud sized for a fallback surge? Do we cap fallback traffic per version?</li><li>Was the routing policy changed? Is it canaried?</li><li>Is fallback rate part of the release gate?</li></ul></td>
               <td>A device update is pushing extra work to the cloud, slowing [features]. We've paused the update and added capacity.<br><br>A routing change caused errors for [feature]. It has been reverted.</td></tr>
+            <tr><td><strong>Sync &amp; Relay (Cross-Device)</strong><br><span class="small">Client team + platform team (Nimbus: Client CFT, hosted by Cloud Infrastructure)</span></td>
+              <td><b>Latency:</b> Cross-device features (Next Step, cross-device Catch Up) lag. Context shows up late on the second device.<br><b>Errors:</b> Pairing or key-exchange failures, relay 5xx, "can't connect your devices".</td>
+              <td><ul><li>Is it only cross-device features? Does single-device use work?</li><li>Is relay latency or error rate up?</li><li>Are sync errors tied to one client version or OS?</li></ul></td>
+              <td><ul><li>Is the relay saturated, or is pairing failing for one client version or OS?</li><li>Did enterprise firewalls push more traffic from peer-to-peer onto the relay?</li><li>Relay-side failure or a client pairing bug? Content is end-to-end encrypted, so what metadata do we have?</li></ul></td>
+              <td>Moving between devices is slower than normal. Each device on its own works fine.<br><br>Some users can't connect their devices. Using one device still works. A fix is in progress.</td></tr>
             <tr><td><strong>Edge / CDN / WAF</strong><br><span class="small">Platform team (Nimbus: Cloud Infrastructure)</span></td>
               <td><b>Latency:</b> Slow everywhere at once. Origin timeouts (504).<br><b>Errors:</b> 502/503/504 at the edge, 403 from WAF rules. Our services may look quiet.</td>
               <td><ul><li>Is the edge 5xx rate up (sweep 3)?</li><li>Is it all regions or one?</li><li>Is App Insights unusually quiet while users can't connect?</li><li>Are there 403s? Did a security rule change?</li></ul></td>
@@ -151,9 +156,9 @@
               <td><ul><li>Is it only one feature? Which one?</li><li>Is one instance much slower than others?</li><li>Did errors start after this team's deploy?</li></ul></td>
               <td><ul><li>Where is the time: our code, retrieval, or the model call? Show me P50/P95 per hop.</li><li>Did prompts or context grow (token growth)? Did a deploy add work to the hot path?</li><li>Top exceptions and panics? Correlated with application_Version?</li><li>Can we degrade gracefully (answer without retrieval)?</li></ul></td>
               <td>[Feature] is slower after a recent change. The team is rolling it back.<br><br>[Feature] is failing for [X%] of requests after a change. We're rolling it back.</td></tr>
-            <tr><td><strong>Partner Integrations</strong><br><span class="small">Integrations team (Nimbus: Partner Integrations CFT)</span></td>
+            <tr><td><strong>Integration Platform &amp; Partners</strong><br><span class="small">Integrations team (Nimbus: Partner Integrations CFT) + the iPaaS vendor</span></td>
               <td><b>Latency:</b> One feature slow only for users of one partner. Partner API slow. Webhooks delayed.<br><b>Errors:</b> Partner 5xx, partner rate limits (429), expired OAuth tokens or consent (401), API/schema changes.</td>
-              <td><ul><li>Is it one partner or all partners?</li><li>What does the partner's status page say?</li><li>Are errors only for one partner's users?</li><li>Has the partner escalation contact been notified?</li></ul></td>
+              <td><ul><li>Is it one partner, or everything that goes through the integration platform?</li><li>What do the partner's and the iPaaS vendor's status pages say?</li><li>Are errors only for one partner's users?</li><li>Has the partner escalation contact been notified?</li></ul></td>
               <td><ul><li>Are our timeouts to the partner shorter than our own latency budget?</li><li>Do we have a circuit breaker and a degraded mode per partner?</li><li>Is it partner-side (status page, their errors) or our connector (schema change, token refresh)?</li><li>Can we disable just this connector with a flag and keep the rest working?</li></ul></td>
               <td>A third-party partner ([partner]) is slow, affecting [feature] for their users. We've switched to a fallback and contacted them.<br><br>[Partner] is having an outage. Users of [feature] with [partner] are affected. Nothing is wrong with our systems. We've disabled the integration temporarily and are working with the partner.</td></tr>
             <tr><td><strong>Model Provider (Capacity &amp; Quota)</strong><br><span class="small">Platform team (Nimbus: Cloud Infrastructure, with Azure)</span></td>

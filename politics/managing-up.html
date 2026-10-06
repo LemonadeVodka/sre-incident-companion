@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Technical, Low-EQ Leader · Reliability Ops Playbook</title>
+  <meta name="description" content="Managing up to a highly technical leader with low emotional intelligence: using their strengths, shielding the team, upward feedback with SBI, documenting patterns, and knowing when to escalate.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pol-up">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Manage Up &amp; Politics</a></div>
+      <div class="eyebrow">Manage Up &amp; Politics · Managing Up</div>
+      <h1>Working With a Technical, Low-EQ Leader</h1>
+      <p class="lede">A common and difficult situation: your leader is technically brilliant and often right, but impatient, blunt to the point of harshness, and quick to dive in and question people's competence. The team ends up demotivated. You can't change who they are. You can change how the interaction works, protect your team, and over time make the relationship productive. (At Nimbus, this is <a href="../environment.html#the-people">Morgan</a>.)</p>
+
+      <div class="tldr"><ul>
+        <li><strong>Use their strength.</strong> Give them technical depth, data, and early warnings. Earn their respect on their terms.</li>
+        <li><strong>Be the buffer.</strong> Absorb the tone, pass down the substance as actions.</li>
+        <li><strong>Pre-wire and structure</strong> their interactions with the team, especially during incidents.</li>
+        <li><strong>Give upward feedback with SBI</strong>, privately, once you have credibility.</li>
+        <li><strong>Document patterns.</strong> Know when to involve your skip-level or HR.</li>
+      </ul></div>
+
+      <div class="callout reality"><div class="callout-title">Keep Perspective</div><p>Most low-EQ technical leaders aren't malicious. They're impatient with ambiguity, and they show care for quality through critique. Treating it as a style to manage (rather than a fight) keeps you effective. Behavior that becomes harassment, discrimination, or retaliation is different: take it to HR.</p></div>
+
+      <h2 id="understand-what-drives-them">Understand What Drives Them</h2>
+      <div class="table-wrap"><table><thead><tr><th>What you see</th><th>What's often underneath</th><th>What helps</th></tr></thead><tbody>
+        <tr><td>Interrogates engineers in public</td><td>Anxiety about the outcome, and distrust of vague answers</td><td>Precise, data-backed updates before they ask</td></tr>
+        <tr><td>Dives into the weeds in incidents</td><td>Wants control and certainty, and possibly pressure from above</td><td>A comms-buffer role, scheduled technical summaries, a real job to do</td></tr>
+        <tr><td>Dismisses non-technical people</td><td>Values technical depth over other skills</td><td>Show your Ops lead's growth with evidence (<a href="../team/ops-lead.html#making-progress-visible">how</a>)</td></tr>
+        <tr><td>Harsh written feedback</td><td>Optimizes for speed, and doesn't model the emotional impact</td><td>Translate it before it reaches the team</td></tr>
+      </tbody></table></div>
+
+      <h2 id="use-their-strength">Use Their Strength</h2>
+      <ul class="checklist" data-key="up-strength">
+        <li>Send <strong>technical pre-reads</strong> before reviews (<a href="../templates.html#technical-pre-read">template</a>): data, the layer analysis, options. They respect rigor.</li>
+        <li>Ask for their technical opinion <strong>on purpose</strong>: "I'd value your view on the capacity isolation design." Channel the expertise into something useful.</li>
+        <li>Let them be right about technical details. Save your capital for decisions about people and priorities.</li>
+        <li>Bring problems <strong>with a recommendation</strong>, not open questions. Ambiguity triggers their impatience.</li>
+        <li><strong>No surprises:</strong> tell them bad news early and privately, before anyone else does.</li>
+      </ul>
+
+      <h2 id="be-the-buffer">Be the Buffer</h2>
+      <ol class="steps">
+        <li><strong>Absorb.</strong>Ask that harsh feedback come to you first: "Send concerns about the team to me, and I'll make sure they're acted on."</li>
+        <li><strong>Filter.</strong>Pull out the legitimate technical point, and drop the tone.</li>
+        <li><strong>Re-frame as action.</strong>"Leadership wants more confidence in our 401 diagnosis. Let's add the token-validation check to the runbook."</li>
+        <li><strong>Close the loop upward.</strong>"The team has added X. Here's the result." This builds their trust in the team.</li>
+      </ol>
+      <div class="callout warn"><div class="callout-title">Don't Hide Information</div><p>Buffering is about tone, not truth. If the leader has a real concern about someone's performance, address it properly (<a href="../team/one-on-ones.html#underperformance">how</a>). Don't bury it.</p></div>
+
+      <h2 id="structure-their-interactions">Structure Their Interactions With the Team</h2>
+      <ul>
+        <li><strong>Incidents:</strong> be their comms buffer. Send SITREPs before they ask, and give them a decision or escalation to own (<a href="../leaders/during-an-incident.html#when-other-leaders-dive-in">how</a>).</li>
+        <li><strong>Reviews:</strong> be in the room when they review your team's work. Frame the agenda, and step in if it turns personal: "Let's capture that as an action and move on."</li>
+        <li><strong>Postmortems:</strong> chair them yourself, and enforce the blameless opening.</li>
+        <li><strong>Direct messages to engineers:</strong> ask them to route questions through you during incidents. Explain why: speed of resolution.</li>
+      </ul>
+
+      <h2 id="upward-feedback">Upward Feedback</h2>
+      <p>Once you have credibility (a few months of delivery and no-surprise updates), give feedback <strong>privately, specifically, and in terms of outcomes they care about</strong>:</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Script</span><span class="title">SBI Upward Feedback<span class="answers">Private, calm, tied to outcomes</span></span></div>
+<pre><code>"Can I share an observation about yesterday's incident review?
+In the review (Situation), when you questioned Priya's diagnosis in front of the group (Behavior),
+she stopped contributing, and two engineers told me afterwards they'll hesitate to speak up next time (Impact).
+I know you want the most accurate diagnosis. That's my goal too. Fastest way there is people
+volunteering ideas early. Would you be open to sending detailed critique to me first, and I'll
+make sure it's acted on?"</code></pre></div>
+      <p>Expect defensiveness the first time. Don't argue. Thank them, and let it sit. The change often shows up later.</p>
+
+      <h2 id="document-patterns">Document Patterns</h2>
+      <p>Keep brief, factual, private notes: date, what happened, impact (people affected, attrition risk), what you did. Not for ammunition, but so that if you need to escalate, you can show a pattern rather than a feeling.</p>
+
+      <h2 id="when-to-escalate">When to Escalate (Skip-Level or HR)</h2>
+      <div class="table-wrap"><table><thead><tr><th>Situation</th><th>Path</th></tr></thead><tbody>
+        <tr><td>Behavior is harsh but not abusive, and you haven't given feedback yet</td><td>Give SBI feedback first, and buffer meanwhile</td></tr>
+        <tr><td>Feedback given, no change, and measurable harm (attrition, people refusing on-call)</td><td>A skip-level conversation framed around business impact and retention, with documented examples</td></tr>
+        <tr><td>Harassment, discrimination, threats, retaliation</td><td>HR, immediately</td></tr>
+      </tbody></table></div>
+
+      <h2 id="protect-yourself">Protect Yourself</h2>
+      <ul>
+        <li>Find a peer or mentor outside your chain to sanity-check situations.</li>
+        <li>Keep your skip-level informed about results (not complaints), so your reputation doesn't depend on one person.</li>
+        <li>Recognize your own stress signals. You can't buffer a team if you're running on empty.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

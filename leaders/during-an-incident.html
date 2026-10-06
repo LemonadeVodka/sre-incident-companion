@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>During an Incident · Nimbus SRE</title>
+  <title>During an Incident · Reliability Ops Playbook</title>
   <meta name="description" content="What a senior manager does, asks, avoids, and decides during an incident, using the LAYERS framework in live mode.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,9 +11,9 @@
 </head>
 <body data-root="../" data-page="lead-during">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
@@ -41,7 +41,7 @@
             <tr><td><strong>0 · Roles</strong></td><td>"Who's coordinating, and who's the Technical Lead?"</td><td>"NOC (Priya) is IC. SRE (Jordan) is Tech Lead."</td></tr>
             <tr><td><strong>L · Locate</strong></td><td>"Which layer is it in, and how do we know?"</td><td>"The model provider layer: 429s on chat-small, and the gateway and edge are normal."</td></tr>
             <tr><td><strong>A · Assess</strong></td><td>"How many users, compared to normal? P50 or P95?"</td><td>"9% of Device Care requests failing, normally under 1%, for 25 minutes."</td></tr>
-            <tr><td><strong>Y · Yesterday</strong></td><td>"What changed before it started?"</td><td>"The Proactive Tips batch started at 09:00, and a local model rollout reached 25% at 08:30."</td></tr>
+            <tr><td><strong>Y · Yesterday</strong></td><td>"What changed before it started?"</td><td>"The Next Step batch started at 09:00, and a local model rollout reached 25% at 08:30."</td></tr>
             <tr><td><strong>E · Evidence</strong></td><td>"How confident are you, and what would prove us wrong?"</td><td>"Medium. Tokens by caller shows the batch. Confirming the fallback rate next."</td></tr>
             <tr><td><strong>R · Response</strong></td><td>"What's the safest reversible action, who owns it, and what do you need from me?"</td><td>"We've asked Insights to pause the batch. If it's not enough, we need approval for overflow capacity at about $900/h."</td></tr>
           </tbody>

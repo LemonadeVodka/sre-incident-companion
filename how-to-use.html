@@ -3,62 +3,66 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>How to Use This Guide · Nimbus SRE</title>
-  <meta name="description" content="Which pages to open for a live incident, onboarding, tabletop exercises, postmortems, leadership reviews, and reuse in another organization.">
+  <title>How to Use This Playbook · Reliability Ops Playbook</title>
+  <meta name="description" content="How a reliability operations manager uses this playbook: during incidents, in the weekly rhythm, for people leadership, managing up, learning the technical side, and reuse elsewhere.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body data-root="./" data-page="how-to-use">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./playbook/index.html">Frameworks</a><a href="./operate/incident-operations.html">Incident Operations</a><a href="./team/contract-noc.html">Lead the Team</a><a href="./politics/index.html">Manage Up &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Start</div>
-      <div class="eyebrow">Start · All Roles</div>
-      <h1>How to Use This Guide</h1>
-      <p class="lede">This guide is used at different moments by different people. Find your moment below and follow its path.</p>
+      <div class="eyebrow">Start · How to Use</div>
+      <h1>How to Use This Playbook</h1>
+      <p class="lede">This is your playbook as a senior manager of reliability and service operations. Use it at different moments: in an incident, in your weekly rhythm, before a hard conversation, or when you want to get sharper technically. Find your moment below.</p>
 
       <h2 id="live-incident">During a Live Incident</h2>
       <div class="panel">
-        <p><strong>Who:</strong> the NOC Coordinator, the SRE Technical Lead, and managers joining.</p>
         <ol>
-          <li>Press <strong>In an Incident</strong> (top right) to open the <a href="index.html#triage">triage tool</a>.</li>
-          <li>NOC: <a href="noc/triage-and-escalate.html">Triage &amp; Escalate</a>, then <a href="noc/coordinate.html">Coordinate</a>. SRE: <a href="sre/investigate.html">Investigate</a>. Managers: <a href="leaders/during-an-incident.html">During an Incident</a>.</li>
-          <li>Open the matching <a href="playbooks.html">playbook</a>.</li>
+          <li>Press <strong>In an Incident</strong> (top right) to open the <a href="index.html#triage">triage tool</a>. It shows your questions and decisions first, then what your NOC and SREs should be doing.</li>
+          <li>Ask questions with <a href="leaders/layers-framework.html">LAYERS</a>, and decide using <a href="leaders/during-an-incident.html#decisions-only-you-can-make">Decisions Only You Can Make</a>.</li>
+          <li>Update executives with the <a href="leaders/executive-updates.html#sitrep-builder">SITREP builder</a>. Shield the responders from side questions.</li>
         </ol>
-        <p><strong>Tip:</strong> click the <strong>#</strong> next to any heading to copy a link to that section, then paste it into Slack or Teams so everyone sees the same steps.</p>
+        <p><strong>Tip:</strong> click the <strong>#</strong> next to any heading to copy a link to that section, then paste it into Slack or Teams.</p>
       </div>
 
-      <h2 id="onboarding">Onboarding</h2>
+      <h2 id="weekly-rhythm">In Your Weekly Rhythm</h2>
       <div class="panel">
-        <p><strong>Who:</strong> new NOC engineers, SREs, and managers.</p>
-        <p>Follow your role's <a href="onboarding.html">onboarding path</a> (week 1, month 1, month 3). Learn to query with <a href="kql/index.html">KQL Training</a>. Your progress is saved in your browser. Print your <a href="cards/index.html">role card</a>.</p>
+        <p>Work through the <a href="index.html#this-week">This Week</a> checklist on the home page. Report with <a href="operate/metrics-and-reporting.html">Metrics &amp; Reporting</a>, and manage the vendor with <a href="team/contract-noc.html">Managing a Contract NOC</a>.</p>
       </div>
 
-      <h2 id="tabletop-exercises">Tabletop Exercises and Game Days</h2>
+      <h2 id="leading-people">Leading People</h2>
       <div class="panel">
-        <p><strong>Who:</strong> a facilitator plus one person per role. Allow 45–60 minutes.</p>
-        <p>Open the <a href="tabletop.html">Tabletop Kit</a>, pick a scenario, assign roles, and reveal injects on the timer. Expect Morgan the director to show up. Score the debrief with <a href="response-quality.html">Weak / Good / Best</a> and export the summary.</p>
+        <p>Before 1:1s, feedback, or career conversations, open <a href="team/one-on-ones.html">1:1s, Feedback &amp; Performance</a>. For your Ops lead, use the <a href="team/ops-lead.html">30/60/90 plan</a>. For SREs across regions, see <a href="team/global-sre.html">Leading Global SREs</a>. Onboard new people with <a href="onboarding.html">Hiring &amp; Onboarding</a>.</p>
       </div>
 
-      <h2 id="post-incident">After an Incident</h2>
+      <h2 id="managing-up">Managing Up and Across</h2>
       <div class="panel">
-        <p><strong>Who:</strong> the NOC (timeline), SRE (author), CFTs, and the senior manager (chair).</p>
-        <p>Follow the <a href="postmortems/index.html">postmortem process</a>: write it with the <a href="postmortems/template.html">writer</a>, run the <a href="postmortems/review-meeting.html">review</a>, and track the <a href="postmortems/action-items.html">action items</a>. Update the playbook you used.</p>
+        <p>Before an important meeting, map stakeholders and pre-wire (<a href="politics/stakeholders.html">Stakeholders &amp; Influence</a>). For a difficult director, read <a href="politics/managing-up.html">Managing Up</a>. When you need a decision, write a <a href="playbook/decision-memo.html">Decision Memo</a>.</p>
       </div>
 
-      <h2 id="leadership-reviews">Leadership and Monthly Reviews</h2>
+      <h2 id="learning-the-technical-side">Learning the Technical Side</h2>
       <div class="panel">
-        <p><strong>Who:</strong> senior managers and directors.</p>
-        <p>Use the <a href="leaders/after-and-between.html#between-incidents">monthly health check</a>, the <a href="observability-maturity.html#self-assessment-scorecard">maturity scorecard</a>, and <a href="response-quality.html">What Good Looks Like</a>. When asking for budget or tooling, link the <a href="leaders/investing.html#tooling-and-process-asks">tooling asks</a>.</p>
+        <p>Follow the <a href="tech/index.html#learning-path">Technical Corner learning path</a>, one module a week. Use the <a href="tech/failure-catalog.html">Failure Catalog</a> as flashcards and <a href="kql/index.html">KQL Training</a> to check claims yourself.</p>
+      </div>
+
+      <h2 id="practice-and-learning">Practice and Post-Incident Learning</h2>
+      <div class="panel">
+        <p>Run a <a href="tabletop.html">tabletop exercise</a> each month with your team (Morgan, the director archetype, shows up in the injects). Chair <a href="postmortems/index.html">postmortems</a> and track <a href="postmortems/action-items.html">action items</a>. Score responses with <a href="response-quality.html">Weak / Good / Best</a>.</p>
+      </div>
+
+      <h2 id="copy-paste">Copy and Paste</h2>
+      <div class="panel">
+        <p>Every template lives in the <a href="templates.html">Template Library</a>, with a filter and copy buttons. Print the <a href="cards/manager.html">LAYERS pocket card</a> for your desk.</p>
       </div>
 
       <h2 id="reusing-elsewhere">Reusing It Elsewhere</h2>
       <div class="panel">
-        <p><strong>Who:</strong> other teams and organizations.</p>
         <p>Start with <a href="adapt.html">Using This Guide Anywhere</a>, then the generic <a href="https://github.com/LemonadeVodka/kql-toolkit">KQL toolkit</a> and <a href="postmortems/template.html">postmortem template</a>.</p>
       </div>
     </article>

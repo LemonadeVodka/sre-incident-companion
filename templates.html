@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Template Library · Reliability Ops Playbook</title>
+  <meta name="description" content="Copy-paste templates for reliability operations managers: executive SITREP, weekly and monthly reports, quarterly review, vendor scorecard, 1:1s, SBI feedback, 30/60/90 plans, decision memo, pre-wire and escalation emails, stakeholder map, RACI, and hiring scorecards.">
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="./" data-page="templates">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./playbook/index.html">Frameworks</a><a href="./operate/incident-operations.html">Incident Operations</a><a href="./team/contract-noc.html">Lead the Team</a><a href="./politics/index.html">Manage Up &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Templates</div>
+      <div class="eyebrow">Template Library</div>
+      <h1>Template Library</h1>
+      <p class="lede">Every copy-paste template in the playbook, grouped by situation. Fill in the [brackets], delete what you don't need, and send. Each one links back to the page that explains when and how to use it.</p>
+
+      <div class="tpl-filter"><label for="tpl-q" class="seg-label">Filter</label><input id="tpl-q" type="search" placeholder="e.g. vendor, director, 1:1, incident" autocomplete="off"><span id="tpl-count" class="tpl-count" aria-live="polite"></span></div>
+
+      <h2 id="incidents-and-reporting">Incidents and Reporting</h2>
+
+      <section class="tpl" data-tags="incident executive sitrep bluf update director">
+      <h3 id="exec-sitrep">Executive SITREP</h3>
+      <p>Use during any Sev 1–2 for executives. Bottom line first. See <a href="leaders/executive-updates.html">Executive Updates</a>, or build one with the SITREP builder.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Message</span><span class="title">SITREP</span></div>
+<pre><code>[SEV X] [Feature] [degraded/down] — Update #[n] — [time, timezone]
+
+BOTTOM LINE: [One sentence: what users experience and whether it's getting better or worse.]
+
+IMPACT: [Who and how many] · [which features] · since [start time]
+CAUSE: [Known / suspected / unknown]: [one line, plain language]
+ACTIONS: [What we're doing now] — owner [team]
+DECISIONS NEEDED: [None / the specific decision, from whom, by when]
+NEXT UPDATE: [time], or sooner if anything changes</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="weekly report director note reliability">
+      <h3 id="weekly-reliability-note">Weekly Reliability Note</h3>
+      <p>Five lines to your director and peers every week. Consistency builds trust. See <a href="operate/metrics-and-reporting.html#reporting-cadence">Reporting Cadence</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Message</span><span class="title">Weekly Note</span></div>
+<pre><code>Reliability — week of [date]
+
+1. SLOs: [n of m features met SLO]. Misses: [feature — P95 / error rate vs target].
+2. Incidents: [count by sev]. Notable: [one line each, with postmortem link].
+3. Trend to watch: [e.g. model TPM at 82% of quota at peak, up from 70%].
+4. Progress: [postmortem actions closed / open / overdue] · [one win from the team, by name].
+5. Ask / heads-up: [decision or help needed, or "none"].</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="monthly report operations metrics scorecard">
+      <h3 id="monthly-ops-report">Monthly Operations Report</h3>
+      <p>For your director and CFT leads. A good one for your Ops lead to own. See <a href="operate/metrics-and-reporting.html">Metrics &amp; Reporting</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Document</span><span class="title">Monthly Report</span></div>
+<pre><code># Reliability Operations — [Month Year]
+
+## Summary (BLUF)
+[Two or three sentences: better, worse, or the same, and why.]
+
+## User Experience
+| Feature | P50 | P95 | Error rate | SLO met? | vs last month |
+|---------|-----|-----|------------|----------|---------------|
+
+## Operations
+- Incidents: Sev1 [n] · Sev2 [n] · Sev3 [n]
+- Time to declare (median / worst): [ ] · Time to mitigate (median / worst): [ ]
+- Detection source: alerts [%] · NOC sweep [%] · customers [%]
+- Missed declarations found in review: [n]
+- Pages per on-call shift (US / India): [ ] / [ ]
+
+## Learning
+- Postmortem actions: closed [n] · open [n] · overdue [n]
+- Top repeat theme: [ ]
+
+## Capacity and Cost
+- Peak TPM vs quota per deployment: [ ]
+- Device → cloud fallback rate: [ ]
+- Cloud AI cost per 1,000 requests: [ ]
+
+## Vendors and Partners
+- NOC vendor scorecard: [green/amber/red], key point: [ ]
+- Partner incidents: [ ]
+
+## Asks
+[Decisions or support needed]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="quarterly review executive qbr investment">
+      <h3 id="quarterly-reliability-review">Quarterly Reliability Review</h3>
+      <p>The executive narrative. Five slides or one page.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Outline</span><span class="title">Quarterly Review</span></div>
+<pre><code>1. Bottom line: Is Nimbus reliable enough for our users and our growth plan? [Yes / not yet, because...]
+2. Trends: SLO attainment per feature, incidents by severity, time to mitigate (quarter over quarter)
+3. Top 3 incidents and what we changed because of them
+4. Risks ahead: capacity outlook (peak vs quota), model retirements, launches, partner changes
+5. Investments needed: [ask, cost, risk if not funded] — link the decision memo
+6. Team: wins, recognition by name, staffing and on-call health</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="handoff follow-the-sun india us shift sre">
+      <h3 id="follow-the-sun-handoff">Follow-the-Sun Handoff</h3>
+      <p>Posted by the outgoing region at the end of each day. See <a href="team/global-sre.html#follow-the-sun">Follow the Sun</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Message</span><span class="title">Handoff</span></div>
+<pre><code>HANDOFF [US → India / India → US] — [date]
+
+Active incidents: [none / INC-123: state, next step, who to ask]
+Watching: [signals trending the wrong way, with dashboard link]
+In-flight changes: [deploys, model or prompt changes, quota requests]
+Waiting on: [team / partner — what — since when]
+Do not: [anything risky right now, e.g. "don't redeploy orchestrator until X"]
+Wins today: [shout-outs]</code></pre></div>
+      </section>
+
+      <h2 id="vendor">Vendor</h2>
+
+      <section class="tpl" data-tags="vendor noc scorecard contract qbr sla kpi">
+      <h3 id="vendor-scorecard">NOC Vendor Scorecard</h3>
+      <p>Monthly, shared with the vendor's delivery manager. Reviewed in the QBR. See <a href="team/contract-noc.html#slas-and-kpis-that-matter">SLAs and KPIs That Matter</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Table</span><span class="title">Vendor Scorecard</span></div>
+<pre><code>NOC Vendor Scorecard — [Month]                     Target     Actual    RAG
+-------------------------------------------------------------------------------
+Detection: incidents found by NOC before customers   ≥ 80%      [ ]       [ ]
+Time from signal to declare (median)                  ≤ 15 min   [ ]       [ ]
+Missed declarations (found in review)                 0          [ ]       [ ]
+Escalation quality (complete escalation template %)   ≥ 90%      [ ]       [ ]
+Exec/stakeholder updates on time (Sev 1–2)            ≥ 95%      [ ]       [ ]
+Shift health sweeps completed                         100%       [ ]       [ ]
+Runbook contributions / improvements                  ≥ [n]      [ ]       [ ]
+Staffing: shifts fully covered / attrition            100% / —   [ ]       [ ]
+Training plan progress (per vendor plan)              on track   [ ]       [ ]
+
+Highlights: [ ]
+Concerns and agreed actions (owner, date): [ ]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="vendor contractor expectations brief noc co-employment">
+      <h3 id="contractor-expectations-brief">Expectations Brief to the Vendor</h3>
+      <p>Addressed to the vendor's delivery manager, not to individual contractors. Set outcomes and let the vendor manage its people. Confirm the wording with HR and procurement. See <a href="team/contract-noc.html#co-employment-boundaries">Co-Employment Boundaries</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Email</span><span class="title">Expectations Brief</span></div>
+<pre><code>Subject: NOC service expectations for [quarter] — per SOW [ref]
+
+Hi [Delivery Manager],
+
+Ahead of [quarter], here are the outcomes we need from the NOC service, aligned to the SOW:
+
+1. Detection: [target], measured on the monthly scorecard.
+2. Declaration: use the Triage or Incident framework; declare within [15] minutes when criteria are met.
+3. Coordination: run the IC loop and post SITREPs on the agreed cadence for Sev 1–2.
+4. Knowledge: each shift contributes [n] runbook improvements per month.
+5. Training: complete [modules] by [date]; please share your plan for staffing it.
+
+Where we see gaps, we'll raise them with you in our weekly sync and the monthly scorecard,
+and rely on you to manage staffing, coaching, and performance within your team.
+
+Thanks — [Name]</code></pre></div>
+      </section>
+
+      <h2 id="people">People</h2>
+
+      <section class="tpl" data-tags="1:1 one-on-one people sre ops lead">
+      <h3 id="one-on-one">1:1 Doc</h3>
+      <p>A shared running doc, newest at the top. Their agenda first. See <a href="team/one-on-ones.html">1:1s, Feedback &amp; Performance</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Document</span><span class="title">1:1</span></div>
+<pre><code>## [Date]
+Their topics:
+-
+My topics:
+-
+How are you, really? (energy 1–5, on-call load, anything blocking)
+Growth: [progress on goal / skill this month]
+Feedback (both directions):
+Actions:
+- [ ] [who] [what] [by when]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="feedback sbi people director upward">
+      <h3 id="sbi-feedback">SBI Feedback</h3>
+      <p>Situation, Behavior, Impact, then a question. Works downward, sideways, and upward. See <a href="team/one-on-ones.html#sbi-feedback">SBI</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Script</span><span class="title">SBI</span></div>
+<pre><code>"In [situation — when and where],
+when you [specific, observable behavior],
+the impact was [effect on people, outcome, or trust].
+[For positive feedback: "Please keep doing that."]
+[For constructive feedback: "What was going on from your side?" — then listen.]
+Next time, could we try [specific alternative]?"</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="career conversation growth people promotion">
+      <h3 id="career-conversation">Career Conversation</h3>
+      <p>Twice a year, separate from performance reviews. See <a href="team/one-on-ones.html#career-conversations">Career Conversations</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Questions</span><span class="title">Career Conversation</span></div>
+<pre><code>Past: Which work in the last year gave you the most energy? The least?
+Present: What are you best at today? What do you want to get better at?
+Future: Where do you want to be in 2–3 years? (role, scope, technical vs people path)
+Gap: What experience would you need to get there that you don't have yet?
+Plan: One stretch assignment for next quarter: [ ]. One skill: [ ]. How I'll help: [ ].
+Check-in date: [ ]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="ops lead 30 60 90 plan growth onboarding">
+      <h3 id="ops-lead-30-60-90">Ops Lead 30/60/90 Plan</h3>
+      <p>For growing a less technical Ops lead. See <a href="team/ops-lead.html#thirty-sixty-ninety">Developing Your Ops Lead</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Plan</span><span class="title">30/60/90</span></div>
+<pre><code>Goal by day 90: [e.g. runs the weekly ops review and leads a Sev 2 bridge with SRE support]
+
+Days 1–30 — Understand
+- [ ] Explain Nimbus's layers on a whiteboard (Technical Corner: Know the Layers)
+- [ ] Shadow 2 incidents; write the timeline for one
+- [ ] KQL Module 1; run the feature health query unaided
+- Check-in: [date]
+
+Days 31–60 — Practice
+- [ ] Own the weekly reliability note draft
+- [ ] Run the NOC vendor weekly sync
+- [ ] Pair with an SRE on one postmortem; ask 3 LAYERS questions
+- Check-in: [date]
+
+Days 61–90 — Lead
+- [ ] Facilitate a tabletop exercise
+- [ ] Own the monthly report and vendor scorecard
+- [ ] Lead the coordination side of a real incident, with me as backup
+- Check-in: [date]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="on-call fairness review sre india us burnout">
+      <h3 id="on-call-fairness-review">On-Call Fairness Review</h3>
+      <p>Quarterly, with both regions. See <a href="team/global-sre.html#on-call-fairness">On-Call Fairness</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Table</span><span class="title">Fairness Review</span></div>
+<pre><code>On-call fairness — [Quarter]                     US         India
+--------------------------------------------------------------------
+Pages per shift (median / worst week)            [ ]        [ ]
+Out-of-hours pages per person                    [ ]        [ ]
+Sev 1–2 incidents led as Tech Lead               [ ]        [ ]
+Postmortems authored                              [ ]        [ ]
+Project / design work share (%)                  [ ]        [ ]
+Toil share (%)                                    [ ]        [ ]
+
+Imbalances found:
+Actions (owner, date):
+Top 3 noisy alerts to fix or delete:</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="hiring interview scorecard sre">
+      <h3 id="hiring-scorecard-sre">SRE Hiring Scorecard</h3>
+      <p>Agree the bar before interviews. Score 1–4 with evidence.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Table</span><span class="title">SRE Scorecard</span></div>
+<pre><code>Candidate: [ ]   Level: [ ]   Interviewer: [ ]
+
+Area                                     Score (1–4)   Evidence
+------------------------------------------------------------------
+Troubleshooting method (layers, data)    [ ]           [ ]
+Cloud / AI infrastructure depth          [ ]           [ ]
+Observability (traces, queries, SLOs)    [ ]           [ ]
+Incident behavior (calm, communicates)   [ ]           [ ]
+Systems thinking / design for failure    [ ]           [ ]
+Collaboration across regions and teams   [ ]           [ ]
+Teaching / raising others                [ ]           [ ]
+
+Recommendation: strong yes / yes / no / strong no
+Must-have concerns: [ ]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="vendor noc selection rfp hiring evaluation">
+      <h3 id="noc-vendor-evaluation">NOC Vendor Evaluation</h3>
+      <p>For selecting or renewing a NOC vendor.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Table</span><span class="title">Vendor Evaluation</span></div>
+<pre><code>Vendor: [ ]
+
+Criterion                                          Weight   Score (1–5)
+--------------------------------------------------------------------------
+Incident coordination experience (cloud / SaaS)    25%      [ ]
+Analyst training program and career path           15%      [ ]
+Attrition rate and knowledge retention approach    15%      [ ]
+Coverage model and timezone fit                    15%      [ ]
+Reporting, KPIs, willingness to be measured        10%      [ ]
+Tooling fit (paging, chat, ticketing)              10%      [ ]
+Cost                                               10%      [ ]
+
+References checked: [ ]   Notes: [ ]</code></pre></div>
+      </section>
+
+      <h2 id="decisions-and-politics">Decisions and Politics</h2>
+
+      <section class="tpl" data-tags="decision memo investment ask director">
+      <h3 id="decision-memo">Decision Memo</h3>
+      <p>One page to get a decision. See <a href="playbook/decision-memo.html">Decision Memo</a> for a worked example.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Document</span><span class="title">Decision Memo</span></div>
+<pre><code>ASK: [Decision needed] from [who] by [date].
+
+CONTEXT: [Problem in three sentences, with data: user impact, incidents, cost.]
+
+OPTIONS:
+ A. [Option] — cost [ ], time [ ], risk [ ], benefit [ ]
+ B. [Option] — cost [ ], time [ ], risk [ ], benefit [ ]
+ C. Do nothing — cost of inaction [ ]
+
+RECOMMENDATION: [Option] because [two sentences].
+
+RISKS AND MITIGATIONS: [ ]
+
+ALIGNED: [Who you pre-wired and their position.]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="pre-wire director stakeholder meeting politics">
+      <h3 id="pre-wire-message">Pre-Wire Message</h3>
+      <p>Before an important meeting, so nobody is surprised. See <a href="politics/stakeholders.html#pre-wiring">Pre-Wiring</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Message</span><span class="title">Pre-Wire</span></div>
+<pre><code>Hi [Name] — before [meeting] on [date], I wanted to get your view on [topic].
+
+The short version: [recommendation in one sentence].
+Why it matters to you: [their goal or pain — e.g. fewer throttling incidents on your feature].
+What I'd need from you: [support / input / nothing, just no surprises].
+
+Is there anything you'd change, or concerns I should address before we're in the room?</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="director technical pre-read managing up politics">
+      <h3 id="technical-pre-read">Technical Pre-Read for Your Director</h3>
+      <p>Send 24 hours before a review, so a highly technical director can dig in privately rather than in front of the team. See <a href="politics/managing-up.html">Managing Up</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Document</span><span class="title">Pre-Read</span></div>
+<pre><code>Pre-read: [Topic / incident] — review on [date]
+
+Bottom line: [one sentence]
+Data: [links to dashboards / queries, with time range]
+What we know (with evidence): [ ]
+What we don't know yet: [ ]
+Hypotheses we ruled out, and how: [ ]
+Proposed actions: [ ]
+Questions for you: [where your expertise would help most]
+
+To keep the review productive for the team, please send technical questions ahead
+and I'll make sure we bring the answers.</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="escalation email politics blocked cft">
+      <h3 id="escalation-email">Escalation Email</h3>
+      <p>Escalate the problem, not the person. See <a href="politics/escalation-and-narrative.html">Escalation &amp; Narrative</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Email</span><span class="title">Escalation</span></div>
+<pre><code>Subject: Decision needed: [issue] — by [date]
+
+Hi [Leader] (cc [peer you've already spoken to]),
+
+[Peer] and I have been working on [issue] and need your help to resolve it.
+
+Impact: [user / business impact, with data].
+What we've tried: [steps, dates].
+Where we disagree: [the trade-off, stated fairly from both sides].
+Options: A [ ] · B [ ]. My recommendation: [ ]. [Peer] prefers [ ] because [ ].
+Decision needed by: [date], because [reason].
+
+Happy to walk through it in 15 minutes.</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="no options priorities pushback director politics">
+      <h3 id="no-with-options">"No, but Here Are Options"</h3>
+      <p>Decline a request without being the blocker. See <a href="politics/escalation-and-narrative.html">Escalation &amp; Narrative</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Message</span><span class="title">No, with Options</span></div>
+<pre><code>"I want to help with [request]. With current capacity we can't do it and also
+[current commitment] by [date]. Here are the options:
+
+1. Do [request] now — [commitment] slips to [date].
+2. Do a smaller version: [scope] by [date], keep [commitment].
+3. Do [request] after [date].
+
+My recommendation is [option] because [reason]. Which would you prefer?"</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="stakeholder map power interest politics">
+      <h3 id="stakeholder-map">Stakeholder Map</h3>
+      <p>Before any cross-team initiative. See <a href="politics/stakeholders.html#stakeholder-map">Stakeholder Mapping</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Table</span><span class="title">Stakeholder Map</span></div>
+<pre><code>Initiative: [ ]
+
+Stakeholder   Power (H/M/L)   Interest (H/M/L)   Position (+/0/−)   What they need to win   Plan / owner
+------------------------------------------------------------------------------------------------------
+[ ]           [ ]             [ ]                [ ]                [ ]                     [ ]
+
+High power + high interest → manage closely (pre-wire 1:1)
+High power + low interest  → keep satisfied (short updates)
+Low power + high interest  → keep informed (and recruit as allies)
+Low power + low interest   → monitor</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="political capital ledger politics trust">
+      <h3 id="political-capital-ledger">Political Capital Ledger</h3>
+      <p>Track deposits and withdrawals of trust. See <a href="politics/index.html">Politics</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Table</span><span class="title">Capital Ledger</span></div>
+<pre><code>Person / team   Deposits (help given, wins shared, promises kept)   Withdrawals (asks, escalations, missed promises)   Balance
+-------------------------------------------------------------------------------------------------------------------------
+[ ]             [ ]                                                   [ ]                                                  [+/0/−]
+
+Before a big ask: Is the balance positive? If not, what deposit can I make first?</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="raci ownership roles">
+      <h3 id="raci-template">RACI</h3>
+      <p>When ownership is unclear. See <a href="playbook/raci-and-severity.html#raci">RACI &amp; Severity</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Table</span><span class="title">RACI</span></div>
+<pre><code>Activity                 [Team A]   [Team B]   [Team C]   [You]
+------------------------------------------------------------------
+[ ]                      R          C          I          A
+
+R = does the work · A = one owner of the outcome · C = consulted before · I = informed after
+Rule: exactly one A per row.</code></pre></div>
+      </section>
+      <p id="tpl-empty" class="tpl-empty" hidden>No templates match. Try a broader word, such as "vendor" or "incident".</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="./assets/site.js"></script>
+<script src="./assets/templates.js"></script>
+</body>
+</html>

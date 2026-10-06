@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decision Memo · Reliability Ops Playbook</title>
+  <meta name="description" content="A one-page decision memo framework for asking leadership for money, priority, or a decision: context, options, recommendation, cost, risks, and the ask.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pb-decision">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Frameworks</a></div>
+      <div class="eyebrow">Framework · Decisions</div>
+      <h1>Decision Memo</h1>
+      <p class="lede">The fastest way to get a decision from busy or skeptical leaders is a one-page memo that does the thinking for them: why now, the options, what you recommend, what it costs, and exactly what you're asking for. It's especially effective with a highly technical director, because it shows rigor up front.</p>
+      <div class="tldr"><ul>
+        <li><strong>One page.</strong> If it needs more, put it in an appendix.</li>
+        <li>Always include <strong>at least two real options</strong> plus "do nothing", with its cost.</li>
+        <li>Lead with the <strong>ask and the deadline</strong>.</li>
+        <li><strong>Pre-wire it</strong> before the meeting (<a href="../politics/stakeholders.html#pre-wiring">how</a>).</li>
+      </ul></div>
+      <h2 id="structure">Structure</h2>
+      <ol class="steps">
+        <li><strong>The Ask</strong>The decision you need, from whom, and by when.</li>
+        <li><strong>Context</strong>The problem in three sentences, with data: user impact, incidents, cost.</li>
+        <li><strong>Options</strong>Two or three, plus "do nothing". For each: what it is, cost, time, risk, benefit.</li>
+        <li><strong>Recommendation</strong>Which option and why, in two sentences.</li>
+        <li><strong>Risks and Mitigations</strong>What could go wrong, and what you'll do about it.</li>
+        <li><strong>Who's Aligned</strong>Who you've pre-wired, and what they said.</li>
+      </ol>
+      <h2 id="example">Example</h2>
+      <div class="code-card"><div class="code-head"><span class="lang">Example</span><span class="title">Separate Capacity for Background AI Work</span></div>
+<pre><code>ASK: Approve a dedicated model deployment for background workloads (Next Step batch)
+     by Oct 20, about $X/month. Decision: Director of Reliability + Cloud Infrastructure lead.
+
+CONTEXT: Background and customer-facing work share one model deployment. In the last
+quarter, 3 incidents (2 Sev 2) were caused by background bursts throttling Device Care.
+About 38,000 users affected in total. Each incident cost ~6 engineer-hours plus credibility.
+
+OPTIONS:
+ A. Dedicated background deployment. ~$X/mo. 2 weeks. Removes the cause.
+ B. Rate-limit background work at the gateway. ~$0. 1 week. Reduces risk; tips arrive later.
+ C. Do nothing. $0. Expect ~1 Sev 2 per month at current growth.
+
+RECOMMENDATION: B now (fast, free), A next quarter as volume grows.
+
+RISKS: B delays tips by up to 30 min at peak (acceptable per Insights CFT).
+
+ALIGNED: Insights CFT EM (agrees), Cloud Infrastructure lead (prefers A, accepts B first),
+Device CFT EM (strongly supports).</code></pre></div>
+      <p>The blank version is in the <a href="../templates.html#decision-memo">Template Library</a>.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

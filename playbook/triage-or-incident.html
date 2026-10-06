@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Triage or Incident? · Reliability Ops Playbook</title>
+  <meta name="description" content="A lightweight framework for deciding whether something is an incident: three states (Watch, Triage, Incident), four yes/no questions, a 15-minute time box, and an interactive checker.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pb-triage">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Frameworks</a></div>
+      <div class="eyebrow">Framework · Before Declaring</div>
+      <h1>Triage or Incident?</h1>
+      <p class="lede">Most late incidents start as "not sure yet". This framework gives your NOC, and you, a fast and defensible way to decide: <strong>three states, four yes/no questions, one time box</strong>. The rule that makes it work is simple: <strong>when in doubt, declare</strong>.</p>
+      <div class="tldr"><ul>
+        <li><strong>Watch</strong> (log it) → <strong>Triage</strong> (a thread plus a 15-minute time box) → <strong>Incident</strong> (declare).</li>
+        <li>Declare if <strong>users are affected AND it's above normal for 10+ minutes</strong>, OR it's on a <strong>shared layer</strong>, OR you <strong>need help</strong>.</li>
+        <li>Still unsure after 15 minutes? Declare. Nobody gets criticized for declaring.</li>
+      </ul></div>
+      <h2 id="use-it-when">Use It When</h2>
+      <p>A signal looks off but nobody is sure it matters: an alert, a support ticket spike, a sweep anomaly, or a partner status notice. Teach it to the NOC vendor as part of their SOW runbooks, and use it yourself when someone asks "should we call this an incident?"</p>
+      <h2 id="the-check">The Check</h2>
+<p>Not sure if it's an incident yet? Use three states, four yes/no questions, and one time box. <strong>When in doubt, declare.</strong> Declaring is cheap, and you can always downgrade.</p>
+      <div class="states">
+        <div><div class="state-title"><i class="light green"></i>Watch</div><p>Something looks odd, but there's no user impact and it's inside normal ranges.</p><p><b>Do:</b> note it in the shift log and re-check at the next sweep.</p></div>
+        <div><div class="state-title"><i class="light amber"></i>Triage</div><p>Possibly affecting users, but the cause is unclear.</p><p><b>Do:</b> open a triage thread (not an incident), FYI the likely owner, and <b>time-box 15 minutes</b>.</p></div>
+        <div><div class="state-title"><i class="light red"></i>Incident</div><p>User impact is confirmed or likely.</p><p><b>Do:</b> declare and coordinate.</p></div>
+      </div>
+      <div class="panel" id="declare-app" aria-live="polite">
+        <noscript>
+          <ol>
+            <li><b>Users:</b> are users affected, or about to be?</li>
+            <li><b>Size and time:</b> clearly above normal (2× errors or 1.5× P95) and lasting more than 10 minutes?</li>
+            <li><b>Spread:</b> on a shared layer (edge, gateway, orchestrator, model, partner), or more than one feature?</li>
+            <li><b>Help:</b> do we need more than one team, or a decision we can't make?</li>
+          </ol>
+          <p>Yes to 1 and 2, or yes to 3 or 4: <b>declare</b>. Yes to only 1 or 2: <b>triage</b> (15 minutes). All no: <b>watch</b>. Still unsure after 15 minutes: <b>declare</b>.</p>
+        </noscript>
+      </div>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Triage Thread Note<span class="answers">Post in the NOC channel, not as an incident</span></span></div>
+<pre><code>TRIAGE (not an incident yet): [what you see + numbers] since [time].
+Likely owner: @[owner] (FYI). Re-check at [time + 15 min].
+If still unsure then → declare.</code></pre>
+      </div>
+      <ul>
+        <li>If a triage becomes an incident, <b>its thread becomes the start of the timeline</b>.</li>
+        <li>Triage threads are reviewed weekly with your manager. Nobody is criticized for declaring.</li>
+      </ul>
+
+      <h2 id="your-role">Your Role as the Manager</h2>
+      <ul>
+        <li>Make it part of the NOC vendor's required runbooks, and the weekly triage-thread review (<a href="../leaders/enabling-the-noc.html#triage-or-incident-coaching">how</a>).</li>
+        <li>Praise early declarations in public, even the false alarms.</li>
+        <li>Track <strong>missed declarations</strong> and <strong>time from first signal to declare</strong> in the <a href="../operate/metrics-and-reporting.html">monthly metrics</a>.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+<script src="../assets/declare.js"></script>
+</body>
+</html>

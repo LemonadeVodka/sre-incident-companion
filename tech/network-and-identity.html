@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Network & Identity · Reliability Ops Playbook</title>
+  <meta name="description" content="The network and identity layers of a cloud AI product: CDN and WAF, API gateway, private endpoints, DNS, TLS, Entra ID tokens, managed identity, 401 vs 403, and the cross-device sync relay.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="tech-network">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Technical Corner</a></div>
+      <div class="eyebrow">Technical Corner · Module 4</div>
+      <h1>Network &amp; Identity</h1>
+      <p class="lede">Before a request ever reaches a model, it crosses the edge, a gateway, private networking, and several identity checks. These layers cause the fastest, broadest outages: the 5xx spike at the edge, the 401 wave after a key rotation, the 403 from a new firewall rule.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>Find which layer returned the error first.</strong> An edge 502 and an orchestrator 502 are completely different problems.</li>
+        <li><strong>401 = "I don't know who you are"</strong> (token missing, expired, or invalid). <strong>403 = "I know you, and the answer is no"</strong> (permissions, WAF, policy).</li>
+        <li>Networking changes (DNS, private endpoints, firewall) are a top cause of sudden, total failures.</li>
+      </ul></div>
+
+      <h2 id="the-path">The Request Path</h2>
+      <div class="table-wrap"><table><thead><tr><th>Hop</th><th>Nimbus (Azure)</th><th>Typical failures</th></tr></thead><tbody>
+        <tr><td>Device → edge</td><td>CDN / Front Door + WAF</td><td>Origin timeouts (504), origin unreachable (502), WAF blocks (403), certificate problems</td></tr>
+        <tr><td>Edge → gateway</td><td>API Management</td><td>401 from token validation, 429 from gateway rate policies, policy errors (500)</td></tr>
+        <tr><td>Gateway → services</td><td>Cloud orchestrator (Rust) on private networking</td><td>DNS resolution failures, connection pool exhaustion, timeouts</td></tr>
+        <tr><td>Services → model</td><td>AI Foundry over a private endpoint, managed identity</td><td>403 from missing role, DNS to the private endpoint failing, 429 quota</td></tr>
+        <tr><td>Device ↔ device</td><td>Sync relay (encrypted)</td><td>Relay connection failures, regional relay overload, sync lag</td></tr>
+      </tbody></table></div>
+      <p>The walkthrough on <a href="troubleshooting.html#which-layer-returned-the-error">which layer returned the error</a> shows how to tell them apart with one query.</p>
+
+      <h2 id="edge-cdn-and-waf">Edge: CDN and WAF</h2>
+      <ul>
+        <li><strong>502/504 at the edge</strong> usually means the origin was slow or unreachable. Check the origin first, then the edge.</li>
+        <li><strong>A response timeout at the edge</strong> can cut off long AI answers that aren't streamed. A rule of thumb: long generations need streaming or a longer timeout.</li>
+        <li><strong>WAF false positives</strong>: AI prompts are long, free text, and sometimes look like attacks to generic rules. A new WAF rule set can block real users with 403s.</li>
+      </ul>
+      <div class="script"><strong>Ask:</strong> "Are the errors generated at the edge, or passed through from the origin? Any WAF or edge config change in the last 24 hours?"</div>
+
+      <h2 id="gateway">API Gateway</h2>
+      <p>The gateway validates tokens, applies rate and token limits, routes to backends (including a secondary model region), and can apply circuit breakers. It's also a common place for policy mistakes.</p>
+      <div class="script"><strong>Ask:</strong> "Which gateway policy returned this? Did a policy, product, or subscription change?"</div>
+
+      <h2 id="private-networking-and-dns">Private Networking and DNS</h2>
+      <p>Production services usually reach data stores and model endpoints through <strong>private endpoints</strong>, which depend on <strong>private DNS</strong> resolving the service name to a private IP. If DNS is misconfigured, the service resolves to the public address, gets blocked, and fails, often across everything at once.</p>
+      <div class="callout warn"><div class="callout-title">Classic Pattern</div><p>"Everything that talks to X failed at 14:02, and a network change was made at 14:00." Ask for the DNS resolution result from inside the service's network, not from a laptop.</p></div>
+
+      <h2 id="tls-and-certificates">TLS and Certificates</h2>
+      <ul>
+        <li>Expired certificates cause sudden, total failures at a predictable time. Ask: "Is certificate expiry monitored, with alerts 30 days ahead?"</li>
+        <li>Desktop clients may pin certificates or ship with specific trust stores. Corporate proxies that inspect TLS can break them for enterprise users only, which shows up as a narrow cohort.</li>
+      </ul>
+
+      <h2 id="identity-and-tokens">Identity and Tokens</h2>
+      <div class="card-grid">
+        <div class="card"><h3>User Tokens</h3><p>The device signs in through an identity provider (Microsoft Entra ID at Nimbus) and gets an access token, typically valid for about an hour, which the client refreshes. Refresh bugs in a client version cause 401s for that version only.</p></div>
+        <div class="card"><h3>Managed Identity</h3><p>Cloud services authenticate to each other without stored secrets. A missing role assignment on a new deployment or resource gives a <strong>403</strong>.</p></div>
+        <div class="card"><h3>Keys and Secrets</h3><p>Rotating a key or secret without updating every consumer gives a wave of 401s starting at the rotation time.</p></div>
+        <div class="card"><h3>Clock Skew</h3><p>Tokens have validity windows. A device with a wrong clock can fail validation and look like a 401 cohort.</p></div>
+      </div>
+      <h3 id="reading-a-401-wave">Reading a 401 Wave</h3>
+      <div class="table-wrap"><table><thead><tr><th>Pattern</th><th>Likely cause</th></tr></thead><tbody>
+        <tr><td>One client version only</td><td>Token refresh bug in that release</td></tr>
+        <tr><td>All users, starting at a precise time</td><td>Key or secret rotation, identity configuration change, signing-key rollover</td></tr>
+        <tr><td>One service-to-service hop</td><td>Managed identity or role assignment, wrong audience</td></tr>
+        <tr><td>One enterprise tenant</td><td>Tenant policy (conditional access), proxy interference</td></tr>
+        <tr><td>One partner integration</td><td>Expired partner OAuth grant, or the partner rotated credentials (<a href="../queries.html#q-partner-auth">query</a>)</td></tr>
+      </tbody></table></div>
+      <p>The <a href="troubleshooting.html#401-investigation">401 investigation</a> walks through the queries.</p>
+
+      <h2 id="sync-relay">The Sync Relay</h2>
+      <p>Nimbus syncs context between a user's devices directly when they're on the same network, and otherwise through an <strong>encrypted relay</strong> service in the cloud. Relay problems show up as Catch Up and Next Step being late or missing on the second device, not as errors on the first.</p>
+      <div class="script"><strong>Ask:</strong> "What's the relay connection success rate and sync lag at P95, by region? Is the problem cross-device only?"</div>
+
+      <details><summary>Go Deeper</summary>
+        <ul>
+          <li><strong>Connection pool exhaustion:</strong> services keep a limited pool of outbound connections. Slow downstream calls hold connections longer and the pool runs out, causing timeouts unrelated to the downstream error rate.</li>
+          <li><strong>SNAT port exhaustion:</strong> heavy outbound traffic from a small set of IPs can run out of ports, causing intermittent connection failures under load.</li>
+          <li><strong>HTTP/2 and streaming:</strong> long-lived streaming responses behave differently through proxies and the edge. Test them explicitly.</li>
+        </ul>
+      </details>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

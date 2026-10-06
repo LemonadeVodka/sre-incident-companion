@@ -472,3 +472,21 @@ figure.diagram figcaption { margin-top: 10px; font-size: .86rem; color: var(--mu
 
 /* Show operators exactly as typed (no == / => ligatures) */
 code, pre, kbd { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+
+/* Collapsible sidebar groups */
+.nav-group { margin-bottom: 4px; }
+.nav-group h4 { margin: 0 0 2px; }
+.nav-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 7px 8px; background: none; border: 0; color: var(--muted); font: 600 .68rem var(--mono); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; text-align: left; }
+.nav-toggle::after { content: "+"; font: 700 .9rem var(--mono); color: var(--accent); }
+.nav-group.open .nav-toggle::after { content: "\2212"; }
+.nav-toggle:hover { color: var(--heading); }
+.nav-group .nav-items { display: none; margin-bottom: 10px; }
+.nav-group.open .nav-items { display: block; }
+
+/* ---------- Template Library filter ---------- */
+.tpl-filter { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 1em 0 1.6em; }
+.tpl-filter input { flex: 1 1 240px; min-width: 0; padding: 8px 10px; border: 1px solid var(--border); background: var(--surface); color: var(--fg); font: .92rem var(--mono); }
+.tpl-filter input:focus { outline: 2px solid var(--accent-strong); outline-offset: 1px; }
+.tpl-count { font: 700 .68rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.tpl-empty { color: var(--muted); font-style: italic; }
+section.tpl { scroll-margin-top: 80px; }

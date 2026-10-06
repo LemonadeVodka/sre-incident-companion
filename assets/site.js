@@ -1,76 +1,94 @@
-/* Nimbus SRE Incident Companion — shared page chrome and behaviors.
+/* Reliability Ops Manager's Playbook — shared page chrome and behaviors.
    Pages provide <body data-root="./|../" data-page="id"> and empty #site-header, #sidebar, #pager, #toc, #footer slots. */
 (function () {
   "use strict";
 
   /* Each group is a track. Prev/next paging stays inside the track. */
   var NAV = [
-    { group: "Start", track: "shared", items: [
-      { id: "index", href: "index.html", title: "Home & Triage" },
+    { group: "Start", track: "start", items: [
+      { id: "index", href: "index.html", title: "Manager Dashboard" },
+      { id: "how-to-use", href: "how-to-use.html", title: "How to Use This Playbook" },
       { id: "environment", href: "environment.html", title: "Background: Nimbus" },
-      { id: "how-to-use", href: "how-to-use.html", title: "How to Use This Guide" },
-      { id: "response-quality", href: "response-quality.html", title: "What Good Looks Like" },
-      { id: "onboarding", href: "onboarding.html", title: "Onboarding Paths" },
-      { id: "adapt", href: "adapt.html", title: "Using This Guide Anywhere" }
+      { id: "lead", href: "leaders/index.html", title: "Be the Expert in the Room" }
     ]},
-    { group: "NOC · Incident Coordinator", track: "noc", items: [
-      { id: "noc", href: "noc/index.html", title: "NOC Role" },
-      { id: "noc-detect", href: "noc/detect.html", title: "Watch & Detect" },
-      { id: "noc-triage", href: "noc/triage-and-escalate.html", title: "Triage & Escalate" },
-      { id: "noc-coordinate", href: "noc/coordinate.html", title: "Coordinate the Incident" },
-      { id: "noc-requests", href: "noc/action-requests.html", title: "Requesting Actions" }
+    { group: "Playbook · Frameworks", track: "frameworks", items: [
+      { id: "playbook", href: "playbook/index.html", title: "All Frameworks" },
+      { id: "lead-framework", href: "leaders/layers-framework.html", title: "LAYERS" },
+      { id: "pb-triage", href: "playbook/triage-or-incident.html", title: "Triage or Incident?" },
+      { id: "lead-exec", href: "leaders/executive-updates.html", title: "SITREP & BLUF" },
+      { id: "lead-post", href: "leaders/post-incident.html", title: "After Action Review" },
+      { id: "pb-decision", href: "playbook/decision-memo.html", title: "Decision Memo" },
+      { id: "pb-raci", href: "playbook/raci-and-severity.html", title: "RACI & Severity" },
+      { id: "response-quality", href: "response-quality.html", title: "Weak / Good / Best" }
     ]},
-    { group: "SRE On-Call · Technical Lead", track: "sre", items: [
-      { id: "sre", href: "sre/index.html", title: "SRE Role" },
-      { id: "sre-investigate", href: "sre/investigate.html", title: "Investigate" },
-      { id: "sre-deep", href: "sre/deep-dives.html", title: "Deep Dives" },
-      { id: "sre-tl", href: "sre/technical-lead.html", title: "Leading the Technical Response" }
+    { group: "Run the Operation", track: "operate", items: [
+      { id: "op-model", href: "operate/service-model.html", title: "Service Operations Model" },
+      { id: "op-incident", href: "operate/incident-operations.html", title: "Incident Operations" },
+      { id: "lead-during", href: "leaders/during-an-incident.html", title: "During an Incident" },
+      { id: "lead-after", href: "leaders/after-and-between.html", title: "Operating Rhythm" },
+      { id: "op-metrics", href: "operate/metrics-and-reporting.html", title: "Metrics & Reporting" },
+      { id: "op-vendors", href: "operate/vendors-and-partners.html", title: "Vendors & Partners" },
+      { id: "ways-of-working", href: "ways-of-working.html", title: "Ways of Working" }
     ]},
-    { group: "Senior Manager", track: "lead", items: [
-      { id: "lead", href: "leaders/index.html", title: "Manager Path" },
+    { group: "Lead the Team", track: "team", items: [
+      { id: "team-noc", href: "team/contract-noc.html", title: "Managing a Contract NOC" },
+      { id: "lead-noc", href: "leaders/enabling-the-noc.html", title: "Growing the NOC" },
+      { id: "team-global", href: "team/global-sre.html", title: "SREs Across US & India" },
+      { id: "lead-sre", href: "leaders/enabling-sre.html", title: "Developing SRE Engineers" },
+      { id: "team-ops-lead", href: "team/ops-lead.html", title: "Developing Your Ops Lead" },
+      { id: "team-1on1", href: "team/one-on-ones.html", title: "1:1s, Feedback & Performance" },
+      { id: "onboarding", href: "onboarding.html", title: "Hiring & Onboarding" },
+      { id: "team-morale", href: "team/morale.html", title: "Morale & Burnout" }
+    ]},
+    { group: "Manage Up & Politics", track: "politics", items: [
+      { id: "pol", href: "politics/index.html", title: "Politics Playbook" },
+      { id: "pol-stakeholders", href: "politics/stakeholders.html", title: "Stakeholders & Influence" },
+      { id: "pol-up", href: "politics/managing-up.html", title: "A Technical, Low-EQ Leader" },
+      { id: "pol-escalate", href: "politics/escalation-and-narrative.html", title: "Escalation & Narrative" }
+    ]},
+    { group: "Technical Corner", track: "tech", items: [
+      { id: "tech", href: "tech/index.html", title: "Start Here" },
       { id: "lead-layers", href: "leaders/ai-product-layers.html", title: "Know the Layers" },
       { id: "lead-primer", href: "leaders/latency-and-errors.html", title: "Latency & Errors Primer" },
-      { id: "lead-framework", href: "leaders/layers-framework.html", title: "The LAYERS Framework" },
-      { id: "lead-noc", href: "leaders/enabling-the-noc.html", title: "Enabling the NOC" },
-      { id: "lead-sre", href: "leaders/enabling-sre.html", title: "Enabling SRE Engineers" },
-      { id: "lead-exec", href: "leaders/executive-updates.html", title: "Updating Executives" },
-      { id: "lead-during", href: "leaders/during-an-incident.html", title: "During an Incident" },
-      { id: "lead-post", href: "leaders/post-incident.html", title: "Post-Incident Actions" },
+      { id: "tech-serving", href: "tech/ai-serving.html", title: "LLM Serving & Capacity" },
+      { id: "tech-rag", href: "tech/rag-and-agents.html", title: "RAG, Agents & Models" },
+      { id: "tech-net", href: "tech/network-and-identity.html", title: "Network & Identity" },
+      { id: "tech-obs", href: "tech/observability.html", title: "Observability for AI" },
+      { id: "tech-trouble", href: "tech/troubleshooting.html", title: "Troubleshooting Walkthrough" },
+      { id: "tech-deep", href: "tech/deep-dives.html", title: "Deep Dives" },
+      { id: "tech-catalog", href: "tech/failure-catalog.html", title: "Failure Catalog" },
+      { id: "kql", href: "kql/index.html", title: "KQL Training" },
+      { id: "kql-basics", href: "kql/basics.html", title: "KQL 1 · Basics" },
+      { id: "kql-latency-errors", href: "kql/latency-and-errors.html", title: "KQL 2 · Latency & Errors" },
+      { id: "kql-advanced", href: "kql/advanced.html", title: "KQL 3 · Across Layers" },
+      { id: "kql-practice", href: "kql/practice.html", title: "KQL Quiz & Cheat Sheet" },
+      { id: "queries", href: "queries.html", title: "Nimbus KQL Library" }
+    ]},
+    { group: "Templates", track: "templates", items: [
+      { id: "templates", href: "templates.html", title: "Template Library" },
+      { id: "cards", href: "cards/manager.html", title: "LAYERS Pocket Card" }
+    ]},
+    { group: "Reference", track: "ref", items: [
+      { id: "playbooks", href: "playbooks.html", title: "Incident Playbooks" },
       { id: "lead-scenarios", href: "leaders/scenarios.html", title: "Scenarios in Plain English" },
-      { id: "lead-after", href: "leaders/after-and-between.html", title: "Operating Rhythm" },
-      { id: "lead-invest", href: "leaders/investing.html", title: "Investing in Reliability" },
-      { id: "lead-jargon", href: "leaders/jargon.html", title: "Jargon Decoder" }
-    ]},
-    { group: "Post-Incident", track: "pm", items: [
-      { id: "pm", href: "postmortems/index.html", title: "Postmortems" },
-      { id: "pm-template", href: "postmortems/template.html", title: "Template & Writer" },
-      { id: "pm-review", href: "postmortems/review-meeting.html", title: "Running the Review" },
-      { id: "pm-example", href: "postmortems/example.html", title: "Worked Example" },
-      { id: "pm-actions", href: "postmortems/action-items.html", title: "Action Items" }
-    ]},
-    { group: "KQL Training", track: "kql", items: [
-      { id: "kql", href: "kql/index.html", title: "Start Here" },
-      { id: "kql-basics", href: "kql/basics.html", title: "1 · Basics" },
-      { id: "kql-latency-errors", href: "kql/latency-and-errors.html", title: "2 · Latency & Errors" },
-      { id: "kql-advanced", href: "kql/advanced.html", title: "3 · Across Layers" },
-      { id: "kql-practice", href: "kql/practice.html", title: "Quiz & Cheat Sheet" }
-    ]},
-    { group: "Practice", track: "practice", items: [
-      { id: "tabletop", href: "tabletop.html", title: "Tabletop Exercise Kit" },
-      { id: "cards", href: "cards/index.html", title: "Printable Role Cards" }
-    ]},
-    { group: "Shared Toolkit", track: "shared", items: [
-      { id: "fundamentals", href: "fundamentals.html", title: "SRE Fundamentals" },
       { id: "incident-response", href: "incident-response.html", title: "Incident Process" },
-      { id: "ways-of-working", href: "ways-of-working.html", title: "Ways of Working" },
-      { id: "playbooks", href: "playbooks.html", title: "Starter Playbooks" },
-      { id: "queries", href: "queries.html", title: "Nimbus KQL" },
+      { id: "pm", href: "postmortems/index.html", title: "Postmortems" },
+      { id: "pm-template", href: "postmortems/template.html", title: "Postmortem Writer" },
+      { id: "pm-review", href: "postmortems/review-meeting.html", title: "Running the Review" },
+      { id: "pm-example", href: "postmortems/example.html", title: "Worked Postmortem" },
+      { id: "pm-actions", href: "postmortems/action-items.html", title: "Action Items" },
+      { id: "tabletop", href: "tabletop.html", title: "Tabletop Exercise Kit" },
+      { id: "lead-invest", href: "leaders/investing.html", title: "Investing in Reliability" },
+      { id: "fundamentals", href: "fundamentals.html", title: "SRE Fundamentals" },
       { id: "observability-maturity", href: "observability-maturity.html", title: "Observability Maturity" },
+      { id: "lead-jargon", href: "leaders/jargon.html", title: "Jargon Decoder" },
+      { id: "adapt", href: "adapt.html", title: "Using This Anywhere" },
       { id: "references", href: "references.html", title: "Glossary & References" }
     ]}
   ];
-  var TRACK_HOME = { noc: "noc/index.html", sre: "sre/index.html", lead: "leaders/index.html" };
-  var TRACK_LABEL = { noc: "NOC Track", sre: "SRE Track", lead: "Manager Guide" };
+  var TRACK_HOME = {};
+  var TRACK_LABEL = { noc: "Growing the NOC", sre: "Developing SREs", lead: "Manager Playbook" };
+  var PANEL_HOME = { noc: "leaders/enabling-the-noc.html", sre: "leaders/enabling-sre.html", lead: "leaders/index.html" };
 
   var body = document.body;
   var root = body.getAttribute("data-root") || "./";
@@ -108,7 +126,7 @@
   if (header) {
     header.innerHTML =
       '<button class="icon-btn menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">' + MENU + '</button>' +
-      '<a class="brand" href="' + root + 'index.html">' + CLOUD + '<span>Nimbus SRE<small>Incident Companion</small></span></a>' +
+      '<a class="brand" href="' + root + 'index.html">' + CLOUD + '<span>Reliability Ops<small>Manager&rsquo;s Playbook</small></span></a>' +
       '<div class="header-spacer"></div>' +
       '<a class="incident-cta" href="' + root + 'index.html#triage"><i class="pulse"></i><span>In an Incident<span class="cta-long">? Start Triage</span></span></a>' +
       '<button class="icon-btn theme-btn" type="button" aria-label="Toggle dark mode"></button>';
@@ -143,12 +161,16 @@
     sidebar.innerHTML = NAV.map(function (g) {
       var role = !!TRACK_HOME[g.track];
       var cls = "nav-group" + (role ? " t-" + g.track : "") + (role && g.track === myRole ? " mine" : "");
-      return '<div class="' + cls + '"><h4>' + (role ? '<i class="track-dot"></i>' : "") + esc(g.group) + '</h4>' + g.items.map(function (i) {
+      var open = g.track === "start" || g.track === currentTrack;
+      if (open) cls += " open";
+      return '<div class="' + cls + '"><h4><button type="button" class="nav-toggle" aria-expanded="' + open + '">' + esc(g.group) + '</button></h4><div class="nav-items">' + g.items.map(function (i) {
         var cur = i.id === page ? ' aria-current="page"' : "";
         return '<a href="' + root + i.href + '"' + cur + '><span>' + esc(i.title) + '</span></a>';
-      }).join("") + '</div>';
+      }).join("") + '</div></div>';
     }).join("");
     sidebar.addEventListener("click", function (e) {
+      var t = e.target.closest(".nav-toggle");
+      if (t) { var grp = t.closest(".nav-group"); var o = grp.classList.toggle("open"); t.setAttribute("aria-expanded", o ? "true" : "false"); return; }
       if (e.target.closest("a")) body.classList.remove("nav-open");
     });
   }
@@ -185,8 +207,8 @@
     var h = panel.querySelector(".leader-head");
     if (!h) return;
     h.insertAdjacentHTML("afterbegin", ICONS[role]);
-    if (currentTrack !== role) {
-      var target = panel.getAttribute("data-guide") || TRACK_HOME[role];
+    if (!panel.hasAttribute("data-noguide")) {
+      var target = panel.getAttribute("data-guide") || PANEL_HOME[role];
       h.insertAdjacentHTML("beforeend", '<a class="guide-link" href="' + root + target + '">' + TRACK_LABEL[role] + ' →</a>');
     }
   });

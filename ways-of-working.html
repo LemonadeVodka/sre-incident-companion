@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ways of Working · Nimbus SRE</title>
+  <title>Ways of Working · Reliability Ops Playbook</title>
   <meta name="description" content="How Nimbus runs incidents with PagerDuty, Slack and Teams, a locked-down Jira, slow-responding CFTs, and few runbooks.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
@@ -11,9 +11,9 @@
 </head>
 <body data-root="./" data-page="ways-of-working">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./playbook/index.html">Frameworks</a><a href="./operate/incident-operations.html">Incident Operations</a><a href="./team/contract-noc.html">Lead the Team</a><a href="./politics/index.html">Manage Up &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
@@ -26,7 +26,7 @@
           <li><strong>PagerDuty pages people. Chat is only for coordination.</strong> Never rely on a Slack or Teams message to wake someone up.</li>
           <li>The <strong>Slack incident channel is the source of truth</strong>. A named <strong>bridge person</strong> mirrors it into Teams for Teams-only CFTs.</li>
           <li><strong>While Jira is locked down,</strong> keep the record in the channel plus a pinned record, and file one Jira ticket afterwards.</li>
-          <li><strong>Slow CFT?</strong> Follow the escalation ladder with timers, and send <a href="noc/action-requests.html">pre-agreed requests</a> to whoever can act.</li>
+          <li><strong>Slow CFT?</strong> Follow the escalation ladder with timers, and send <a href="operate/incident-operations.html">pre-agreed requests</a> to whoever can act.</li>
           <li><strong>Cloud Infrastructure</strong> owns the shared cloud and has a lot of influence. Bring evidence, use their process, and escalate through management.</li>
           <li><strong>New team:</strong> every incident leaves behind a runbook, even a rough one.</li>
         </ul>
@@ -127,7 +127,7 @@ Follow-ups: [owner — item]   Runbook to write: [title, owner]</code></pre>
             <tr><td><strong>T+15 min</strong></td><td>PagerDuty escalates to the CFT secondary. Re-page if needed, and call them if you have a phone number.</td><td>NOC / SRE</td></tr>
             <tr><td><strong>T+30 min</strong></td><td>SRE pages the <strong>CFT engineering manager</strong> and notifies the senior manager in the channel.</td><td>SRE</td></tr>
             <tr><td><strong>T+45 min</strong></td><td>The senior manager contacts the CFT's director or leadership directly.</td><td>Senior manager</td></tr>
-            <tr><td><strong>Meanwhile</strong></td><td>Send <a href="noc/action-requests.html">pre-agreed requests</a> to owners who <em>are</em> responding. Cloud Infrastructure can often shift traffic or add capacity even when a feature CFT is silent.</td><td>NOC (IC) + SRE</td></tr>
+            <tr><td><strong>Meanwhile</strong></td><td>Send <a href="operate/incident-operations.html">pre-agreed requests</a> to owners who <em>are</em> responding. Cloud Infrastructure can often shift traffic or add capacity even when a feature CFT is silent.</td><td>NOC (IC) + SRE</td></tr>
           </tbody>
         </table>
       </div>

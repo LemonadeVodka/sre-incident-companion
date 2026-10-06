@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Scenarios in Plain English · Nimbus SRE</title>
+  <title>Scenarios in Plain English · Reliability Ops Playbook</title>
   <meta name="description" content="Our eight most likely Nimbus incidents explained for senior managers: what is happening, what users feel, the typical fix, and your decisions.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,9 +11,9 @@
 </head>
 <body data-root="../" data-page="lead-scenarios">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
@@ -160,7 +160,7 @@
         <div class="playbook-head"><h2>A Partner Service Is Down</h2></div>
         <div class="playbook-body">
           <div class="pb-section"><div class="pb-label">What's happening</div><div>A third-party partner (for example a meeting platform, a productivity suite, or a device maker's support API) is slow or failing. Our systems are fine, but the feature that depends on that partner breaks for its users.</div></div>
-          <div class="pb-section"><div class="pb-label">What users feel</div><div>For example, Meeting Recap fails only for Zoom meetings, or Device Care can't check warranty status.</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>For example, Catch Up fails only for Zoom meetings, or Device Care can't check warranty status.</div></div>
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>We can't fix the partner. We contain it: disable that one connector, show a friendly message or fallback, and work with the partner. Duration depends on them.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Disable the integration temporarily, approve customer messaging that names the partner, and escalate through the partner's executive or account contact if their support is slow.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it the partner or our connector? Does the partner's status page confirm it? Who owns the partner relationship right now? Is this an SLA breach?</div></div>

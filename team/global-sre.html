@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SREs Across US & India · Reliability Ops Playbook</title>
+  <meta name="description" content="Leading a follow-the-sun SRE team across the US and India: handoffs, fair on-call, rotating interesting work, overlap rituals, career paths, and the centralized SRE model.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="team-global">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Lead the Team</div>
+      <div class="eyebrow">Lead the Team · Global SRE</div>
+      <h1>SREs Across US &amp; India</h1>
+      <p class="lede">A follow-the-sun team can give you 24-hour coverage without anyone working nights, or it can quietly split into two teams with different status, work, and morale. The difference is how deliberately you design handoffs, on-call, and who gets the interesting work.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>One team, two time zones.</strong> Same standards, same rituals, same career path.</li>
+        <li><strong>Hand off in writing</strong>, every day, with the same template. Overlap time is precious, so spend it on decisions and teaching.</li>
+        <li><strong>Rotate the interesting work.</strong> Watch for the "toil goes to one region" pattern.</li>
+        <li><strong>Be fair about on-call</strong>, and measure it.</li>
+      </ul></div>
+
+      <h2 id="follow-the-sun">Follow-the-Sun Design</h2>
+      <div class="table-wrap"><table><thead><tr><th>Element</th><th>Good practice</th></tr></thead><tbody>
+        <tr><td>Coverage</td><td>India covers its business day (overnight US). The US covers its business day. Each region's on-call is primary in its own daytime, with a secondary from the other region.</td></tr>
+        <tr><td>Handoff</td><td>Twice a day, in writing (<a href="../templates.html#follow-the-sun-handoff">template</a>), posted in the team channel, with a 15-minute live overlap when possible.</td></tr>
+        <tr><td>Incident command across the handoff</td><td>A Technical Lead hands over explicitly (<a href="../operate/incident-operations.html#technical-handover">template</a>). Nobody hands over mid-mitigation without a summary.</td></tr>
+        <tr><td>Overlap hours</td><td>Protect 1–2 overlap hours for decisions, design reviews, and pairing. Not for status, which belongs in writing.</td></tr>
+        <tr><td>Meetings</td><td>Rotate meeting times so the same region isn't always the one up early or late.</td></tr>
+      </tbody></table></div>
+
+      <h2 id="avoid-the-two-tier-team">Avoid the Two-Tier Team</h2>
+      <div class="callout reality"><div class="callout-title">The Common Failure</div><p>Without meaning to, one region gets the alerts, tickets, and toil, and the other gets design work, postmortem authorship, and executive visibility. Within a year you have two teams, unequal careers, and attrition in the region doing the toil.</p></div>
+      <ul class="checklist" data-key="global-fairness">
+        <li>Track who authors postmortems, design docs, and automation, by region, every quarter.</li>
+        <li>Rotate "toil captain" and "project captain" roles across both regions.</li>
+        <li>Give each region ownership of at least one meaningful reliability project.</li>
+        <li>Make sure executives hear from engineers in both regions (demo days, postmortem readouts).</li>
+        <li>Have one promotion bar and one rubric, applied by the same calibration group.</li>
+      </ul>
+
+      <h2 id="on-call-fairness">On-Call Fairness</h2>
+      <p>Measure it monthly: pages per person, after-hours pages, and incidents led. Rebalance when one person or region carries more than their share. Use the <a href="../templates.html#on-call-fairness-review">on-call fairness review</a> template.</p>
+
+      <h2 id="centralized-sre">Centralized SRE: Giving Them Leverage</h2>
+      <p>Your SREs serve every CFT but own none of their backlogs. Help them with:</p>
+      <ul>
+        <li><strong>"SRE advises, CFT owns"</strong>, agreed in writing with CFT leadership.</li>
+        <li><strong>A named SRE liaison per CFT</strong>, spread across both regions.</li>
+        <li><strong>Production readiness checks</strong> before launches: monitoring, an on-call owner, a runbook, capacity.</li>
+        <li><strong>You escalating stalled reliability work</strong> with CFT leadership, so engineers don't have to fight those battles alone.</li>
+      </ul>
+
+      <h2 id="career-paths">Career Paths</h2>
+      <div class="card-grid">
+        <div class="card t-sre"><h3>Junior → Mid</h3><p>Leads Sev 3 investigations, writes runbooks, completes the KQL training, and pairs on Sev 2.</p></div>
+        <div class="card t-sre"><h3>Mid → Senior</h3><p>Technical Lead for Sev 1–2, authors postmortems, runs a game day, and owns a CFT liaison relationship.</p></div>
+        <div class="card t-sre"><h3>Senior → Staff</h3><p>Drives a cross-team reliability initiative (SLOs, capacity, isolation), mentors across regions, and influences Cloud Infrastructure.</p></div>
+      </div>
+      <p>Develop them with the question ladders in <a href="../leaders/enabling-sre.html">Developing SRE Engineers</a>.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

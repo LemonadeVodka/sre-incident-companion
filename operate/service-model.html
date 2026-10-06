@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Service Operations Model · Reliability Ops Playbook</title>
+  <meta name="description" content="The reliability operations model for an AI product: incident, problem, change, capacity, and vendor management, with who owns what and how the practices connect.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="op-model">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Run the Operation</div>
+      <div class="eyebrow">Run the Operation</div>
+      <h1>Service Operations Model</h1>
+      <p class="lede">Incidents get the attention, but reliability is decided by five connected practices. As the senior manager you own how they fit together, even when other teams own parts of them. This page is your map.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>Incident</strong> (restore service) → <strong>Problem</strong> (remove the cause) → <strong>Change</strong> (ship safely) → <strong>Capacity</strong> (stay ahead of demand) → <strong>Vendor &amp; partner</strong> (manage what you don't own).</li>
+        <li>Most organizations are good at incidents and weak at problems. Postmortem actions that never close are a <strong>problem-management</strong> failure.</li>
+        <li>For an AI product, <strong>capacity</strong> (model quota, fallback surges) and <strong>change</strong> (prompts, model versions, routing policy) need extra attention.</li>
+      </ul></div>
+
+      <h2 id="the-five-practices">The Five Practices</h2>
+      <div class="table-wrap"><table><thead><tr><th>Practice</th><th>Goal</th><th>Owner at Nimbus</th><th>Your job</th><th>Key measure</th></tr></thead><tbody>
+        <tr><td><strong>Incident</strong></td><td>Restore service fast</td><td>NOC (coordination) + SRE (technical lead)</td><td>Decide, unblock, communicate</td><td>Time to declare, time to mitigate</td></tr>
+        <tr><td><strong>Problem</strong></td><td>Remove causes so incidents don't recur</td><td>SRE + owning CFT</td><td>Chair postmortems, fund and track actions</td><td>Action completion %, repeat incidents</td></tr>
+        <tr><td><strong>Change</strong></td><td>Ship safely: code, config, prompts, model versions, routing</td><td>CFTs + Cloud Infrastructure</td><td>Push for canaries and rollout gates, and change visibility for the NOC</td><td>Change-related incident %</td></tr>
+        <tr><td><strong>Capacity</strong></td><td>Stay ahead of demand (tokens, PTU, relay, partners)</td><td>Cloud Infrastructure + SRE</td><td>Quarterly capacity review, launch sign-off</td><td>Peak usage vs limit, 429 rate</td></tr>
+        <tr><td><strong>Vendor &amp; partner</strong></td><td>Hold outside parties to commitments</td><td>You + Ops lead + Partner Integrations CFT</td><td>SOW, SLAs, scorecards, QBRs, partner reviews</td><td>SLA attainment, partner incident count</td></tr>
+      </tbody></table></div>
+
+      <h2 id="how-they-connect">How They Connect</h2>
+      <ol class="steps">
+        <li><strong>An incident</strong> is declared through Triage or Incident, and run by the NOC and SRE.</li>
+        <li><strong>The postmortem</strong> becomes the entry point to problem management: it produces actions with owners.</li>
+        <li><strong>Many actions are changes:</strong> canaries, rollout gates, capacity isolation. They go through change management.</li>
+        <li><strong>Capacity findings</strong> feed the quarterly capacity review and launch sign-offs.</li>
+        <li><strong>Vendor and partner findings</strong> feed the scorecard, the QBR, and the partner review.</li>
+      </ol>
+
+      <h2 id="ai-specific-change-management">AI-Specific Change Management</h2>
+      <p>In AI products, many risky changes don't look like code deploys. Make sure each one is visible and gated:</p>
+      <div class="table-wrap"><table><thead><tr><th>Change type</th><th>Risk</th><th>Gate to ask for</th></tr></thead><tbody>
+        <tr><td>Prompt template edits</td><td>Token growth, latency, quality</td><td>Flag-controlled, eval suite, token budget check</td></tr>
+        <tr><td>Model version upgrades</td><td>Output length, speed, filter behavior</td><td>Pinned versions in production, canary, evals</td></tr>
+        <tr><td>On-device model or driver updates</td><td>Fallback surge to the cloud</td><td>Fallback rate as a release gate</td></tr>
+        <tr><td>Routing policy (local vs cloud)</td><td>Cloud load shifts</td><td>Canary by client version, a cloud capacity check</td></tr>
+        <tr><td>WAF, CDN, gateway, auth policy</td><td>Broad outage, 401s, 403s</td><td>Canary, announcement to the NOC, rollback plan</td></tr>
+        <tr><td>Partner or iPaaS connector changes</td><td>Broken integrations</td><td>Contract tests, partner deprecation watch</td></tr>
+      </tbody></table></div>
+      <div class="callout tip"><div class="callout-title">Change Visibility for the NOC</div><p>Ask every team to post significant changes to a shared change feed the NOC watches. "What changed?" (the Y in LAYERS) is the fastest question in any incident, but only if the answer is somewhere to find.</p></div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

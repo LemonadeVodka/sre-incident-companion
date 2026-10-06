@@ -1,5 +1,5 @@
 /* Interactive triage decision tree. Renders into #triage-app. Links are relative to the site root.
-   Results give separate steps for the NOC and for SRE on-call. */
+   Results show what your NOC and SREs should be doing, and what you ask and decide. */
 (function () {
   "use strict";
   var app = document.getElementById("triage-app");
@@ -44,7 +44,7 @@
     err_type: {
       q: "What Kind of Errors Dominate?",
       help: "Run the error-rate query, and the layer comparison if you can.",
-      link: ["Errors by layer", "sre/investigate.html#q-layers"],
+      link: ["Errors by layer", "tech/troubleshooting.html#q-layers"],
       options: [
         { label: "401 Unauthorized", sub: "Credentials rejected", go: "r_401" },
         { label: "5xx / 403 at the Edge (Front Door)", sub: "Before our code runs", go: "r_cdn" },
@@ -84,25 +84,25 @@
       title: "Unknown Alert: Make It Known in 5 Minutes",
       noc: ["Read the alert: which table, which service, what threshold?", "Check user impact with the sweep queries. If there's none, it's lower urgency, but still note it.", "Find the owner in the ownership table and page them. If unclear, page SRE as Technical Lead."],
       sre: ["Decide whether the alert reflects user impact. If not, file it for alert cleanup.", "Make sure someone owns writing a runbook for it."],
-      links: [["Who owns what", "environment.html#who-owns-what"], ["NOC sweep", "noc/detect.html#shift-health-sweep"], ["Severity levels", "incident-response.html#severity-levels"]]
+      links: [["Who owns what", "environment.html#who-owns-what"], ["NOC sweep", "team/contract-noc.html#shift-health-sweep"], ["Severity levels", "incident-response.html#severity-levels"]]
     },
     r_blind: {
       title: "Blind Spot: Users Feel It, Telemetry Doesn't Show It",
       noc: ["Run the telemetry-volume sweep. A drop means data loss, not health.", "Collect 3–5 concrete user reports (time, feature, version).", "Declare at Sev 3, open a channel, and page SRE."],
       sre: ["Check the OTel Collector and the edge logs. Failures before our code won't appear in App Insights.", "Slice by client version and region.", "Build an ad-hoc panel to measure impact, then follow the evidence."],
-      links: [["Playbook: dashboards green", "playbooks.html#pb-dashboards-green"], ["Telemetry volume", "queries.html#q-telemetry-volume"], ["Edge errors", "sre/investigate.html#q-edge-errors"]]
+      links: [["Playbook: dashboards green", "playbooks.html#pb-dashboards-green"], ["Telemetry volume", "queries.html#q-telemetry-volume"], ["Edge errors", "tech/troubleshooting.html#q-edge-errors"]]
     },
     r_client: {
       title: "Cohort-Specific: A Client Release or Device Issue",
       noc: ["Confirm with the by-client-version query.", "Send the halt-rollout request to the Client CFT.", "Declare, and page the Client CFT and SRE."],
       sre: ["Compare the new build's errors, 401s, and crashes with the previous build.", "Disable the new code path with a server flag if possible.", "Keep the rollout paused until a fix is verified."],
-      links: [["Playbook: client rollout", "playbooks.html#pb-client-rollout"], ["By client version", "queries.html#q-client-version"], ["Halt-rollout request", "noc/action-requests.html#req-halt-rollout"]]
+      links: [["Playbook: client rollout", "playbooks.html#pb-client-rollout"], ["By client version", "queries.html#q-client-version"], ["Halt-rollout request", "operate/incident-operations.html#req-halt-rollout"]]
     },
     r_latency_one: {
       title: "One Feature Is Slow",
       noc: ["Confirm against yesterday, then declare and open the channel.", "Page the owning CFT, plus SRE for Sev 2."],
       sre: ["Split P50/P95 per hop: model, retrieval, or our own code?", "Check for a deploy or prompt change and roll back if it lines up.", "Check token growth."],
-      links: [["Playbook: one feature", "playbooks.html#pb-latency-one-feature"], ["Per-hop query", "sre/investigate.html#q-hops"], ["Token growth", "queries.html#q-token-growth"]]
+      links: [["Playbook: one feature", "playbooks.html#pb-latency-one-feature"], ["Per-hop query", "tech/troubleshooting.html#q-hops"], ["Token growth", "queries.html#q-token-growth"]]
     },
     r_ttft: {
       title: "Slow First Token",
@@ -114,7 +114,7 @@
       title: "One Instance Stalled (Likely Rust Async Runtime)",
       noc: ["Confirm with P50/P95 by instance.", "Send the restart-one-instance request to the owner (CFT or Cloud Infrastructure).", "Tell SRE the instance name."],
       sre: ["Look for blocking work on the tokio runtime, or pool exhaustion.", "If it recurs, roll back the latest deploy."],
-      links: [["By instance", "sre/investigate.html#q-by-instance"], ["Rust failure modes", "sre/investigate.html#rust-service-failure-modes"], ["Restart request", "noc/action-requests.html#req-restart-instance"]]
+      links: [["By instance", "tech/troubleshooting.html#q-by-instance"], ["Rust failure modes", "tech/troubleshooting.html#rust-service-failure-modes"], ["Restart request", "operate/incident-operations.html#req-restart-instance"]]
     },
     r_foundry_wide: {
       title: "Model Layer Degraded Across Features",
@@ -124,30 +124,36 @@
     },
     r_429: {
       title: "Throttling (429)",
-      noc: ["Run sweep query 5 to find the deployment.", "If the Proactive Tips batch is running and Device Care is hit, send the pause-batch request to the Insights CFT.", "Page Cloud Infrastructure and SRE. Never request a scale-out for 429s."],
+      noc: ["Run sweep query 5 to find the deployment.", "If the Next Step batch is running and Device Care is hit, send the pause-batch request to the Insights CFT.", "Page Cloud Infrastructure and SRE. Never request a scale-out for 429s."],
       sre: ["Find the noisy neighbor with tokens per minute by caller.", "Check retries and concurrency in the Rust services.", "Enable spillover with Cloud Infrastructure if needed."],
-      links: [["Playbook: 429 surge", "playbooks.html#pb-429-surge"], ["Token share", "queries.html#q-token-share"], ["Pause-batch request", "noc/action-requests.html#req-pause-tips"]]
+      links: [["Playbook: 429 surge", "playbooks.html#pb-429-surge"], ["Token share", "queries.html#q-token-share"], ["Pause-batch request", "operate/incident-operations.html#req-pause-tips"]]
     },
     r_401: {
       title: "401 Surge",
       noc: ["Run sweep query 4: all APIs, or one?", "One client version: send the halt-rollout request. All versions: page Cloud Infrastructure.", "Page SRE. Secrets and policies are Cloud Infrastructure decisions."],
       sre: ["Which layer rejected the token: APIM or the Foundry dependency (managed identity)?", "Which cohort: everyone, one build, or scattered devices (clock skew)?", "What changed: APIM policy, app registration, secret expiry, role assignment?"],
-      links: [["Playbook: 401 surge", "playbooks.html#pb-401-surge"], ["401 investigation", "sre/investigate.html#401-investigation"], ["401 by client", "queries.html#q-401-by-client"]]
+      links: [["Playbook: 401 surge", "playbooks.html#pb-401-surge"], ["401 investigation", "tech/troubleshooting.html#401-investigation"], ["401 by client", "queries.html#q-401-by-client"]]
     },
     r_cdn: {
       title: "Edge / CDN Problem (Front Door)",
       noc: ["Run sweep query 3 (edge status codes).", "Declare at high urgency, and page Cloud Infrastructure and SRE.", "Check Azure status for Front Door, and name a comms buffer early."],
       sre: ["Use the layer query to separate the edge from the origin (APIM).", "Read the error info: origin connection, timeout, health probe, WAF?", "Check recent Front Door, WAF, DNS, or certificate changes."],
-      links: [["Playbook: CDN / edge", "playbooks.html#pb-cdn-edge"], ["Edge errors", "sre/investigate.html#q-edge-errors"], ["WAF blocks", "queries.html#q-waf"]]
+      links: [["Playbook: CDN / edge", "playbooks.html#pb-cdn-edge"], ["Edge errors", "tech/troubleshooting.html#q-edge-errors"], ["WAF blocks", "queries.html#q-waf"]]
     },
     r_service_err: {
       title: "Our Rust Services Are Failing",
       noc: ["Confirm with the error-rate query, declare, and page the owning CFT plus SRE.", "If one instance is failing health checks, send the restart request to its owner."],
       sre: ["Look at the top exceptions and search for panics.", "Correlate with the service version and roll back if it lines up.", "Check downstream dependency failures that surface as our 500s."],
-      links: [["Panics", "sre/investigate.html#q-panics"], ["Top exceptions", "queries.html#q-top-exceptions"], ["Deploy correlation", "queries.html#q-deploy-correlation"]]
+      links: [["Panics", "tech/troubleshooting.html#q-panics"], ["Top exceptions", "queries.html#q-top-exceptions"], ["Deploy correlation", "queries.html#q-deploy-correlation"]]
     }
   };
 
+  var DEFAULT_LEAD = [
+    "Check the channel first, then ask once: Who is IC? Who is Tech Lead? What's the impact in numbers? When's the next update?",
+    "Ask the LAYERS question that matters now: which layer, and how do we know? What changed in the hour before?",
+    "Be ready to decide: spend, a feature or partner kill switch, failover, customer messaging, pulling in people.",
+    "Own the upward story: send a SITREP to executives and shield the responders from side questions."
+  ];
   var history = [];
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function list(title, cls, items) {
@@ -169,9 +175,9 @@
     } else if (R[id]) {
       var r = R[id];
       html += '<div class="triage-result"><h3 tabindex="-1">' + esc(r.title) + "</h3>" +
-        list("NOC Coordinator: Do Now", "noc", r.noc) + list("SRE Technical Lead: Investigate", "sre", r.sre) + list("Manager: Do and Ask", "lead", r.lead) +
+        list("You: Ask and Decide", "lead", r.lead && r.lead.length ? r.lead : DEFAULT_LEAD) + list("Your NOC Should", "noc", r.noc) + list("Your SREs Should", "sre", r.sre) +
         '<div class="triage-links">' + r.links.map(function (l) { return '<a class="btn" href="' + root + l[1] + '">' + esc(l[0]) + "</a>"; }).join("") + "</div>" +
-        '<p class="triage-help">No playbook fits? Follow the <a href="' + root + 'sre/investigate.html#method-when-there-is-no-runbook">no-runbook method</a> and write one afterwards.</p></div>';
+        '<p class="triage-help">No playbook fits? Follow the <a href="' + root + 'tech/troubleshooting.html#method-when-there-is-no-runbook">no-runbook method</a> and write one afterwards.</p></div>';
     }
     if (history.length) html += '<div class="triage-nav"><button type="button" class="link-btn" data-act="back">← Back</button><button type="button" class="link-btn" data-act="restart">Start Over</button></div>';
     app.innerHTML = html;

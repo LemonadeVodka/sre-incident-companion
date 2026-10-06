@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Updating Executives · Nimbus SRE</title>
+  <title>Updating Executives · Reliability Ops Playbook</title>
   <meta name="description" content="How senior managers brief executive leadership on AI reliability: BLUF, SITREP templates, translating latency and error metrics into business impact, confidence language, and a SITREP builder.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,9 +11,9 @@
 </head>
 <body data-root="../" data-page="lead-exec">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
@@ -40,7 +40,7 @@
             <tr><td>"429s on chat-small."</td><td>"We've hit our AI capacity limit for this feature, so some requests are being turned away."</td></tr>
             <tr><td>"401s on client 4.13.0."</td><td>"Users on the newest app version are being asked to sign in again. The rollout is paused."</td></tr>
             <tr><td>"Edge 5xx, OriginConnectionError."</td><td>"Many users can't connect, because of a problem at our network entry point."</td></tr>
-            <tr><td>"Zoom connector 5xx, partner status degraded."</td><td>"A partner (Zoom) is having an outage. Meeting Recap for Zoom users is affected. Our systems are fine."</td></tr>
+            <tr><td>"Zoom connector 5xx, partner status degraded."</td><td>"A partner (Zoom) is having an outage. Catch Up for Zoom users is affected. Our systems are fine."</td></tr>
             <tr><td>"Fallback rate 31% on local model v2.3."</td><td>"A device update is failing and pushing extra work to the cloud. That update is paused."</td></tr>
             <tr><td>"Burn rate 14×."</td><td>"At this rate we'd use a month's reliability allowance in two days."</td></tr>
           </tbody>
@@ -77,7 +77,7 @@
         <label>Actions (who is doing what)<textarea name="actions" rows="2" placeholder="Paused the batch job (Insights team); adding overflow capacity (Cloud Infrastructure)."></textarea></label>
         <label>Decision needed from executives (optional)<input name="decision" placeholder="approve overflow capacity at about $900/hour"></label>
         <label>Prevention (post-incident)<textarea name="prevent" rows="2" placeholder="Separate capacity for background work (Nov 1); alert at 80% capacity (Oct 8)."></textarea></label>
-        <label>Weekly summary (weekly type)<textarea name="summary" rows="2" placeholder="Reliability met target for 4 of 5 features; Meeting Recap missed due to a partner outage."></textarea></label>
+        <label>Weekly summary (weekly type)<textarea name="summary" rows="2" placeholder="Reliability met target for 4 of 5 features; Catch Up missed due to a partner outage."></textarea></label>
       </form>
       <div class="hero-actions no-print">
         <button type="button" class="btn primary" id="sitrep-copy">Copy SITREP</button>

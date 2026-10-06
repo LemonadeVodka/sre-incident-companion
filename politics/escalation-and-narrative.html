@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escalation & Narrative · Reliability Ops Playbook</title>
+  <meta name="description" content="Escalating without burning bridges, saying no with options, and owning the narrative after incidents so your team's work is understood accurately.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pol-escalate">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Manage Up &amp; Politics</a></div>
+      <div class="eyebrow">Manage Up &amp; Politics · Escalation</div>
+      <h1>Escalation &amp; Narrative</h1>
+      <p class="lede">Two moments decide how your team is seen: when you escalate a blocked issue, and the story that forms after an incident. Do both well and you build credibility. Do them badly and you burn relationships, or let someone else write the story about your team.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>Escalate the problem, not the person.</strong> Facts, impact, what's been tried, and a specific ask.</li>
+        <li><strong>Tell them first:</strong> let the person know before you escalate above them.</li>
+        <li><strong>Say no with options</strong>, not just "no".</li>
+        <li><strong>Own the narrative early</strong> after incidents: a factual SITREP within 24 hours, before rumors fill the gap.</li>
+      </ul></div>
+
+      <h2 id="escalating-well">Escalating Well</h2>
+      <ol class="steps">
+        <li><strong>Try peer to peer first</strong>, unless users are actively affected in a Sev 1.</li>
+        <li><strong>Tell them you're escalating.</strong>"We're stuck on X. I'm going to raise it with our directors so we can get a decision. Not a complaint, we need a call."</li>
+        <li><strong>Escalate in writing, briefly.</strong>Situation, user or business impact, what was tried, options, a recommendation, and a deadline (<a href="../templates.html#escalation-email">template</a>).</li>
+        <li><strong>Keep it about the problem.</strong>"The capacity decision is blocked," not "Cloud Infrastructure won't help."</li>
+        <li><strong>After the decision, repair.</strong>Thank them, share credit, and move on.</li>
+      </ol>
+
+      <h2 id="saying-no">Saying No With Options</h2>
+      <p>When your director or another team asks for something your team can't absorb, don't just say no. Show the trade-off:</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Script</span><span class="title">"No, but Here Are Options"</span></div>
+<pre><code>"We can do this. Here's what it costs:
+Option A: Start now, which delays the NOC sweep automation by 3 weeks.
+Option B: Start in 2 weeks after the automation ships.
+Option C: Do a smaller version (X) now, the rest in Q3.
+I recommend B because the automation reduces page load for the whole team.
+Which do you prefer?"</code></pre></div>
+
+      <h2 id="owning-the-narrative">Owning the Narrative After Incidents</h2>
+      <p>After a visible incident, a story forms within hours: "the NOC was slow", "the AI is unreliable", "SRE missed it". If you don't provide the facts, someone else will provide a story.</p>
+      <ul class="checklist" data-key="narrative">
+        <li><strong>Within 24 hours:</strong> a post-incident SITREP to the stakeholders who care (<a href="../leaders/executive-updates.html#sitrep-builder">builder</a>): impact, cause and confidence, what's being done.</li>
+        <li><strong>Name the system factors, not people.</strong> "Shared capacity without priority" rather than "the Insights team's batch job".</li>
+        <li><strong>Credit what worked:</strong> declaration time, the team's mitigation, a partner's fast response.</li>
+        <li><strong>Pre-wire the postmortem's conclusions</strong> with affected teams before they're published, so nobody is ambushed.</li>
+        <li><strong>Close the loop at 30 days:</strong> "X of Y actions complete." This is how leaders learn that your team follows through.</li>
+      </ul>
+
+      <h2 id="when-your-team-made-a-mistake">When Your Team Made a Mistake</h2>
+      <p>Own it plainly and quickly, as a system issue, with the fix: "Our NOC declared 25 minutes late. The triage time box wasn't in the vendor's runbook. It is now, and we're tracking time to declare weekly." Owning it early earns more capital than defending it.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

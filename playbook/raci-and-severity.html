@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RACI & Severity · Reliability Ops Playbook</title>
+  <meta name="description" content="RACI for reliability operations ownership across NOC vendor, SRE, CFTs, Cloud Infrastructure, and partners, plus a severity matrix tied to user impact.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pb-raci">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Frameworks</a></div>
+      <div class="eyebrow">Framework · Ownership</div>
+      <h1>RACI &amp; Severity</h1>
+      <p class="lede">Two frameworks that prevent the most common arguments in incidents: "whose job is this?" and "how big is this?". Agree them <em>before</em> incidents, write them down, and point to them when tension rises.</p>
+
+      <h2 id="raci">RACI</h2>
+      <p><strong>R</strong>esponsible (does the work), <strong>A</strong>ccountable (one person who owns the outcome), <strong>C</strong>onsulted (input before), <strong>I</strong>nformed (told after).</p>
+      <div class="table-wrap"><table><thead><tr><th>Activity</th><th>NOC vendor</th><th>SRE</th><th>Owning CFT</th><th>Cloud Infra</th><th>You</th></tr></thead><tbody>
+        <tr><td>Detect and declare</td><td>R</td><td>C</td><td>I</td><td>I</td><td>A</td></tr>
+        <tr><td>Coordinate the incident</td><td>R</td><td>C</td><td>C</td><td>C</td><td>A</td></tr>
+        <tr><td>Technical diagnosis</td><td>I</td><td>R/A</td><td>C</td><td>C</td><td>I</td></tr>
+        <tr><td>Execute fixes on a feature service</td><td>I</td><td>C</td><td>R/A</td><td>I</td><td>I</td></tr>
+        <tr><td>Execute fixes on the shared cloud</td><td>I</td><td>C</td><td>I</td><td>R/A</td><td>I</td></tr>
+        <tr><td>Spend or trade-off decisions</td><td>I</td><td>C</td><td>C</td><td>C</td><td>R/A</td></tr>
+        <tr><td>Executive communication</td><td>I</td><td>C</td><td>I</td><td>I</td><td>R/A</td></tr>
+        <tr><td>Postmortem</td><td>C (timeline)</td><td>R (author)</td><td>C</td><td>C</td><td>A (chair)</td></tr>
+        <tr><td>Action items</td><td>I</td><td>C</td><td>R/A (theirs)</td><td>R/A (theirs)</td><td>A (follow-through)</td></tr>
+      </tbody></table></div>
+      <div class="callout tip"><div class="callout-title">One "A" per Row</div><p>If two people are Accountable, nobody is. Resolve disputes by agreeing the A before the next incident, and pre-wire it with both leaders.</p></div>
+
+      <h2 id="severity">Severity</h2>
+      <div class="table-wrap"><table><thead><tr><th>Severity</th><th>Definition</th><th>Nimbus examples</th><th>Response</th></tr></thead><tbody>
+        <tr><td><span class="badge sev1">Sev 1</span></td><td>Most users, or several features, badly affected</td><td>Edge outage, model provider down in the primary region, Ask Nimbus and Writing Assist failing for more than 25%</td><td>Page immediately. NOC is IC, SRE is Tech Lead, you're engaged. SITREP every 30 min. Postmortem required.</td></tr>
+        <tr><td><span class="badge sev2">Sev 2</span></td><td>One important feature badly affected, or partial impact across features</td><td>Device Care 429s above 10%, Writing Assist P95 more than 3× baseline, fallback surge, a major partner outage</td><td>Page the owners. Updates every 60 min. Postmortem required.</td></tr>
+        <tr><td><span class="badge sev3">Sev 3</span></td><td>Minor or contained, or a workaround exists</td><td>Next Step delayed, cross-device sync slow, a small cohort</td><td>Business hours. Ticket. Postmortem optional.</td></tr>
+        <tr><td><span class="badge sev4">Sev 4</span></td><td>No user impact, but a risk</td><td>Quota trending toward the limit, a misrouted alert</td><td>Backlog</td></tr>
+      </tbody></table></div>
+      <p>If unsure, go higher. Downgrading costs one message. See <a href="triage-or-incident.html">Triage or Incident?</a> for the step before severity.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

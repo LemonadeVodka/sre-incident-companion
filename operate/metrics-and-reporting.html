@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Metrics & Reporting · Reliability Ops Playbook</title>
+  <meta name="description" content="Reliability metrics that matter and the ones that mislead (MTTR), a metrics stack for an AI product and a contract NOC, and how to report weekly, monthly, and quarterly.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="op-metrics">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Run the Operation</div>
+      <div class="eyebrow">Run the Operation · Metrics</div>
+      <h1>Metrics &amp; Reporting</h1>
+      <p class="lede">What you measure shapes how your team and your vendor behave, and what your executives believe. Choose a small set of metrics that reflect user experience and operational health, report them consistently, and be ready to explain why some popular ones mislead.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>User experience first:</strong> P50/P95 latency, error rate, and SLO attainment per feature.</li>
+        <li><strong>Operational health second:</strong> time to declare, time to mitigate, detection source, action completion, page load.</li>
+        <li><strong>Be careful with MTTR</strong> and with counting incidents. Both are easy to game and noisy.</li>
+        <li>Report <strong>weekly</strong> (3–5 lines), <strong>monthly</strong> (scorecard), <strong>quarterly</strong> (exec reliability report).</li>
+      </ul></div>
+
+      <h2 id="the-metrics-stack">The Metrics Stack</h2>
+      <div class="table-wrap"><table><thead><tr><th>Layer</th><th>Metric</th><th>Why it matters</th></tr></thead><tbody>
+        <tr><td rowspan="3"><strong>User experience</strong></td><td>P50 / P95 latency per feature (and first token for streaming)</td><td>What users feel</td></tr>
+        <tr><td>Error rate per feature (user-visible failures)</td><td>What users see</td></tr>
+        <tr><td>SLO attainment and error budget remaining</td><td>Whether reliability is good enough</td></tr>
+        <tr><td rowspan="5"><strong>Operations</strong></td><td>Time from first signal to declare</td><td>NOC judgment and detection</td></tr>
+        <tr><td>Time to mitigate</td><td>Response effectiveness. Better than time to resolve.</td></tr>
+        <tr><td>Detection source (alert, sweep, customer)</td><td>Whether we can see our own product</td></tr>
+        <tr><td>Postmortem action completion %</td><td>Whether we're learning</td></tr>
+        <tr><td>Actionable pages per on-call shift</td><td>Burnout risk, and alert quality</td></tr>
+        <tr><td rowspan="3"><strong>AI and capacity</strong></td><td>Peak tokens per minute vs quota, per deployment</td><td>Distance to throttling</td></tr>
+        <tr><td>Fallback rate (device → cloud)</td><td>Early warning of a surge</td></tr>
+        <tr><td>Cost per 1,000 requests (cloud AI)</td><td>Efficiency, and part of the business case</td></tr>
+        <tr><td rowspan="2"><strong>Vendors and partners</strong></td><td>NOC vendor SLA attainment</td><td>Contract health (<a href="../team/contract-noc.html#slas-and-kpis-that-matter">KPIs</a>)</td></tr>
+        <tr><td>Partner availability and incidents per partner</td><td>Dependency risk</td></tr>
+      </tbody></table></div>
+
+      <h2 id="metrics-that-mislead">Metrics That Mislead</h2>
+      <div class="card-grid wide">
+        <div class="card"><h3>MTTR (Mean Time to Resolve)</h3><p>Incidents vary too much for an average to mean anything, and one long incident skews it. It also encourages closing incidents early. Use <strong>time to mitigate</strong>, shown as a distribution, instead.</p></div>
+        <div class="card"><h3>Incident Count</h3><p>It goes down when people stop declaring. Pair it with <strong>missed declarations</strong> and <strong>detection source</strong>.</p></div>
+        <div class="card"><h3>Uptime %</h3><p>"99.9% up" can hide a slow, frustrating product. AI products fail through slowness and quality as often as through outages.</p></div>
+        <div class="card"><h3>Average Latency</h3><p>It hides the slowest users. Always report P50 and P95.</p></div>
+        <div class="card"><h3>Tickets Closed (Vendor)</h3><p>Rewards speed over judgment. Measure outcomes instead.</p></div>
+      </div>
+
+      <h2 id="reporting-cadence">Reporting Cadence</h2>
+      <div class="table-wrap"><table><thead><tr><th>Report</th><th>Audience</th><th>Contents</th><th>Template</th></tr></thead><tbody>
+        <tr><td>Weekly reliability note</td><td>Director, peers</td><td>3–5 lines: SLOs, notable incidents, trends, asks</td><td><a href="../templates.html#weekly-reliability-note">Weekly note</a></td></tr>
+        <tr><td>Monthly operations report</td><td>Director, CFT leads</td><td>The metrics stack, actions, vendor scorecard summary</td><td><a href="../templates.html#monthly-ops-report">Monthly report</a></td></tr>
+        <tr><td>Quarterly reliability review</td><td>Executives</td><td>BLUF, trends, top incidents and lessons, capacity outlook, investments needed</td><td><a href="../templates.html#quarterly-reliability-review">Quarterly review</a></td></tr>
+      </tbody></table></div>
+      <div class="callout tip"><div class="callout-title">Make Your Ops Lead the Owner</div><p>Have your Ops lead build the weekly and monthly reports. It grows their technical fluency and frees your time for the quarterly narrative (<a href="../team/ops-lead.html">plan</a>).</p></div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

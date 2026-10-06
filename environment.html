@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Background: Nimbus · Nimbus SRE</title>
-  <meta name="description" content="Background on Nimbus: a Rust desktop AI companion on Azure AI Foundry, its architecture, ownership, telemetry, and the tools and processes the team works with.">
+  <title>Background: Nimbus · Reliability Ops Playbook</title>
+  <meta name="description" content="Background on Nimbus: a Rust hybrid on-device and cloud AI assistant on Azure AI Foundry, its architecture, ownership, telemetry, and the tools and processes the team works with.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body data-root="./" data-page="environment">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="./index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./noc/index.html">NOC track</a><a href="./sre/index.html">SRE track</a><a href="./leaders/index.html">Manager track</a><a href="./playbooks.html">Playbooks</a><a href="./queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./playbook/index.html">Frameworks</a><a href="./operate/incident-operations.html">Incident Operations</a><a href="./team/contract-noc.html">Lead the Team</a><a href="./politics/index.html">Manage Up &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="index.html">Home</a> / Start</div>
@@ -23,7 +23,8 @@
 
       <div class="tldr">
         <ul>
-          <li><strong>Nimbus</strong> is a desktop AI companion. The <strong>desktop client, the local Agent, and the cloud services are all written in Rust</strong>.</li>
+          <li><strong>Nimbus</strong> is a <strong>cross-device AI assistant</strong> built into PCs, phones, tablets, and wearables. It's <strong>local-first</strong>: most requests run on the device's NPU, and only the prompt and minimal context go to the cloud. Client, Agent, and cloud services are written in Rust.</li>
+          <li>Context syncs across a user's devices <strong>peer-to-peer</strong> on the same network, or through an <strong>encrypted sync relay</strong> otherwise.</li>
           <li>A <strong>device orchestrator</strong> decides whether each request is answered <strong>on the device</strong> by a small local model, or sent to the cloud: <strong>Front Door (CDN) → APIM → cloud orchestrator → feature services → Azure AI Foundry</strong>.</li>
           <li>Most incidents involve <strong>AI latency</strong>, <strong>error rates</strong>, <strong>CDN/edge errors</strong>, and <strong>401s</strong>. Latency is measured at <strong>P50 and P95</strong> only.</li>
           <li>Some features depend on <strong>third-party partners</strong> (meeting platforms, productivity suites, OEM device APIs, partner AI skills) through connectors owned by a <strong>Partner Integrations CFT</strong>.</li>
@@ -38,13 +39,22 @@
       </div>
 
       <div class="card-grid">
-        <a class="card t-noc" href="noc/index.html"><h3>NOC: Focus On</h3><p>The request path (so you can tell where errors come from), who owns what, and what normal looks like.</p></a>
-        <a class="card t-sre" href="sre/index.html"><h3>SRE: Focus On</h3><p>The two orchestrators, Rust specifics, the telemetry pipeline and its gaps, and which logs live where.</p></a>
+        <a class="card t-noc" href="team/contract-noc.html"><h3>NOC: Focus On</h3><p>The request path (so you can tell where errors come from), who owns what, and what normal looks like.</p></a>
+        <a class="card t-sre" href="team/global-sre.html"><h3>SRE: Focus On</h3><p>The two orchestrators, Rust specifics, the telemetry pipeline and its gaps, and which logs live where.</p></a>
         <a class="card t-lead" href="leaders/index.html"><h3>Managers: Focus On</h3><p>Shared dependencies, Cloud Infrastructure's role, ownership gray zones, and the tools &amp; process landscape.</p></a>
       </div>
 
       <h2 id="what-nimbus-is">What Nimbus Is</h2>
-      <p>Nimbus comes pre-installed on Windows PCs. Users open it with a hotkey or from the taskbar, then ask it to search their files, rewrite text, recap meetings, or fix device settings. The <strong>Nimbus app</strong> (UI) and the <strong>Nimbus Agent</strong> (a background service that collects device context) are Rust binaries that update themselves through staged rollouts. A <strong>device orchestrator</strong> inside the Agent handles simple requests on the device with a small local model (quick rewrites, settings lookups, simple Device Care steps) and sends everything else to the cloud.</p>
+      <p>Nimbus ships built into more than 80 PC configurations (16 GB of memory or more), plus phones, tablets, and a smartwatch. Users talk to it by voice ("Hey Nimbus") or chat, in six languages. It works at the system level, keeping context as people move between devices.</p>
+      <div class="card-grid">
+        <div class="card"><h3>Ask Nimbus</h3><p>Voice and chat questions over the user's <strong>personal knowledge base</strong> (encrypted, on the device), with an optional research partner for web answers.</p></div>
+        <div class="card"><h3>Catch Up</h3><p>Cross-device summaries of notifications, messages, mail, and meetings: "what did I miss?"</p></div>
+        <div class="card"><h3>Next Step</h3><p>Anticipates the next task. For example, it opens on your laptop the document you were reading on your phone.</p></div>
+        <div class="card"><h3>Writing Assist</h3><p>Rewrite, summarize, and draft in any app.</p></div>
+        <div class="card"><h3>Device Care</h3><p>Diagnoses and fixes device problems using tools, drivers, and OEM support APIs.</p></div>
+        <div class="card"><h3>Live</h3><p>Real-time multimodal help (voice, screen, camera). Newer and heavier on cloud capacity.</p></div>
+      </div>
+      <p><strong>Local-first.</strong> A local inference engine on the device's NPU handles most requests. The personal knowledge base is encrypted and stays on the device. When a request needs larger-model reasoning or internet data, Nimbus sends <strong>only the prompt and the context that request needs</strong> to the cloud. That means many requests never reach our cloud telemetry at all.</p>
       <p>Three things make Nimbus harder to run than a typical web service:</p>
       <ul>
         <li><strong>The client is on the user's machine.</strong> Its network, proxy, clock, and version are out of our control. Several client versions are always live at once.</li>
@@ -60,7 +70,7 @@
           <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="d-arrow"/></marker></defs>
 
           <rect class="d-box" x="10" y="40" width="210" height="245" rx="10"/>
-          <text class="d-text" x="115" y="63" text-anchor="middle">Desktop (Rust)</text>
+          <text class="d-text" x="115" y="63" text-anchor="middle">Devices (Rust)</text>
           <rect class="d-box-plain" x="25" y="76" width="180" height="40" rx="8"/>
           <text class="d-sub" x="115" y="101" text-anchor="middle">Nimbus app</text>
           <rect class="d-box-accent" x="25" y="132" width="180" height="50" rx="8"/>
@@ -89,11 +99,11 @@
 
           <rect class="d-box" x="670" y="40" width="150" height="230" rx="10"/>
           <text class="d-text" x="745" y="64" text-anchor="middle">Feature services</text>
-          <text class="d-sub" x="745" y="90" text-anchor="middle">Smart Search</text>
+          <text class="d-sub" x="745" y="90" text-anchor="middle">Ask Nimbus</text>
           <text class="d-sub" x="745" y="114" text-anchor="middle">Writing Assist</text>
-          <text class="d-sub" x="745" y="138" text-anchor="middle">Meeting Recap</text>
+          <text class="d-sub" x="745" y="138" text-anchor="middle">Catch Up</text>
           <text class="d-sub" x="745" y="162" text-anchor="middle">Device Care</text>
-          <text class="d-sub" x="745" y="186" text-anchor="middle">Proactive Tips</text>
+          <text class="d-sub" x="745" y="186" text-anchor="middle">Next Step</text>
           <text class="d-sub" x="745" y="214" text-anchor="middle">one CFT each</text>
 
           <rect class="d-box-accent" x="840" y="40" width="150" height="230" rx="10"/>
@@ -111,7 +121,7 @@
 
           <rect class="d-box-partner" x="840" y="290" width="150" height="50" rx="10"/>
           <text class="d-text" x="915" y="312" text-anchor="middle">Partners</text>
-          <text class="d-sub" x="915" y="330" text-anchor="middle">Zoom · M365 · OEM</text>
+          <text class="d-sub" x="915" y="330" text-anchor="middle">via iPaaS · OEM</text>
           <path class="d-line" d="M820 250 H830 V315 H836" marker-end="url(#arr)"/>
           <path class="d-line" d="M205 157 H246" marker-end="url(#arr)"/>
           <text class="d-accent-text" x="212" y="148">cloud</text>
@@ -120,7 +130,10 @@
           <path class="d-line" d="M650 155 H666" marker-end="url(#arr)"/>
           <path class="d-line" d="M820 155 H836" marker-end="url(#arr)"/>
           <path class="d-line" d="M745 270 V286" marker-end="url(#arr)"/>
-          <path class="d-line-dash" d="M205 96 H232 V28 H246" marker-end="url(#arr)"/>
+          <path class="d-line-dash" d="M160 40 V28 H246" marker-end="url(#arr)"/>
+          <rect class="d-box-partner" x="250" y="62" width="240" height="40" rx="10"/>
+          <text class="d-sub" x="370" y="87" text-anchor="middle">Sync relay · encrypted cross-device</text>
+          <path class="d-line-dash" d="M205 92 H246" marker-end="url(#arr)"/>
           <text class="d-reality-text" x="115" y="305" text-anchor="middle">⚠ local path: client telemetry only</text>
           <text class="d-reality-text" x="115" y="325" text-anchor="middle">⚠ local failure → cloud surge</text>
           <text class="d-reality-text" x="370" y="218" text-anchor="middle">⚠ 5xx · 403 · 401 start here</text>
@@ -156,17 +169,18 @@
       <h3 id="a-request-step-by-step">A Request, Step by Step</h3>
       <ol class="steps">
         <li><strong>Device orchestrator</strong>The Agent's orchestrator looks at the request and the device state. Simple tasks are answered by the <strong>on-device model</strong> in well under a second, with no cloud call at all. Everything else goes to the cloud. If the local model fails, it <strong>falls back to the cloud</strong>.</li>
+        <li><strong>Cross-device sync</strong>When a user moves between devices, context syncs peer-to-peer if they're on the same network, otherwise through the <strong>encrypted sync relay</strong>. If the relay fails, single-device use still works, but continuity breaks: Next Step and cross-device Catch Up stall.</li>
         <li><strong>Sign-in token</strong>For cloud calls, the client uses an Entra ID token and refreshes it before it expires. If the refresh fails, or the device clock is wrong, you get <strong>401s</strong>.</li>
         <li><strong>Azure Front Door</strong>The CDN edge terminates TLS, applies WAF rules, and forwards to APIM. Edge problems show up as <strong>502/503/504</strong> or <strong>403</strong> before our code ever runs.</li>
         <li><strong>APIM gateway</strong>Validates the token, applies rate limits, and forwards to the cloud orchestrator.</li>
         <li><strong>Cloud orchestrator</strong>Owned by Cloud Infrastructure. It routes each request to the right feature service and applies cross-feature policies. Every cloud request passes through it, so when it degrades, <em>every</em> feature degrades.</li>
         <li><strong>Feature service</strong>The CFT's Rust service builds the prompt, calls retrieval and tools, then calls Foundry with a managed identity.</li>
-        <li><strong>Partner integrations</strong>Some features call third-party services through connectors: Meeting Recap pulls Zoom and Webex transcripts, Smart Search and Writing Assist use Microsoft 365 and Google Workspace context, and Device Care calls OEM warranty and driver APIs. Partners have their own outages, rate limits (429), and OAuth tokens that expire (401).</li>
+        <li><strong>Partner integrations</strong>Some features call third-party services through connectors: Catch Up pulls Zoom and Webex transcripts, Ask Nimbus and Writing Assist use Microsoft 365 and Google Workspace context, and Device Care calls OEM warranty and driver APIs. Partners have their own outages, rate limits (429), and OAuth tokens that expire (401).</li>
         <li><strong>Azure AI Foundry</strong>The model streams tokens back. Over PTU capacity, requests spill to pay-as-you-go or get <strong>429s</strong>.</li>
       </ol>
       <div class="callout tip">
         <div class="callout-title">Which layer answered?</div>
-        <p>The same status code can come from different layers. A <strong>401</strong> could come from APIM (bad client token) or from Foundry (managed identity problem). A <strong>503</strong> could come from Front Door (origin down) or from Foundry (overloaded). Always establish <em>which layer</em> returned the error. The <a href="sre/investigate.html#which-layer-returned-the-error">SRE investigate page</a> shows how.</p>
+        <p>The same status code can come from different layers. A <strong>401</strong> could come from APIM (bad client token) or from Foundry (managed identity problem). A <strong>503</strong> could come from Front Door (origin down) or from Foundry (overloaded). Always establish <em>which layer</em> returned the error. The <a href="tech/troubleshooting.html#which-layer-returned-the-error">SRE investigate page</a> shows how.</p>
       </div>
 
       <h2 id="the-two-orchestrators">The Two Orchestrators</h2>
@@ -184,14 +198,30 @@
       </div>
       <p>The <a href="queries.html#q-routing-split">local vs cloud split</a> and <a href="queries.html#q-fallback-rate">fallback rate</a> queries watch these patterns.</p>
 
-<h2 id="partner-integrations">Partner Integrations</h2>
-      <p>Partners extend what Nimbus can do, but they add dependencies we don't control. When a partner fails, our job is to <strong>contain</strong> it (disable that connector, degrade gracefully, tell users) and to <strong>work the relationship</strong>.</p>
+<h2 id="sync-and-relay">Sync &amp; Relay</h2>
+      <p>The sync relay is what makes Nimbus feel like one assistant across devices. It's a cloud service, so it can fail like one:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Failure</th><th>What users feel</th><th>What you'll see</th></tr></thead>
+          <tbody>
+            <tr><td>Relay degraded or down</td><td>Next Step and cross-device Catch Up stop working. Single-device use is fine.</td><td>Relay error and latency rise. Client sync failures by device pair.</td></tr>
+            <tr><td>Key exchange or pairing failures</td><td>"Can't connect your devices"</td><td>Pairing errors tied to one client version or OS</td></tr>
+            <tr><td>Peer-to-peer blocked (enterprise firewalls)</td><td>Slower sync for business users</td><td>Relay traffic shifts up for enterprise tenants</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Because synced context is end-to-end encrypted, the relay can't see what it carries. Diagnosis relies on <strong>client telemetry and relay health metrics</strong>, not content.</p>
+
+      <h2 id="partner-integrations">Partner Integrations</h2>
+      <p>Most third-party integrations run through an <strong>integration-platform partner (an iPaaS)</strong>. It brokers OAuth and the APIs for mail and calendar (Gmail, Outlook), team chat (Slack), and notes apps. A separate <strong>research partner</strong> powers web answers in Ask Nimbus. Partners extend what Nimbus can do, but they add dependencies we don't control. When a partner fails, our job is to <strong>contain</strong> it (disable that connector, degrade gracefully, tell users) and to <strong>work the relationship</strong>.</p>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Partner type</th><th>Feature</th><th>Auth</th><th>Typical limits</th><th>Escalation</th><th>SLA</th></tr></thead>
           <tbody>
-            <tr><td>Meeting platforms (Zoom, Webex)</td><td>Meeting Recap</td><td>OAuth per user</td><td>Per-app rate limits</td><td>Partner support + account manager</td><td>99.9% API availability</td></tr>
-            <tr><td>Productivity suites (Microsoft 365 / Graph, Google Workspace)</td><td>Smart Search, Writing Assist</td><td>OAuth with consent</td><td>Throttling (429 with retry-after)</td><td>Partner support portal</td><td>Per partner terms</td></tr>
+            <tr><td><strong>Integration platform (iPaaS)</strong>: mail, calendar, chat, notes connectors</td><td>Catch Up, Ask Nimbus, Next Step</td><td>OAuth per user, brokered by the iPaaS</td><td>Per-connector and per-tenant limits</td><td>iPaaS vendor support + account team</td><td>99.9% platform availability</td></tr>
+            <tr><td>Research / answer-engine partner</td><td>Ask Nimbus (web answers)</td><td>Service-to-service key</td><td>Requests per minute</td><td>Partner support</td><td>Per agreement</td></tr>
+            <tr><td>Meeting platforms (Zoom, Webex)</td><td>Catch Up</td><td>OAuth per user</td><td>Per-app rate limits</td><td>Partner support + account manager</td><td>99.9% API availability</td></tr>
+            <tr><td>Productivity suites (Microsoft 365 / Graph, Google Workspace)</td><td>Ask Nimbus, Writing Assist</td><td>OAuth with consent</td><td>Throttling (429 with retry-after)</td><td>Partner support portal</td><td>Per partner terms</td></tr>
             <tr><td>OEM device-support APIs</td><td>Device Care</td><td>API key / mTLS</td><td>Contracted request volume</td><td>Named OEM engineering contact</td><td>Contractual, reviewed quarterly</td></tr>
             <tr><td>Partner-hosted AI skills / agents</td><td>Routed from the cloud orchestrator</td><td>Service-to-service tokens</td><td>Per-skill quotas</td><td>Partner on-call (for strategic partners)</td><td>Per agreement</td></tr>
           </tbody>
@@ -211,17 +241,17 @@
       </div>
 
       <h2 id="the-people">The People</h2>
-      <p>Incidents are as much about people as systems. These are the people in our story:</p>
+      <p>Incidents are as much about people as systems. These are the people in our story, written as archetypes so the lessons apply anywhere:</p>
       <div class="card-grid wide">
-        <div class="card t-noc"><h3>The NOC (Offshore)</h3><p>An offshore team that watches 24/7, declares, and coordinates every incident. Many work in a second language, and technical depth is still growing. They have no production tooling yet, so they request actions from owners. They're at their best with clear scripts, plain English, and safety to escalate.</p></div>
-        <div class="card t-sre"><h3>Centralized SRE</h3><p>A small central team that provides the Technical Lead. They're not embedded in any CFT, so they have broad knowledge but rely on owners to make changes.</p></div>
-        <div class="card"><h3>The CFTs</h3><p>Five feature CFTs, the Client CFT, and the Partner Integrations CFT. They own the code. Some have no PagerDuty rotation, and two work in Microsoft Teams.</p></div>
-        <div class="card"><h3>Cloud Infrastructure</h3><p>Powerful and essential. They own the shared cloud and run their own change process. Evidence moves them, and accusations don't.</p></div>
-        <div class="card t-lead"><h3>The Senior Manager</h3><p>You. You decide, unblock, develop the NOC and SRE, and report to executives. The <a href="leaders/index.html">manager track</a> is built for this role.</p></div>
-        <div class="card"><h3>Morgan, the Director</h3><p>Morgan (they/them) is a well-meaning director under pressure from above. In incidents, Morgan tends to dive into the weeds: asking for raw queries, messaging engineers directly, opening side calls, and asking for root cause before users are back. Morgan appears in the <a href="tabletop.html">tabletop exercises</a> and the <a href="postmortems/example.html">worked postmortem</a>. The guidance for handling this pattern is generic and applies to any leader.</p></div>
+        <div class="card t-lead"><h3>You: Senior Manager, Reliability Operations</h3><p>You lead a contract NOC, FTE SREs in the US and India, and an Operations lead. You decide, unblock, develop people, manage up, and report to executives. This playbook is written for you.</p></div>
+        <div class="card t-noc"><h3>The Contract NOC</h3><p>A vendor-run, offshore team that watches 24/7, declares, and coordinates incidents. Many work in a second language, and technical depth is still growing. You manage <em>through the vendor</em>: contract, SLAs, scorecard. They have no production tooling yet, so they request actions from owners.</p></div>
+        <div class="card t-sre"><h3>The SREs (US + India)</h3><p>Full-time engineers split across two regions, working follow-the-sun. They provide the Technical Lead in incidents, and they're centralized rather than embedded in CFTs. The risk to watch is "toil goes to one region, interesting work to the other".</p></div>
+        <div class="card"><h3>The Operations Lead</h3><p>Runs process: rotations, the vendor relationship day to day, reporting. Strong on organization, still growing technically and working on it. One of your highest-leverage people to develop.</p></div>
+        <div class="card"><h3>The CFTs and Cloud Infrastructure</h3><p>Feature CFTs, the Client CFT, and the Partner Integrations CFT own the code. Cloud Infrastructure owns the shared cloud and runs its own change process. Evidence moves them, and accusations don't.</p></div>
+        <div class="card"><h3>Morgan, the Director</h3><p>Morgan (they/them) is your director: <strong>highly technical, impatient, and low on EQ</strong>. Morgan dives into the weeds in incidents, questions engineers' competence in public, and can leave the team demotivated, while often being technically right. Managing up to Morgan and shielding the team is covered in <a href="politics/managing-up.html">A Technical, Low-EQ Leader</a>. Morgan also appears in the tabletop exercises.</p></div>
       </div>
 
-            <h2 id="what-rust-means-for-incidents">What Rust Means for Incidents</h2>
+      <h2 id="what-rust-means-for-incidents">What Rust Means for Incidents</h2>
       <p>Rust removes whole classes of crashes, such as null pointers and data races, but it has its own failure modes. You'll see these in Nimbus:</p>
       <div class="table-wrap">
         <table>
@@ -244,11 +274,11 @@
         <table>
           <thead><tr><th>Feature experience</th><th>CFT</th><th>Mode</th><th>Foundry deployments</th><th>CFT chat tool</th></tr></thead>
           <tbody>
-            <tr><td><strong>Smart Search</strong></td><td>Search</td><td>Interactive</td><td><code>embeddings</code>, <code>chat-large-ptu</code></td><td>Slack</td></tr>
+            <tr><td><strong>Ask Nimbus</strong></td><td>Search</td><td>Interactive</td><td><code>embeddings</code>, <code>chat-large-ptu</code></td><td>Slack</td></tr>
             <tr><td><strong>Writing Assist</strong></td><td>Create</td><td>Interactive, streaming</td><td><code>chat-large-ptu</code> → <code>chat-large-paygo</code></td><td>Slack</td></tr>
-            <tr><td><strong>Meeting Recap</strong></td><td>Collab</td><td>Near-real-time</td><td><code>chat-large-paygo</code>, <code>chat-small</code></td><td><strong>Teams</strong></td></tr>
+            <tr><td><strong>Catch Up</strong></td><td>Collab</td><td>Near-real-time</td><td><code>chat-large-paygo</code>, <code>chat-small</code></td><td><strong>Teams</strong></td></tr>
             <tr><td><strong>Device Care</strong></td><td>Device</td><td>Interactive, multi-step</td><td><code>chat-small</code></td><td><strong>Teams</strong></td></tr>
-            <tr><td><strong>Proactive Tips</strong></td><td>Insights</td><td>Background, bursty</td><td><code>chat-small</code></td><td>Slack</td></tr>
+            <tr><td><strong>Next Step</strong></td><td>Insights</td><td>Background, bursty</td><td><code>chat-small</code></td><td>Slack</td></tr>
           </tbody>
         </table>
       </div>
@@ -323,11 +353,11 @@
         <table>
           <thead><tr><th>Feature</th><th>P50</th><th>P95</th><th>Error rate</th></tr></thead>
           <tbody>
-            <tr><td>Smart Search</td><td>1.4 s</td><td>3.5 s</td><td>&lt; 0.5%</td></tr>
+            <tr><td>Ask Nimbus</td><td>1.4 s</td><td>3.5 s</td><td>&lt; 0.5%</td></tr>
             <tr><td>Writing Assist</td><td>2.5 s</td><td>6 s (first token 1.2 s)</td><td>&lt; 0.5%</td></tr>
-            <tr><td>Meeting Recap</td><td>12 s</td><td>30 s</td><td>&lt; 1%</td></tr>
+            <tr><td>Catch Up</td><td>12 s</td><td>30 s</td><td>&lt; 1%</td></tr>
             <tr><td>Device Care</td><td>3 s</td><td>9 s</td><td>&lt; 1%</td></tr>
-            <tr><td>Proactive Tips</td><td>4 s</td><td>15 s</td><td>&lt; 2% (retried)</td></tr>
+            <tr><td>Next Step</td><td>4 s</td><td>15 s</td><td>&lt; 2% (retried)</td></tr>
             <tr><td>Edge (Front Door) 5xx</td><td colspan="2">—</td><td>&lt; 0.1%</td></tr>
             <tr><td>401 rate at APIM</td><td colspan="2">—</td><td>&lt; 0.3% (token refresh noise)</td></tr>
           </tbody>
@@ -346,7 +376,7 @@
             <tr><td><strong>Jira</strong></td><td>Our only "ticketing system"</td><td>The project is locked down: we can't create incident issue types or edit fields freely</td><td>Keep the incident record in Slack and a pinned doc, and file one Jira ticket afterwards</td></tr>
             <tr><td><strong>Runbooks</strong></td><td>—</td><td>We're a new team, so there are very few</td><td>Use the <a href="playbooks.html">starter playbooks</a> and write one after every incident</td></tr>
             <tr><td><strong>Postmortems</strong></td><td>Learning after incidents</td><td>Often skipped or never finished, and action items get lost</td><td>The <a href="postmortems/index.html">postmortem track</a> makes them routine</td></tr>
-            <tr><td><strong>NOC tooling</strong></td><td>—</td><td>The NOC can see and coordinate, but can't change anything in production</td><td>The NOC <a href="noc/action-requests.html">requests actions</a> from owners</td></tr>
+            <tr><td><strong>NOC tooling</strong></td><td>—</td><td>The NOC can see and coordinate, but can't change anything in production</td><td>The NOC <a href="operate/incident-operations.html">requests actions</a> from owners</td></tr>
           </tbody>
         </table>
       </div>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAG, Agents & Model Changes · Reliability Ops Playbook</title>
+  <meta name="description" content="Retrieval-augmented generation, agents and tool calls, model versions, evals, and content filters: how AI systems get slower, fail, or regress without a code change, and what to ask.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="tech-rag">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Technical Corner</a></div>
+      <div class="eyebrow">Technical Corner · Module 3</div>
+      <h1>RAG, Agents &amp; Model Changes</h1>
+      <p class="lede">Modern AI features rarely make one model call. They retrieve context, call tools, chain steps, and pass through safety filters. Each step adds latency and a new way to fail, and some of the worst regressions come from changes to prompts, data, or models rather than code.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>RAG</strong> = search for relevant context, then send it to the model. Retrieval adds latency, and context adds tokens.</li>
+        <li><strong>Agents</strong> chain several model and tool calls. Latency <strong>multiplies</strong>, and one slow tool slows the whole answer.</li>
+        <li><strong>Evals</strong> are the AI equivalent of tests. Without them, prompt and model changes ship blind.</li>
+        <li><strong>Content filters</strong> can block requests and look like errors.</li>
+      </ul></div>
+
+      <h2 id="rag">Retrieval-Augmented Generation (RAG)</h2>
+      <ol class="steps">
+        <li><strong>Embed</strong>The question is turned into a vector (a numeric representation of meaning) by an embedding model, which is another model call.</li>
+        <li><strong>Search</strong>A vector or hybrid search index finds the most relevant chunks of documents.</li>
+        <li><strong>Assemble</strong>The chunks are added to the prompt as context.</li>
+        <li><strong>Generate</strong>The model answers using that context.</li>
+      </ol>
+      <p>In Nimbus, the personal knowledge base is on the device, so much retrieval happens locally. Cloud retrieval is used for enterprise documents and web answers (via the research partner).</p>
+      <div class="table-wrap"><table><thead><tr><th>Failure</th><th>Signature</th><th>Ask</th></tr></thead><tbody>
+        <tr><td>Slow search index</td><td>Retrieval span grows, model span normal</td><td>"How long is retrieval at P95? Did the index size or query volume change?"</td></tr>
+        <tr><td>Context bloat</td><td>Input tokens up, TTFT up, cost up</td><td>"How many chunks and tokens are we adding per request? Did someone change the chunk count?"</td></tr>
+        <tr><td>Stale or missing index</td><td>Answers worse, no errors</td><td>"When did indexing last succeed? Is there an alert on indexing lag?"</td></tr>
+        <tr><td>Embedding model throttled</td><td>429s on the embedding deployment</td><td>"Does the embedding model share quota with the chat model?"</td></tr>
+      </tbody></table></div>
+
+      <h2 id="agents-and-tool-calls">Agents and Tool Calls</h2>
+      <p>An agent lets the model decide to call tools (search, calendar, partner APIs via the integration platform) and loops: think → call tool → read result → think again → answer. Every loop adds a model call and a tool call.</p>
+      <div class="callout reality"><div class="callout-title">Latency Multiplies</div><p>Four steps of 1.5 seconds each is 6 seconds before any answer. A tool that occasionally takes 10 seconds puts that 10 seconds into the P95 of every feature that uses it.</p></div>
+      <ul class="checklist" data-key="agent-hygiene">
+        <li><strong>Maximum steps</strong> per request, so a confused agent can't loop forever.</li>
+        <li><strong>Timeouts per tool</strong>, shorter than the overall request budget.</li>
+        <li><strong>Circuit breakers</strong> per partner tool, with a graceful answer when a tool is down.</li>
+        <li><strong>Retries with backoff and a budget</strong>, not unlimited.</li>
+        <li><strong>A trace for every step</strong>, so you can see which step was slow.</li>
+      </ul>
+      <div class="script"><strong>Ask:</strong> "How many model calls and tool calls does this feature make per request at P50 and P95? Which step is slowest?"</div>
+
+      <h2 id="model-and-prompt-changes">Model and Prompt Changes</h2>
+      <p>These change behavior without a deploy, so they're often missing from "what changed?" lists:</p>
+      <ul>
+        <li>A new model version (manual or automatic upgrade).</li>
+        <li>A system prompt or template edit, often stored in config or a feature flag.</li>
+        <li>New tools added to an agent.</li>
+        <li>Retrieval settings: chunk count, ranking, index rebuilds.</li>
+        <li>Routing policy between the device model and the cloud model.</li>
+      </ul>
+      <p>Insist that they're logged in the change feed (<a href="../operate/service-model.html#ai-specific-change-management">AI change management</a>).</p>
+
+      <h2 id="evals">Evals</h2>
+      <p>An <strong>eval</strong> is a fixed set of example inputs, with a way to score the outputs for quality, safety, length, and format, run before a change ships. It's the AI equivalent of a test suite.</p>
+      <div class="wgb">
+        <div><span class="q-level q-weak">Weak</span><p>Someone tries a few prompts by hand before shipping.</p></div>
+        <div><span class="q-level q-good">Good</span><p>A versioned eval set runs for every prompt or model change, scoring quality and output length.</p></div>
+        <div><span class="q-level q-best">Best</span><p>Evals gate the release, latency and token counts are compared too, and production samples continually refresh the eval set.</p></div>
+      </div>
+
+      <h2 id="content-filters">Content Filters</h2>
+      <p>Hosted models usually run safety filters on both input and output. A blocked prompt typically returns a <strong>400</strong> with a content-filter error. A blocked answer may come back as a normal response with a finish reason that marks it as filtered.</p>
+      <div class="callout warn"><div class="callout-title">When Filters Look Like Outages</div><p>A prompt template change, or a new model version with different filter behavior, can cause a jump in 400s or empty answers. Ask: "What share of errors are content-filter results, and did that share change?"</p></div>
+
+      <details><summary>Go Deeper</summary>
+        <ul>
+          <li><strong>Semantic caching</strong> returns stored answers for similar questions. It cuts latency and cost, but carries a risk of stale or wrong answers.</li>
+          <li><strong>Structured output</strong> (JSON mode, function schemas) reduces parsing failures in agent tool calls.</li>
+          <li><strong>Small vs large models:</strong> routing simple tasks to smaller models improves latency and cost, and adds a routing decision to monitor.</li>
+        </ul>
+      </details>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

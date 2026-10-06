@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Failure Catalog · Reliability Ops Playbook</title>
+  <meta name="description" content="Fifteen real-shaped cloud AI infrastructure failures, each with its signature on the charts, the layer it lives in, and the first questions a reliability manager should ask.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="tech-failures">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Technical Corner</a></div>
+      <div class="eyebrow">Technical Corner · Module 7</div>
+      <h1>Failure Catalog</h1>
+      <p class="lede">Fifteen failures that happen in real hybrid AI products. Learn their signatures and you'll recognize most incidents within the first ten minutes, and know which question to ask first. Use them as flashcards with your Ops lead, or as tabletop scenarios.</p>
+
+      <div class="tldr"><ul>
+        <li>Each entry: <strong>signature</strong> (what you see), <strong>layer</strong>, and <strong>first questions</strong>.</li>
+        <li>Many failures look alike at first. The first questions are designed to tell them apart.</li>
+      </ul></div>
+
+      <h2 id="model-and-capacity">Model and Capacity</h2>
+      <div class="card-grid wide">
+        <div class="card t-sre"><h3 id="f-quota-exhaustion">1. Quota Exhaustion</h3><p><strong>Signature:</strong> 429s from the model at peak hours, P95 up if retries hide them.</p><p><strong>Layer:</strong> Model provider.</p><p><strong>Ask:</strong> "What share of TPM are we using at peak, per deployment? Who's the biggest consumer?"</p></div>
+        <div class="card t-sre"><h3 id="f-noisy-neighbor">2. Noisy Neighbor</h3><p><strong>Signature:</strong> A customer-facing feature throttles when a background job or another team's feature bursts.</p><p><strong>Layer:</strong> Model provider (shared deployment).</p><p><strong>Ask:</strong> "Which features share this deployment? Did anyone start a batch job?" (<a href="deep-dives.html#noisy-neighbor-on-shared-foundry-quota">deep dive</a>)</p></div>
+        <div class="card t-sre"><h3 id="f-fallback-surge">3. Device-to-Cloud Fallback Surge</h3><p><strong>Signature:</strong> Cloud requests jump with no change in active users. Often follows a client, driver, or on-device model update.</p><p><strong>Layer:</strong> Device orchestrator → cloud.</p><p><strong>Ask:</strong> "What's the local vs cloud split by client version? What shipped to devices?" (<a href="deep-dives.html#local-to-cloud-fallback-surge">deep dive</a>)</p></div>
+        <div class="card t-sre"><h3 id="f-model-version">4. Silent Model Version Change</h3><p><strong>Signature:</strong> Latency, output length, or content-filter rate shifts at a single point in time, with no deploy.</p><p><strong>Layer:</strong> Model provider.</p><p><strong>Ask:</strong> "Did the model version change? Is the deployment on auto-upgrade?"</p></div>
+        <div class="card t-sre"><h3 id="f-regional-capacity">5. Regional Capacity Shortage</h3><p><strong>Signature:</strong> Higher TTFT and 429s in one region, while other regions are fine. Provider status may show degradation.</p><p><strong>Layer:</strong> Model provider.</p><p><strong>Ask:</strong> "Can we shift to the secondary region, and does it have quota?"</p></div>
+        <div class="card t-sre"><h3 id="f-prompt-bloat">6. Prompt or Context Bloat</h3><p><strong>Signature:</strong> Input tokens per request rise gradually or in a step. TTFT and cost rise together.</p><p><strong>Layer:</strong> Orchestrator / retrieval.</p><p><strong>Ask:</strong> "What changed in the prompt template or retrieval settings? Show input tokens per feature over 30 days."</p></div>
+      </div>
+
+      <h2 id="network-and-identity">Network and Identity</h2>
+      <div class="card-grid wide">
+        <div class="card t-noc"><h3 id="f-edge-timeouts">7. Edge Timeouts on Long Answers</h3><p><strong>Signature:</strong> 504s at the edge on non-streaming, long-running requests. The origin finishes, but too late.</p><p><strong>Layer:</strong> Edge / CDN.</p><p><strong>Ask:</strong> "Are these generated at the edge? What's the origin response time compared with the edge timeout?"</p></div>
+        <div class="card t-noc"><h3 id="f-waf-false-positive">8. WAF False Positives</h3><p><strong>Signature:</strong> 403s for some prompts after a WAF rule update. Longer or code-like prompts are hit most.</p><p><strong>Layer:</strong> Edge / WAF.</p><p><strong>Ask:</strong> "Which rule is matching? When was the rule set changed?"</p></div>
+        <div class="card t-noc"><h3 id="f-token-refresh">9. Client Token Refresh Bug</h3><p><strong>Signature:</strong> 401s for one client version, often about an hour after sign-in.</p><p><strong>Layer:</strong> Device client / identity.</p><p><strong>Ask:</strong> "Is it one client version? Does the timing match the token lifetime?" (<a href="troubleshooting.html#401-investigation">401 investigation</a>)</p></div>
+        <div class="card t-noc"><h3 id="f-secret-rotation">10. Key or Secret Rotation</h3><p><strong>Signature:</strong> 401s or 403s for all users of a service, starting at a precise minute.</p><p><strong>Layer:</strong> Identity / gateway / service-to-service.</p><p><strong>Ask:</strong> "Was any key, secret, certificate, or role assignment changed at that time?"</p></div>
+        <div class="card t-noc"><h3 id="f-private-dns">11. Private DNS Misconfiguration</h3><p><strong>Signature:</strong> Total failure of every call to one dependency, right after a network change.</p><p><strong>Layer:</strong> Networking.</p><p><strong>Ask:</strong> "What does the name resolve to from inside the service network?"</p></div>
+      </div>
+
+      <h2 id="system-behavior">System Behavior</h2>
+      <div class="card-grid wide">
+        <div class="card t-lead"><h3 id="f-retry-storm">12. Retry Storm</h3><p><strong>Signature:</strong> A short blip becomes a long outage. Request volume to the dependency multiplies while it's struggling.</p><p><strong>Layer:</strong> Orchestrator / clients.</p><p><strong>Ask:</strong> "What are our retry counts and backoff? Is volume to the dependency higher than user traffic explains?" (<a href="deep-dives.html#retry-storms-and-cascading-failure">deep dive</a>)</p></div>
+        <div class="card t-lead"><h3 id="f-pool-exhaustion">13. Connection Pool Exhaustion</h3><p><strong>Signature:</strong> Timeouts in the orchestrator on some instances, while downstream reports healthy.</p><p><strong>Layer:</strong> Orchestrator (Rust services).</p><p><strong>Ask:</strong> "Is it some instances or all? What do pool usage and wait time show?" (<a href="troubleshooting.html#rust-service-failure-modes">Rust failure modes</a>)</p></div>
+        <div class="card t-lead"><h3 id="f-partner-outage">14. Partner or Integration Platform Outage</h3><p><strong>Signature:</strong> Errors only in features using one partner. Agent answers slow down while tool calls wait.</p><p><strong>Layer:</strong> Integration platform / partner.</p><p><strong>Ask:</strong> "Is it one connector or all? Is the circuit breaker open? What's on their status page?" (<a href="../operate/vendors-and-partners.html#in-incidents">partners in incidents</a>)</p></div>
+        <div class="card t-lead"><h3 id="f-sync-relay">15. Sync Relay Degradation</h3><p><strong>Signature:</strong> Catch Up and Next Step late on the second device. No errors on the first device.</p><p><strong>Layer:</strong> Sync relay.</p><p><strong>Ask:</strong> "What's relay success and sync lag by region? Is it cross-network sync only?" (<a href="network-and-identity.html#sync-relay">sync relay</a>)</p></div>
+      </div>
+
+      <h2 id="look-alikes">Telling Look-Alikes Apart</h2>
+      <div class="table-wrap"><table><thead><tr><th>You see</th><th>Could be</th><th>The question that separates them</th></tr></thead><tbody>
+        <tr><td>P95 up, no errors</td><td>Hidden 429 retries, prompt bloat, regional capacity, an agent tool getting slower</td><td>"Show 429s including retried, input tokens, and TTFT vs generation time by region."</td></tr>
+        <tr><td>401 wave</td><td>Token refresh bug, secret rotation, partner OAuth</td><td>"One client version, everyone at one minute, or one partner?"</td></tr>
+        <tr><td>Cloud volume up</td><td>Real growth, fallback surge, retry storm</td><td>"Are active users up? Is the local share down? Are retries up?"</td></tr>
+        <tr><td>5xx at the edge</td><td>Origin failure, edge timeout, WAF</td><td>"Is the error generated at the edge or passed through from the origin?"</td></tr>
+      </tbody></table></div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

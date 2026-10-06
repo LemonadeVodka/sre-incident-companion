@@ -3,118 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NOC: Incident Coordinator · Nimbus SRE</title>
-  <meta name="description" content="The NOC role for Nimbus: first line of defense and Incident Coordinator for every declared incident, with no production tooling yet.">
-  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../assets/style.css">
-  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+  <title>Moved · Reliability Ops Playbook</title>
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href="../team/contract-noc.html">
+  <meta http-equiv="refresh" content="0; url=../team/contract-noc.html">
+  <style>body{font:17px/1.6 Barlow,system-ui,sans-serif;margin:0;padding:48px 16px;background:#121416;color:#d9d6cc}a{color:#c9a96e}</style>
+  <script>location.replace("../team/contract-noc.html" + location.hash);</script>
 </head>
-<body data-root="../" data-page="noc">
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
-<div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
-  <main class="content" id="main">
-    <article class="prose">
-      <div class="breadcrumb"><a href="../index.html">Home</a> / NOC</div>
-      <div class="track-banner t-noc"><i class="track-dot"></i>NOC · Incident Coordinator</div>
-      <h1>NOC: First Line of Defense and Incident Coordinator</h1>
-      <p class="lede">You usually see a problem first, and once an incident is declared, <strong>you run it</strong>. The NOC detects, declares, and coordinates: channel, roles, cadence, communication, escalation timers, and the timeline. You don't have tooling to change production yet, so you get things done by <strong>requesting actions from the people who own them</strong>.</p>
-
-      <div class="tldr">
-        <ul>
-          <li><strong>Detect:</strong> run the shift health sweep. Most services have no dashboard, so the sweep is your dashboard.</li>
-          <li><strong>Declare and coordinate:</strong> you're the <strong>Incident Coordinator (IC)</strong> for every declared incident. SRE is the Technical Lead.</li>
-          <li><strong>Request, don't act:</strong> ask owners for specific actions using the <a href="action-requests.html">pre-agreed requests</a>, and chase them on timers.</li>
-          <li><strong>Close the loop:</strong> schedule the postmortem and hand over your timeline. Postmortems are one of our weakest spots.</li>
-        </ul>
-      </div>
-
-      <div class="anywhere">
-        <div class="callout-title">Applies Anywhere</div>
-        <p>Separating <strong>coordination</strong> from <strong>technical investigation</strong> is the single most effective incident practice. The coordinator keeps the big picture, the cadence, and the people. The technical lead keeps their head in the problem. Neither tries to do both.</p>
-      </div>
-
-      <h2 id="what-you-own">What You Own, and What You Don't</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>NOC owns</th><th>NOC does not own (yet)</th></tr></thead>
-          <tbody>
-            <tr><td>Watching signals and running the shift sweep</td><td>Root-cause investigation (SRE Technical Lead)</td></tr>
-            <tr><td><strong>Declaring</strong> incidents and setting the initial severity</td><td>Any production change: rollbacks, flags, restarts, scaling, failover</td></tr>
-            <tr><td><strong>Coordinating</strong>: channel, roles, cadence, updates, decisions log</td><td>Technical decisions about <em>what</em> to change (SRE recommends, owners decide)</td></tr>
-            <tr><td>Paging SRE, CFTs, and Cloud Infrastructure through PagerDuty, and running escalation timers</td><td>Business decisions such as spend or customer messaging (senior manager)</td></tr>
-            <tr><td>Bridging to Teams-only CFTs, and protecting responders from interruptions</td><td>—</td></tr>
-            <tr><td>The timeline, the pinned record, the Jira ticket, and scheduling the postmortem</td><td>—</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="callout reality">
-        <div class="callout-title">Reality Check: Coordinating Without Tooling</div>
-        <p>You can see almost everything and change almost nothing. That's fine for a coordinator, as long as requests are <strong>specific, timed, and recorded</strong>: "Insights CFT, please pause the Proactive Tips batch now. I'll check again at 14:30." See <a href="action-requests.html">Requesting Actions</a>. Getting the NOC executable tooling is on the <a href="../leaders/investing.html#tooling-and-process-asks">manager asks list</a>.</p>
-      </div>
-
-      <h2 id="when-to-bring-in-sre">When to Bring in SRE</h2>
-      <p>Page <strong>SRE on-call</strong> (PagerDuty "Nimbus SRE") as Technical Lead when <em>any</em> of these is true:</p>
-      <ul>
-        <li>User impact is confirmed and above the <a href="../environment.html#what-normal-looks-like">baselines</a> for more than 10 minutes.</li>
-        <li>More than one feature is affected, or the problem is at a shared layer (Front Door, APIM, auth, cloud orchestrator, Foundry).</li>
-        <li>After 15 minutes you still can't tell which layer or owner is involved.</li>
-        <li>A CFT hasn't acknowledged within 15 minutes, and you need someone to judge the technical options.</li>
-      </ul>
-      <p>When SRE joins, <strong>you stay IC</strong>. Hand them the technical picture (template on <a href="triage-and-escalate.html#briefing-the-technical-lead">Triage &amp; Escalate</a>) and keep coordinating.</p>
-
-      <h2 id="shift-rhythm">Shift Rhythm</h2>
-      <h3 id="start-of-shift">Start of Shift</h3>
-      <ul class="checklist" data-key="noc-shift-start">
-        <li>Read the previous shift's handoff note and any open <code>#inc-</code> channels. You may be inheriting IC.</li>
-        <li>Check PagerDuty shows you on call, and that your phone gets a test notification.</li>
-        <li>Run the <a href="detect.html#shift-health-sweep">shift health sweep</a>.</li>
-        <li>Check scheduled changes: client rollouts, local model updates, CFT deploys, Cloud Infrastructure changes, Azure maintenance.</li>
-        <li>Open the Teams channels for the Collab and Device CFTs, so you can bridge quickly.</li>
-      </ul>
-      <h3 id="during-the-shift">During the Shift</h3>
-      <ul>
-        <li>Re-run the sweep every <strong>2 hours</strong>, and after any rollout or change you hear about.</li>
-        <li>Acknowledge every page within <strong>5 minutes</strong>.</li>
-        <li>Keep notes as you go. They become the handoff and the postmortem timeline.</li>
-      </ul>
-      <h3 id="end-of-shift">End of Shift</h3>
-      <ul class="checklist" data-key="noc-shift-end">
-        <li>Open incidents: status, IC handover (template on <a href="coordinate.html#handing-over-ic">Coordinate</a>), next update time.</li>
-        <li>Outstanding action requests: who owns each one, and when you're due to check.</li>
-        <li>Postmortems to schedule, and timelines to hand over.</li>
-        <li>Noisy or confusing alerts, for the runbook backlog.</li>
-      </ul>
-
-      <h2 id="what-good-looks-like">What Good Looks Like</h2>
-      <details>
-        <summary>Weak / Good / Best in Class: NOC as Incident Coordinator</summary>
-        <div class="details-body">
-          <div class="wgb">
-            <div><span class="q-level q-weak">Weak</span><p>Notices late, debugs instead of coordinating, pages in chat, nobody knows who's in charge, and the timeline is rebuilt from memory.</p></div>
-            <div><span class="q-level q-good">Good</span><p>Declares within 10 minutes, runs a clear channel with roles and a cadence, pages through PagerDuty with timers, and makes specific action requests.</p></div>
-            <div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus executive questions are absorbed before they reach responders, the timeline is postmortem-ready at close, and the review is scheduled before standing down.</p></div>
-          </div>
-          <p>Compare every dimension on <a href="../response-quality.html">What Good Looks Like</a>.</p>
-        </div>
-      </details>
-
-      <h2 id="your-pages">Your Pages</h2>
-      <div class="card-grid">
-        <a class="card" href="detect.html"><h3>Watch &amp; Detect</h3><p>Signals, the shift health sweep, and noise vs signal.</p></a>
-        <a class="card" href="triage-and-escalate.html"><h3>Triage &amp; Escalate</h3><p>The first 15 minutes, which layer, who to page, and briefing the Tech Lead.</p></a>
-        <a class="card" href="coordinate.html"><h3>Coordinate the Incident</h3><p>The IC loop, roles, Slack/Teams, slow CFTs, and executive interruptions.</p></a>
-        <a class="card" href="action-requests.html"><h3>Requesting Actions</h3><p>How to get owners to act, plus the pre-agreed requests.</p></a>
-        <a class="card" href="../onboarding.html#noc-path"><h3>NOC Onboarding Path</h3><p>Week 1, month 1, and month 3, with progress tracking.</p></a>
-        <a class="card" href="../cards/noc.html"><h3>NOC Role Card</h3><p>A printable one-pager for your desk.</p></a>
-      </div>
-    </article>
-    <nav class="pager" id="pager"></nav>
-  </main>
-  <aside class="toc" id="toc"></aside>
-</div>
-<footer class="site-footer" id="footer"></footer>
-<script src="../assets/site.js"></script>
+<body>
+  <p>This page moved to <a href="../team/contract-noc.html">Managing a Contract NOC</a>.</p>
 </body>
 </html>

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stakeholders & Influence · Reliability Ops Playbook</title>
+  <meta name="description" content="Stakeholder mapping, influence without authority, pre-wiring decisions, and building coalitions with CFTs, Cloud Infrastructure, vendors, and partners.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="pol-stakeholders">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Manage Up &amp; Politics</a></div>
+      <div class="eyebrow">Manage Up &amp; Politics · Influence</div>
+      <h1>Stakeholders &amp; Influence</h1>
+      <p class="lede">Most of what you need (CFTs prioritizing reliability fixes, Cloud Infrastructure isolating capacity, executives funding NOC tooling) depends on people who don't report to you. Influence comes from knowing what each of them needs, and helping them get it while you get what you need.</p>
+
+      <div class="tldr"><ul>
+        <li>Map every stakeholder on <strong>power × interest</strong>, and know <strong>what they need to win</strong>.</li>
+        <li><strong>Pre-wire</strong>: meet key people one-on-one before any important meeting.</li>
+        <li>Build <strong>coalitions</strong>. Three CFTs asking for the same thing beats you asking alone.</li>
+      </ul></div>
+
+      <h2 id="stakeholder-map">Stakeholder Map</h2>
+      <div class="table-wrap"><table><thead><tr><th></th><th>Low interest</th><th>High interest</th></tr></thead><tbody>
+        <tr><td><strong>High power</strong></td><td><b>Keep satisfied.</b> Brief, outcome-focused updates. Example: executives outside your chain.</td><td><b>Manage closely.</b> Pre-wire everything. Examples: your director, Cloud Infrastructure leadership.</td></tr>
+        <tr><td><strong>Low power</strong></td><td><b>Monitor.</b> Occasional updates.</td><td><b>Keep informed and enlist.</b> Examples: CFT engineering managers, the NOC vendor's delivery manager, support leads.</td></tr>
+      </tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Stakeholder (archetype)</th><th>What they need to "win"</th><th>What you need from them</th><th>How to work with them</th></tr></thead><tbody>
+        <tr><td>Your director (highly technical)</td><td>Technical rigor, no surprises, looking competent to their boss</td><td>Air cover, budget, backing for priorities</td><td>Data-first pre-reads, early warnings, let them be right about technical detail (<a href="managing-up.html">more</a>)</td></tr>
+        <tr><td>Cloud Infrastructure leadership</td><td>Stability of their platform, fewer accusations, credit</td><td>Capacity isolation, change announcements, joint postmortem actions</td><td>Evidence, their process, shared wins, peer-to-peer escalation</td></tr>
+        <tr><td>CFT engineering managers</td><td>Shipping features, fewer pages, looking good in reviews</td><td>Reliability fixes prioritized, on-call coverage, runbooks</td><td>Make reliability work visible as a win for them. Use the SRE liaison.</td></tr>
+        <tr><td>NOC vendor account team</td><td>Contract renewal, a good scorecard, a reference customer</td><td>Quality staff, low attrition, improvement plans</td><td>A clear scorecard, fair QBRs, praise for good work, early warning on problems</td></tr>
+        <tr><td>Partner and iPaaS contacts</td><td>Stable integration, low support burden</td><td>Fast escalation, root causes, SLA adherence</td><td>Named contacts, a quarterly partner review, data on their impact</td></tr>
+        <tr><td>Executives (VP+)</td><td>Business impact understood, risk managed, no surprises</td><td>Funding, priority decisions</td><td>BLUF and SITREP, quarterly reliability report, clear asks with options</td></tr>
+      </tbody></table></div>
+
+      <h2 id="pre-wiring">Pre-Wiring Decisions</h2>
+      <p>Decisions are rarely made in the meeting. They're made in the conversations before it. For any important proposal:</p>
+      <ol class="steps">
+        <li><strong>List who must say yes, and who could say no.</strong>Include anyone whose silence in the meeting would hurt you.</li>
+        <li><strong>Meet each one 1:1 beforehand.</strong>Share a short pre-read. Ask "What would make this work for you? What worries you?"</li>
+        <li><strong>Adjust the proposal.</strong>Incorporate their input and credit it: "Building on X's point…"</li>
+        <li><strong>Close the loop.</strong>Tell them what changed, so nobody is surprised in the room.</li>
+        <li><strong>In the meeting:</strong> the decision should feel obvious. If someone pushes back, take it offline.</li>
+      </ol>
+      <p>Use the <a href="../templates.html#pre-wire-message">pre-wire message</a> and <a href="../templates.html#decision-memo">decision memo</a> templates.</p>
+
+      <h2 id="influence-without-authority">Influence Without Authority</h2>
+      <div class="card-grid wide">
+        <div class="card"><h3>Reciprocity</h3><p>Give first: incident support, data for their QBR, a shout-out. People help those who've helped them.</p></div>
+        <div class="card"><h3>Shared Goals</h3><p>Frame the ask in their terms: "Isolating background capacity means your feature stops getting throttled at 9 a.m."</p></div>
+        <div class="card"><h3>Evidence</h3><p>A chart showing their feature's 429s, or the cost of the last incident. Hard to argue with.</p></div>
+        <div class="card"><h3>Make It Easy</h3><p>Bring the draft design, the ticket text, or the SRE who'll pair with them. Lower the cost of saying yes.</p></div>
+        <div class="card"><h3>Social Proof</h3><p>"Two other CFTs already adopted the production readiness check."</p></div>
+        <div class="card"><h3>Escalate Last</h3><p>Escalation spends capital and relationships. Use it when the user impact justifies it (<a href="escalation-and-narrative.html">how</a>).</p></div>
+      </div>
+
+      <h2 id="coalitions">Building Coalitions</h2>
+      <p>Before asking leadership for something big (NOC executable tooling, separate capacity for background workloads, a Jira incident project), gather allies who share the pain: CFT managers whose features suffered, the support lead who fielded tickets, the vendor whose SLA depends on tooling. Bring their voices, and their data, into the decision memo.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

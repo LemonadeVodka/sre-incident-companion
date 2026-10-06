@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Morale & Burnout · Reliability Ops Playbook</title>
+  <meta name="description" content="Protecting morale in an operations team: spotting burnout, on-call health, repairing morale after a demotivating leader, recognition, and team rituals across time zones.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="team-morale">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Lead the Team</div>
+      <div class="eyebrow">Lead the Team · Morale</div>
+      <h1>Morale &amp; Burnout</h1>
+      <p class="lede">Operations teams burn out quietly: nights, pressure, blame, and repetitive toil. Add a leader whose style demotivates people, and good engineers leave. Morale is part of your reliability strategy. A burned-out team detects later, decides worse, and quits at the worst time.</p>
+
+      <div class="tldr"><ul>
+        <li>Watch the <strong>early signs</strong>: cynicism, silence in channels, fewer volunteers, more sick days, people stopping asking questions.</li>
+        <li>Fix the <strong>structural causes</strong>: page volume, on-call fairness, toil, unclear ownership.</li>
+        <li>After a demotivating interaction with leadership, run <strong>morale repair</strong> within 24 hours.</li>
+        <li>Recognize <strong>behaviors</strong> publicly and specifically, including contract NOC staff, through the vendor.</li>
+      </ul></div>
+
+      <h2 id="early-signs">Early Signs of Burnout</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Withdrawal</h3><p>Quieter in channels and meetings, cameras off, no more "I'll take it".</p></div>
+        <div class="card"><h3>Cynicism</h3><p>"Nothing changes." "Why bother writing the postmortem?"</p></div>
+        <div class="card"><h3>Errors</h3><p>More mistakes on routine tasks, and missed handoffs.</p></div>
+        <div class="card"><h3>Avoidance</h3><p>On-call swaps, more sick days, not volunteering for incidents.</p></div>
+      </div>
+
+      <h2 id="structural-fixes">Structural Fixes</h2>
+      <div class="table-wrap"><table><thead><tr><th>Cause</th><th>Fix</th></tr></thead><tbody>
+        <tr><td>Too many pages</td><td>Measure pages per shift. Delete or tune alerts nobody acts on. Target fewer than 2 actionable pages per on-call shift.</td></tr>
+        <tr><td>Unfair on-call</td><td>Monthly fairness review (<a href="global-sre.html#on-call-fairness">how</a>)</td></tr>
+        <tr><td>Endless toil</td><td>Cap toil time. Fund automation. Rotate toil across regions.</td></tr>
+        <tr><td>Blame after incidents</td><td>Enforce blameless postmortems and protect them from leadership interruptions.</td></tr>
+        <tr><td>Never-ending incidents</td><td>Hand over at shift change, and send people home after long Sev 1s.</td></tr>
+      </tbody></table></div>
+
+      <h2 id="morale-repair">Morale Repair After a Demotivating Interaction</h2>
+      <p>When a senior leader publicly criticizes the team, dismisses their work, or dives in harshly during an incident, act within 24 hours:</p>
+      <ol class="steps">
+        <li><strong>Acknowledge it.</strong>Don't pretend it didn't happen. "That was a tough session yesterday."</li>
+        <li><strong>Separate signal from tone.</strong>"Underneath it, the concern was X. That's fair, and here's what we'll do about it." Leave out the harsh delivery.</li>
+        <li><strong>Reaffirm what went well.</strong>Specific, factual credit for the work.</li>
+        <li><strong>Own the follow-up.</strong>"I'll handle the conversation with leadership. You focus on the fix."</li>
+        <li><strong>Check in privately</strong> with whoever took the brunt of it.</li>
+      </ol>
+      <p>Never badmouth the leader to the team. It feels supportive, but it erodes trust in the whole leadership chain, including you. Handle the leader through <a href="../politics/managing-up.html">managing up</a>.</p>
+
+      <h2 id="recognition">Recognition</h2>
+      <ul>
+        <li><strong>Public, specific, fast:</strong> name the behavior and its impact in the team channel within a day.</li>
+        <li><strong>Upward:</strong> credit people by name in SITREPs and executive reports.</li>
+        <li><strong>Contract NOC:</strong> recognize great work in the channel and in writing to the vendor's account manager, so it reaches their performance process.</li>
+        <li><strong>Both regions:</strong> make sure recognition is balanced between the US and India.</li>
+      </ul>
+
+      <h2 id="team-rituals">Team Rituals</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Incident Wins</h3><p>A monthly five minutes: the best catch, the best handoff, the best "I don't know, but I'll find out".</p></div>
+        <div class="card"><h3>Learning Hour</h3><p>Rotating presenters across regions, covering one technical topic or postmortem story.</p></div>
+        <div class="card"><h3>Pulse Check</h3><p>A monthly anonymous three-question survey: on-call load, clarity, and feeling supported.</p></div>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

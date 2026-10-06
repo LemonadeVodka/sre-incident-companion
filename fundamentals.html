@@ -58,7 +58,7 @@
       <p>Google's SRE book argues that aiming for perfect reliability is a mistake. Users can't tell 99.99% from 100% because their Wi-Fi, laptop, and the model itself are less reliable than that. Every extra nine costs a lot and slows feature work. The job is to pick the <em>right</em> level of reliability for each feature, then spend whatever is left over deliberately.</p>
       <div class="callout tip">
         <div class="callout-title">Applied to Nimbus</div>
-        <p>Writing Assist is interactive and used constantly, so it deserves a tight target. Proactive Tips runs in the background and retries quietly, so a looser target is fine. Giving them the same target wastes effort on one and short-changes the other.</p>
+        <p>Writing Assist is interactive and used constantly, so it deserves a tight target. Next Step runs in the background and retries quietly, so a looser target is fine. Giving them the same target wastes effort on one and short-changes the other.</p>
       </div>
 
       <h2 id="slis-slos-and-error-budgets">SLIs, SLOs, and Error Budgets</h2>
@@ -75,9 +75,9 @@
           <tbody>
             <tr><td>Writing Assist</td><td>Availability</td><td>Request returns a usable response (not 5xx, 429, or timeout)</td><td>99.5% / 28d</td></tr>
             <tr><td>Writing Assist</td><td>Responsiveness</td><td>First token arrives in under 1.5 s</td><td>95% / 28d</td></tr>
-            <tr><td>Smart Search</td><td>Latency</td><td>Results arrive in under 3.5 s</td><td>95% / 28d</td></tr>
+            <tr><td>Ask Nimbus</td><td>Latency</td><td>Results arrive in under 3.5 s</td><td>95% / 28d</td></tr>
             <tr><td>Device Care</td><td>Task success</td><td>The multi-step flow completes with no tool or model failure</td><td>99% / 28d</td></tr>
-            <tr><td>Proactive Tips</td><td>Freshness</td><td>Tip generated within 15 minutes of its trigger</td><td>98% / 28d</td></tr>
+            <tr><td>Next Step</td><td>Freshness</td><td>Tip generated within 15 minutes of its trigger</td><td>98% / 28d</td></tr>
           </tbody>
         </table>
       </div>

@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Troubleshooting Walkthrough · Reliability Ops Playbook</title>
+  <meta name="description" content="How SREs investigate AI incidents layer by layer: which layer returned the error, P50/P95 decomposition, orchestrators, CDN, 401s, Rust failure modes. Written for a manager learning the technical side.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="tech-trouble">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+            <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Technical Corner</a></div>
+      <div class="eyebrow">Technical Corner · How Your SREs Work</div>
+      <h1>Troubleshooting Walkthrough</h1>
+      <p class="lede">This is how your SREs investigate an AI incident when there's no runbook: find the layer, split the latency, read the error type, check what changed. Learn it so you can follow along, ask sharper questions, and recognize a strong investigation from a weak one. It covers <strong>AI latency, error rates, CDN errors, and 401s</strong>.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>First answer <strong>which layer returned the error</strong>: edge, gateway, service, or model. One query compares all four.</li>
+          <li>Split P50/P95 latency by hop. <strong>First-token time up</strong> points to capacity or queueing. <strong>Total up with first token flat</strong> points to longer outputs.</li>
+          <li><strong>CDN errors</strong>: read Front Door's error info and origin health. <strong>401s</strong>: find which layer rejected the token, then which cohort.</li>
+          <li>For Rust services, know the signatures of <strong>runtime starvation, pool exhaustion, and panics</strong>.</li>
+        </ul>
+      </div>
+
+      <h2 id="method-when-there-is-no-runbook">Method When There's No Runbook</h2>
+      <ol class="steps">
+        <li><strong>Write the symptom down precisely.</strong>"Device Care errors 9% since 14:05, 429 on chat-small." Precision rules out half the causes.</li>
+        <li><strong>Find the layer</strong> (next section).</li>
+        <li><strong>List 2–3 hypotheses</strong> in the channel, each with its cheapest test.</li>
+        <li><strong>Test the cheapest one first,</strong> unless another is far more likely.</li>
+        <li><strong>Mitigate as soon as one is plausible</strong> and the mitigation is reversible.</li>
+        <li><strong>Write down what worked.</strong> That's the start of the runbook.</li>
+      </ol>
+
+      <h2 id="which-layer-returned-the-error">Which Layer Returned the Error?</h2>
+      <p>The same status code can come from different layers. This query counts errors at each layer for the same time window. Run it in the <strong>Log Analytics workspace</strong> that holds the Front Door and APIM logs and the workspace-based App Insights tables.</p>
+      <div class="code-card" id="q-layers">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Errors by layer<span class="answers">Edge vs gateway vs backend vs services, side by side</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+let fdCategory = "FrontDoorAccessLog";   // [AZURE] Front Door access log category
+// ── Query ──────────────────────────────────
+union
+  (AzureDiagnostics
+     | where TimeGenerated > ago(window) and Category == fdCategory
+     | extend code = toint(column_ifexists("httpStatusCode_s", "")), w = 1, layer = "1 · edge (Front Door)"),
+  (ApiManagementGatewayLogs
+     | where TimeGenerated > ago(window)
+     | extend code = toint(ResponseCode), w = 1, layer = "2 · gateway (APIM, to client)"),
+  (ApiManagementGatewayLogs
+     | where TimeGenerated > ago(window)
+     | extend code = toint(BackendResponseCode), w = 1, layer = "3 · backend (as APIM saw it)"),
+  (AppRequests
+     | where TimeGenerated > ago(window)
+     | extend code = toint(ResultCode), w = toint(ItemCount), layer = "4 · services (App Insights)")
+| summarize total = sum(w), e5xx = sumif(w, code >= 500), e401 = sumif(w, code == 401),
+            e403 = sumif(w, code == 403), e429 = sumif(w, code == 429) by layer
+| order by layer asc</code></pre>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pattern</th><th>Points to</th></tr></thead>
+          <tbody>
+            <tr><td>Edge 5xx high, gateway near normal</td><td>Front Door can't reach APIM (origin connectivity, timeouts, origin health probes failing)</td></tr>
+            <tr><td>Edge 403 high</td><td>WAF blocking. Check WAF logs for the rule.</td></tr>
+            <tr><td>Gateway 401 high, backend normal</td><td>APIM token validation: client tokens, an Entra problem, or a <code>validate-jwt</code> policy change</td></tr>
+            <tr><td>Backend 5xx (layer 3) matches services 5xx (layer 4)</td><td>Our services are failing</td></tr>
+            <tr><td>Backend 5xx/504 high but services look fine</td><td>Network or timeouts between APIM and services, or services crashing before logging (panics)</td></tr>
+            <tr><td>Services 5xx with Foundry dependency failures</td><td>The model layer. See the error types below.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="decomposing-latency">Decomposing Latency (P50 and P95)</h2>
+      <p>Here is an illustrative <strong>P95 budget</strong> for a cloud-answered Writing Assist request. Learn the shape so you can spot which segment grew. On-device answers stop after the first segment, usually under a second.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 900 200" role="img" aria-labelledby="lb-title lb-desc">
+          <title id="lb-title">Writing Assist P95 Latency Budget</title>
+          <desc id="lb-desc">A stacked bar of about 6 seconds: device orchestration 0.05 seconds, edge 0.3, APIM 0.1, cloud orchestrator 0.15, feature service 0.25, retrieval 0.6, model first token 1.2, generation about 3, and return path 0.4.</desc>
+          <rect class="d-box-warn" x="20" y="60" width="7" height="56"/>
+          <rect class="d-box" x="27" y="60" width="43" height="56"/>
+          <rect class="d-box-accent" x="70" y="60" width="14" height="56"/>
+          <rect class="d-box-warn" x="84" y="60" width="21" height="56"/>
+          <rect class="d-box" x="105" y="60" width="36" height="56"/>
+          <rect class="d-box" x="141" y="60" width="86" height="56"/>
+          <rect class="d-box-warn" x="227" y="60" width="172" height="56"/>
+          <rect class="d-box-accent" x="399" y="60" width="421" height="56"/>
+          <rect class="d-box" x="820" y="60" width="60" height="56"/>
+          <text class="d-sub" x="18" y="34">device orch.</text>
+          <path class="d-line" d="M23 40 V58"/>
+          <text class="d-sub" x="48" y="138" text-anchor="middle">edge</text>
+          <text class="d-sub" x="77" y="52" text-anchor="middle">APIM</text>
+          <text class="d-sub" x="94" y="156" text-anchor="middle">cloud orch.</text>
+          <path class="d-line" d="M94 118 V142"/>
+          <text class="d-sub" x="128" y="52" text-anchor="middle">service</text>
+          <text class="d-sub" x="184" y="138" text-anchor="middle">retrieval</text>
+          <text class="d-text" x="313" y="93" text-anchor="middle">first token 1.2 s</text>
+          <text class="d-text" x="610" y="93" text-anchor="middle">generation ~3 s (output tokens)</text>
+          <text class="d-sub" x="850" y="52" text-anchor="middle">return</text>
+          <path class="d-line" d="M20 170 H880"/>
+          <text class="d-sub" x="20" y="190">0 s</text>
+          <text class="d-sub" x="227" y="190" text-anchor="middle">1.45 s</text>
+          <text class="d-sub" x="399" y="190" text-anchor="middle">2.65 s ← first words</text>
+          <text class="d-sub" x="880" y="190" text-anchor="end">~6 s</text>
+        </svg>
+        <figcaption>Amber segments are shared or capacity-bound (orchestrators, model queueing). The model takes about 70% of the time, and the two orchestrators are small but sit in front of everything.</figcaption>
+      </figure>
+      <div class="code-card" id="q-hops">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">P50 / P95 per hop for one service<span class="answers">Model vs retrieval vs our own code</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let role = "writing-assist-svc";                                          // [NIMBUS] cloud_RoleName of the service
+let window = 1h;                                                          // [TUNE] how far back to look
+let modelHosts = dynamic(["openai.azure.com", "services.ai.azure.com"]);  // [AZURE] Foundry hostnames
+let retrievalHosts = dynamic(["search.windows.net"]);                     // [AZURE] AI Search hostnames
+// ── Query ──────────────────────────────────
+requests
+| where timestamp > ago(window) and cloud_RoleName == role
+| project operation_Id, request_ms = duration
+| join kind=leftouter (
+    dependencies
+    | where timestamp > ago(window) and cloud_RoleName == role
+    | extend hop = case(target has_any (modelHosts), "model",
+                        target has_any (retrievalHosts), "retrieval", "other")
+    | summarize hop_ms = sum(duration) by operation_Id, hop
+  ) on operation_Id
+| summarize p50_hop_ms = percentile(hop_ms, 50), p95_hop_ms = percentile(hop_ms, 95),
+            p95_request_ms = percentile(request_ms, 95) by hop
+| order by p95_hop_ms desc</code></pre>
+      </div>
+      <p>To measure <strong>gateway overhead</strong>, compare APIM <code>TotalTime</code> with <code>BackendTime</code> in <code>ApiManagementGatewayLogs</code>. The difference is time spent in APIM itself, such as policies and token validation.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>What you see</th><th>Likely cause</th></tr></thead>
+          <tbody>
+            <tr><td>First token up, generation speed normal</td><td>Queueing: PTU saturated, or traffic spilling to slower pay-as-you-go</td></tr>
+            <tr><td>First token up and input tokens up</td><td>Bigger prompts, so a slower start (more context, bigger retrieval chunks)</td></tr>
+            <tr><td>Total up, first token flat, output tokens up</td><td>Longer answers after a prompt or model-version change</td></tr>
+            <tr><td>Request P95 up, every hop normal</td><td>Time inside our Rust service. See <a href="#rust-service-failure-modes">Rust failure modes</a>.</td></tr>
+            <tr><td>P50 fine, P95 up</td><td>A subset is slow: one instance, one region, one client cohort, or long prompts</td></tr>
+            <tr><td>P50 and P95 both up</td><td>Something broad: model capacity, a dependency, or a deploy</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="device-and-cloud-orchestrators">Device and Cloud Orchestrators</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Symptom</th><th>Suspect</th><th>Confirm</th></tr></thead>
+          <tbody>
+            <tr><td>Cloud requests and 429s up, with no server deploy</td><td>Device orchestrator falling back from a failing local model</td><td><a href="../queries.html#q-fallback-rate">Fallback rate</a> by local model version, and <a href="../queries.html#q-routing-split">local vs cloud split</a> by client version</td></tr>
+            <tr><td>Local share dropped in one client version only</td><td>Routing policy or local model shipped in that version</td><td>Routing split by version, plus the release notes</td></tr>
+            <tr><td>Users complain about "quick" tasks, and server metrics are perfect</td><td>The local path (on-device model) failing or slow</td><td>Client <code>customEvents</code>, crash and fallback reasons</td></tr>
+            <tr><td>Every feature slow or erroring together, Foundry and dependencies normal</td><td>Cloud orchestrator</td><td><a href="#q-by-instance">P50/P95 by instance</a> with the orchestrator's <code>cloud_RoleName</code>, and the layer query</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Fallback surges are tricky because <strong>nothing on the server is broken</strong>. The cloud is just doing the device's work too. Mitigation usually means halting the local model rollout (Client CFT) <em>and</em> adding cloud capacity (Cloud Infrastructure).</p>
+
+      <h2 id="error-types">Error Types: 429, 5xx, Timeouts</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>429 Throttled</th><th>5xx from Foundry</th><th>Timeouts</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Meaning</strong></td><td>Over quota or PTU capacity</td><td>The model service failed</td><td>Someone gave up waiting</td></tr>
+            <tr><td><strong>First check</strong></td><td>Which deployment, which caller? Is <code>retry-after</code> honored?</td><td>One deployment or region, or all?</td><td>Which layer timed out first?</td></tr>
+            <tr><td><strong>Typical fix</strong></td><td>Shed background load, spillover, backoff</td><td>Fail over, Azure support case</td><td>Fix the underlying latency, align timeout budgets</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Timeout budgets</strong> should shrink as you go deeper: client 30 s → APIM 28 s → service-to-model 25 s → service-to-retrieval 2 s. If the client gives up before the service does, the server is doing wasted work.</p>
+
+      <h2 id="cdn-and-edge-errors">CDN and Edge Errors (Front Door)</h2>
+      <p>Edge errors happen before our code runs, so App Insights may show nothing at all. Use the Front Door logs.</p>
+      <div class="code-card" id="q-edge-errors">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Edge errors by error type and route<span class="answers">Why is Front Door failing?</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 1h;                         // [TUNE] how far back to look
+let fdCategory = "FrontDoorAccessLog";   // [AZURE] Front Door access log category
+// ── Query ──────────────────────────────────
+AzureDiagnostics
+| where TimeGenerated > ago(window) and Category == fdCategory
+| extend status = toint(column_ifexists("httpStatusCode_s", "")),
+         errorInfo = tostring(column_ifexists("errorInfo_s", "")),
+         route = tostring(column_ifexists("routeName_s", "")),
+         pop = tostring(column_ifexists("pop_s", ""))
+| where status >= 400
+| summarize errors = count(), sample_pop = any(pop) by status, errorInfo, route
+| order by errors desc</code></pre>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Error info / status</th><th>Usually means</th><th>Check</th></tr></thead>
+          <tbody>
+            <tr><td><code>OriginConnectionError</code>, 502</td><td>Front Door can't connect to the origin (APIM)</td><td>APIM health, private link or DNS changes, origin certificate</td></tr>
+            <tr><td><code>OriginTimeout</code>, 504</td><td>The origin is too slow</td><td>APIM and service latency. Often model latency underneath.</td></tr>
+            <tr><td>503 with health probe failures</td><td>All origins marked unhealthy</td><td>The health probe path and response, and origin group settings</td></tr>
+            <tr><td>403</td><td>WAF block</td><td>WAF log category: which rule? Is it a new rule, or a client change that triggers it?</td></tr>
+            <tr><td>Errors at one POP only</td><td>A regional edge problem</td><td>Azure status. Mostly out of our control, so communicate.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <div class="callout-title">Column names vary</div>
+        <p>Front Door log columns differ by tier and by diagnostic mode (<code>AzureDiagnostics</code> or resource-specific tables). The queries use <code>column_ifexists()</code> so they don't break, but check your own column names once and update the query. They're tagged <code>[AZURE]</code>.</p>
+      </div>
+
+      <h2 id="401-investigation">401 Investigation</h2>
+      <ol class="steps">
+        <li><strong>Which layer rejected the token?</strong>Use the layer query. A 401 at APIM means the client token was rejected. A 401 on the <strong>Foundry dependency</strong> means our service's managed identity was rejected.</li>
+        <li><strong>Which cohort?</strong>All clients point to the server side: Entra, APIM policy, or signing keys. One client version points to a client bug. A scattered small set of devices suggests <strong>clock skew</strong>.</li>
+        <li><strong>What changed?</strong>APIM policy edits, app registration changes, secret or certificate rotation, managed identity role assignments (<code>AzureActivity</code>).</li>
+        <li><strong>Is it the token refresh?</strong>A wave of 401s about an hour after a client release often means a token refresh bug in the new build.</li>
+      </ol>
+      <div class="code-card" id="q-401-cohort">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">401s by client version<span class="answers">Is this one client build or everyone?</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 6h;                         // [TUNE] how far back to look
+let clientVersionKey = "client.version"; // [NIMBUS] attribute holding the desktop client version
+// ── Query ──────────────────────────────────
+requests
+| where timestamp > ago(window)
+| extend client = tostring(customDimensions[clientVersionKey])
+| summarize total = sum(itemCount), unauthorized = sumif(itemCount, resultCode == "401") by client
+| extend pct_401 = round(100.0 * unauthorized / total, 2)
+| order by unauthorized desc</code></pre>
+      </div>
+      <div class="code-card" id="q-401-identity">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">401/403 from our services to dependencies<span class="answers">Is our managed identity being rejected?</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 6h;                         // [TUNE] how far back to look
+// ── Query ──────────────────────────────────
+dependencies
+| where timestamp > ago(window) and resultCode in ("401", "403")
+| summarize failures = sum(itemCount), first_seen = min(timestamp) by cloud_RoleName, target, resultCode
+| order by first_seen asc</code></pre>
+      </div>
+      <div class="code-card" id="q-401-auth-errors">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Token validation errors in logs<span class="answers">Expired vs not-yet-valid (clock skew) vs invalid</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 6h;                                                                                 // [TUNE] how far back to look
+let authPatterns = dynamic(["ExpiredSignature", "ImmatureSignature", "InvalidAudience", "AADSTS"]); // [TUNE] error strings your Rust JWT library / Entra emit
+// ── Query ──────────────────────────────────
+traces
+| where timestamp > ago(window) and message has_any (authPatterns)
+| extend kind = case(message has "ImmatureSignature", "not yet valid (clock skew?)",
+                     message has "ExpiredSignature", "expired",
+                     message has "InvalidAudience", "wrong audience (config?)",
+                     "other auth error")
+| summarize events = sum(itemCount) by kind, cloud_RoleName, bin(timestamp, 15m)
+| render timechart</code></pre>
+      </div>
+
+      <h2 id="rust-service-failure-modes">Rust Service Failure Modes</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Failure</th><th>Signature</th><th>Confirm</th><th>Mitigate</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Async runtime starvation</strong> (blocking work on tokio threads)</td><td>All endpoints on an instance slow down together, dependencies are normal, CPU is moderate</td><td>Latency by instance (below), and gaps in traces before spans start</td><td>Restart the bad instance, roll back the change that added blocking work</td></tr>
+            <tr><td><strong>Connection pool exhaustion</strong></td><td>Request time up, dependency duration normal, and a gap before the dependency span starts</td><td>Compare request start with dependency start in a trace. Check pool metrics if exported.</td><td>Scale out, raise pool limits, find leaked connections</td></tr>
+            <tr><td><strong>Panics</strong></td><td>Instance restarts, APIM backend 502s, gaps in telemetry</td><td>Search traces for <code>panicked at</code> (below)</td><td>Roll back. A panic usually follows a new input shape.</td></tr>
+            <tr><td><strong>Unbounded concurrency</strong></td><td>429s from Foundry together with memory growth</td><td>In-flight calls per instance, and calls per operation</td><td>Concurrency limits (a semaphore), and load shedding</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-card" id="q-by-instance">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">P50 / P95 by instance<span class="answers">Is one instance stalled?</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let role = "writing-assist-svc";   // [NIMBUS] cloud_RoleName of the service
+let window = 1h;                   // [TUNE] how far back to look
+// ── Query ──────────────────────────────────
+requests
+| where timestamp > ago(window) and cloud_RoleName == role
+| summarize p50_ms = percentile(duration, 50), p95_ms = percentile(duration, 95), requests = sum(itemCount)
+    by cloud_RoleInstance
+| order by p95_ms desc</code></pre>
+      </div>
+      <div class="code-card" id="q-panics">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Rust panics<span class="answers">Which instance, how often, what message</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let role = "writing-assist-svc";   // [NIMBUS] cloud_RoleName of the service
+let window = 6h;                   // [TUNE] how far back to look
+// ── Query ──────────────────────────────────
+union traces, exceptions
+| where timestamp > ago(window) and cloud_RoleName == role
+| extend text = coalesce(message, outerMessage)
+| where text has "panicked at"
+| summarize panics = count(), sample = any(text) by cloud_RoleInstance, bin(timestamp, 15m)
+| order by timestamp desc</code></pre>
+      </div>
+
+      <h2 id="what-changed">What Changed?</h2>
+      <div class="code-card" id="q-activity">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Who changed what in Azure<span class="answers">APIM policies, Front Door, role assignments, deployments</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 24h;                                                   // [TUNE] how far back to look
+let resourceGroups = dynamic(["rg-nimbus-prod", "rg-nimbus-ai"]);   // [NIMBUS] your production resource groups
+// ── Query ──────────────────────────────────
+AzureActivity
+| where TimeGenerated > ago(window) and ResourceGroup in~ (resourceGroups)
+| where CategoryValue == "Administrative" and ActivityStatusValue in ("Success", "Succeeded")
+| project TimeGenerated, Caller, OperationNameValue, ResourceGroup, Resource = tostring(split(_ResourceId, "/")[-1])
+| order by TimeGenerated desc</code></pre>
+      </div>
+      <p>Also check service deploys (<a href="../queries.html#q-version-first-seen">version first seen</a>), desktop client rollouts (<a href="../queries.html#q-client-version">by client version</a>), and prompt or model-version changes, which you'll have to ask the CFT about because they often aren't logged.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Worked Postmortem Example · Nimbus SRE</title>
+  <title>Worked Postmortem Example · Reliability Ops Playbook</title>
   <meta name="description" content="A complete fictional blameless postmortem for a Nimbus incident: Device Care 429s from a background batch combined with a local-to-cloud fallback surge.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,9 +11,9 @@
 </head>
 <body data-root="../" data-page="pm-example">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Post-Incident</a></div>
@@ -26,13 +26,13 @@
       </div>
 
       <h2 id="summary">Summary</h2>
-      <p>For about 85 minutes, Device Care requests failed at up to 14% because the shared <code>chat-small</code> model deployment ran out of capacity. Two things combined: the daily Proactive Tips batch, and a surge of requests from devices whose new on-device model (v2.3) was failing and falling back to the cloud. Service recovered after the batch was paused and the on-device model rollout was halted.</p>
+      <p>For about 85 minutes, Device Care requests failed at up to 14% because the shared <code>chat-small</code> model deployment ran out of capacity. Two things combined: the daily Next Step batch, and a surge of requests from devices whose new on-device model (v2.3) was failing and falling back to the cloud. Service recovered after the batch was paused and the on-device model rollout was halted.</p>
 
       <h2 id="user-impact">User Impact</h2>
       <ul>
         <li>Device Care: error rate peaked at 14% (baseline 0.6%), and P95 rose from 9 s to 21 s. About 38,000 users saw "Nimbus is busy".</li>
         <li>Quick on-device tasks were slower for about 12% of devices (the v2.3 cohort).</li>
-        <li>Proactive Tips were delayed by up to 3 hours. This was acceptable.</li>
+        <li>Next Step were delayed by up to 3 hours. This was acceptable.</li>
       </ul>
 
       <h2 id="detection">Detection</h2>
@@ -44,11 +44,11 @@
           <thead><tr><th>Time</th><th>Event</th></tr></thead>
           <tbody>
             <tr><td>08:30</td><td>Client CFT ramps the on-device model v2.3 from 5% to 25% (routine).</td></tr>
-            <tr><td>09:00</td><td>The Proactive Tips daily batch starts on <code>chat-small</code>.</td></tr>
+            <tr><td>09:00</td><td>The Next Step daily batch starts on <code>chat-small</code>.</td></tr>
             <tr><td>09:02</td><td>429s begin on <code>chat-small</code>. Device Care errors rise.</td></tr>
             <tr><td>09:11</td><td>The NOC sweep flags 429s. Priya (NOC) declares Sev 2 and opens <code>#inc-20260921-device-care-429</code>.</td></tr>
             <tr><td>09:14</td><td>Pages: Device CFT (Teams), Cloud Infrastructure, and SRE. Jordan (SRE) joins as Technical Lead at 09:19.</td></tr>
-            <tr><td>09:22</td><td>Jordan's token-share query shows Proactive Tips <em>and</em> unexpected Device Care volume. Recommends pausing the batch.</td></tr>
+            <tr><td>09:22</td><td>Jordan's token-share query shows Next Step <em>and</em> unexpected Device Care volume. Recommends pausing the batch.</td></tr>
             <tr><td>09:24</td><td>NOC sends the pause-batch request to the Insights CFT.</td></tr>
             <tr><td>09:31</td><td>A director DMs Jordan three times asking for the KQL and an ETA, and opens a Teams call with the Device CFT. The NOC names the senior manager as comms buffer at 09:38.</td></tr>
             <tr><td>09:41</td><td>The Insights CFT pauses the batch (17 min after the request). 429s drop but don't clear.</td></tr>
@@ -62,7 +62,7 @@
 
       <h2 id="contributing-factors">Contributing Factors</h2>
       <ul>
-        <li><strong>Shared capacity:</strong> interactive Device Care and background Proactive Tips share <code>chat-small</code>, with no priority between them.</li>
+        <li><strong>Shared capacity:</strong> interactive Device Care and background Next Step share <code>chat-small</code>, with no priority between them.</li>
         <li><strong>Fallback isn't a rollout gate:</strong> the on-device model rollout checked crash rate but not fallback rate, so v2.3's failures shifted load to the cloud silently.</li>
         <li><strong>No saturation or fallback alerts:</strong> detection depended on the NOC's sweep timing.</li>
         <li><strong>Request latency:</strong> the NOC can't act directly, and the pause request took 17 minutes, partly because the Insights CFT's on-call is business hours only.</li>
@@ -109,7 +109,7 @@
           <thead><tr><th>Owner</th><th>Action</th><th>Due</th><th>Type</th></tr></thead>
           <tbody>
             <tr><td>Client CFT</td><td>Add fallback rate to the on-device model rollout gate (auto-halt above 5%)</td><td>2026-10-15</td><td>Prevent</td></tr>
-            <tr><td>Insights CFT + Cloud Infrastructure</td><td>Move the Proactive Tips batch to its own deployment</td><td>2026-11-01</td><td>Prevent</td></tr>
+            <tr><td>Insights CFT + Cloud Infrastructure</td><td>Move the Next Step batch to its own deployment</td><td>2026-11-01</td><td>Prevent</td></tr>
             <tr><td>Cloud Infrastructure</td><td>Alert on <code>chat-small</code> tokens per minute above 80% of quota for 10 min</td><td>2026-10-08</td><td>Detect</td></tr>
             <tr><td>SRE</td><td>Add fallback rate by local model version to the NOC sweep and a Grafana panel</td><td>2026-10-08</td><td>Detect</td></tr>
             <tr><td>NOC lead + Senior Manager</td><td>Publish an exec update template, name a comms buffer at declaration for Sev 1–2, and brief directors</td><td>2026-10-10</td><td>Process</td></tr>

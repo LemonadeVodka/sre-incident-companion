@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vendors & Partners · Reliability Ops Playbook</title>
+  <meta name="description" content="Managing the NOC vendor, the integration platform (iPaaS), model and cloud providers, and third-party partners: contracts, SLAs, escalation paths, and quarterly reviews.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="op-vendors">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Run the Operation</div>
+      <div class="eyebrow">Run the Operation · Third Parties</div>
+      <h1>Vendors &amp; Partners</h1>
+      <p class="lede">A large share of your reliability depends on companies you don't control: the NOC vendor, the integration platform, the cloud and model provider, and partners like meeting platforms and OEM device APIs. Managing them well means clear commitments, known escalation paths, and regular, evidence-based reviews.</p>
+
+      <div class="tldr"><ul>
+        <li>For every third party: <strong>owner, contract and SLA, escalation path, status page, and review cadence</strong>. Write them down.</li>
+        <li><strong>Contain, then work the relationship:</strong> in incidents, protect users first (kill switch, fallback), then escalate to the partner.</li>
+        <li>Review each one <strong>quarterly with data</strong>: incidents caused, SLA attainment, open asks.</li>
+      </ul></div>
+
+      <h2 id="third-party-register">Third-Party Register</h2>
+      <div class="table-wrap"><table><thead><tr><th>Third party (archetype)</th><th>Provides</th><th>Owner</th><th>Escalation</th><th>Review</th></tr></thead><tbody>
+        <tr><td>NOC vendor</td><td>24/7 monitoring, incident coordination</td><td>You + Ops lead</td><td>Shift lead → delivery manager → account executive</td><td>Monthly scorecard, quarterly QBR</td></tr>
+        <tr><td>Cloud and model provider</td><td>Edge, gateway, compute, model hosting and capacity</td><td>Cloud Infrastructure</td><td>Support case (by severity) → account team → technical account manager</td><td>Quarterly capacity and incident review</td></tr>
+        <tr><td>Integration platform (iPaaS)</td><td>Connectors for mail, calendar, chat, notes</td><td>Partner Integrations CFT</td><td>Vendor support → account team</td><td>Quarterly partner review</td></tr>
+        <tr><td>Research / answer-engine partner</td><td>Web answers in Ask Nimbus</td><td>Search CFT</td><td>Partner support</td><td>Quarterly</td></tr>
+        <tr><td>Meeting platforms, OEM APIs</td><td>Transcripts, device support data</td><td>Partner Integrations CFT / Device CFT</td><td>Named partner contacts</td><td>Quarterly</td></tr>
+      </tbody></table></div>
+
+      <h2 id="in-incidents">Third Parties in Incidents</h2>
+      <ol class="steps">
+        <li><strong>Confirm it's them.</strong>Their status page, our partner and iPaaS error breakdown (<a href="../queries.html#q-partner-health">query</a>), and whether only their users are affected.</li>
+        <li><strong>Contain.</strong>A per-partner kill switch or fallback, so the rest of the product stays healthy.</li>
+        <li><strong>Escalate through the right path</strong>, with evidence: timestamps, error rates, request IDs.</li>
+        <li><strong>Communicate.</strong>The SITREP names the partner factually ("our systems are fine"), and you agree public wording with the partner team.</li>
+        <li><strong>Follow up.</strong>Request their incident report, record the SLA impact, and raise it at the quarterly review.</li>
+      </ol>
+
+      <h2 id="quarterly-partner-review">Quarterly Partner Review</h2>
+      <ul class="checklist" data-key="partner-review">
+        <li>Availability and latency for each partner over the quarter (from our telemetry, not just theirs).</li>
+        <li>Incidents caused, time to their acknowledgement, and quality of their root-cause reports.</li>
+        <li>SLA breaches and credits claimed.</li>
+        <li>Upcoming changes or deprecations on their side, and whether we're ready for them.</li>
+        <li>Our resilience: does a circuit breaker and degraded mode exist for this partner?</li>
+      </ul>
+      <p>The NOC vendor has its own governance on <a href="../team/contract-noc.html#weekly-monthly-quarterly">Managing a Contract NOC</a>.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

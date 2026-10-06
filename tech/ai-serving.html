@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Serving & Capacity · Reliability Ops Playbook</title>
+  <meta name="description" content="How large language models are served in the cloud: tokens, prefill and decode, time to first token, provisioned vs pay-as-you-go capacity, TPM and RPM quota, 429 throttling, regional capacity, model lifecycle, and cost.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="tech-serving">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Technical Corner</a></div>
+      <div class="eyebrow">Technical Corner · Module 2</div>
+      <h1>AI Serving &amp; Capacity</h1>
+      <p class="lede">Most AI latency and error incidents in the cloud come down to how the model is served: how many tokens go in and out, how much capacity you've reserved, and what happens when you run out. Learn these few ideas and the majority of incidents become understandable.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>Latency ≈ time to first token + (output tokens × time per token).</strong> More input slows the start, and more output slows the finish.</li>
+        <li><strong>Capacity is measured in tokens per minute.</strong> Exceed it and you get <strong>429</strong>s, not slowness, unless a retry hides them.</li>
+        <li><strong>Provisioned capacity</strong> buys predictability. <strong>Pay-as-you-go</strong> buys flexibility, but shares capacity with others.</li>
+        <li>Models have <strong>versions and retirement dates</strong>. A version change can change speed, length, and behavior with no code change.</li>
+      </ul></div>
+
+      <h2 id="tokens">Tokens</h2>
+      <p>Models read and write <strong>tokens</strong>, chunks of text averaging about ¾ of an English word. Everything is counted in tokens: cost, quota, latency. A request has <strong>input tokens</strong> (system prompt + user prompt + retrieved context + conversation history) and <strong>output tokens</strong> (the answer).</p>
+      <div class="callout reality"><div class="callout-title">Why This Matters to You</div><p>A prompt change that adds 2,000 tokens of context to every request can raise latency, cost, and quota usage all at once, while every service shows "healthy". Token counts per feature belong on the dashboard.</p></div>
+
+      <h2 id="prefill-and-decode">Prefill and Decode</h2>
+      <div class="table-wrap"><table><thead><tr><th>Phase</th><th>What happens</th><th>Driven by</th><th>Shows up as</th></tr></thead><tbody>
+        <tr><td><strong>Prefill</strong></td><td>The model processes all input tokens at once</td><td>Input length, server load</td><td><strong>Time to first token (TTFT)</strong></td></tr>
+        <tr><td><strong>Decode</strong></td><td>The model generates output one token at a time</td><td>Output length, model size, load</td><td><strong>Tokens per second</strong> after the first token</td></tr>
+      </tbody></table></div>
+      <p>Streaming features (Ask Nimbus, Writing Assist) feel fast when TTFT is low, even if the full answer takes several seconds. Batch features (Catch Up, Next Step) care about total time and throughput.</p>
+      <div class="script"><strong>Ask:</strong> "Is the P95 increase in time to first token, or in generation time? Did average input or output tokens change?"</div>
+
+      <h2 id="why-latency-is-long-tailed">Why AI Latency Is Long-Tailed</h2>
+      <ul>
+        <li>Output length varies widely. A 50-token answer and a 1,500-token answer can come from the same feature.</li>
+        <li>Shared capacity queues under load, so the slowest requests wait the longest.</li>
+        <li>Retries after 429s or timeouts add whole extra round trips.</li>
+        <li>Agentic flows chain several model calls (<a href="rag-and-agents.html#agents-and-tool-calls">agents</a>).</li>
+      </ul>
+      <p>That's why the gap between P50 and P95 matters more for AI than for most web services. A widening gap is an early warning.</p>
+
+      <h2 id="capacity-and-quota">Capacity and Quota</h2>
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>What you buy</th><th>Strengths</th><th>Watch for</th></tr></thead><tbody>
+        <tr><td><strong>Pay-as-you-go (standard)</strong></td><td>A quota of <strong>tokens per minute (TPM)</strong> per deployment, per region. Requests per minute (RPM) are derived from it.</td><td>Flexible, no commitment</td><td>Shared infrastructure, so latency varies with others' load. 429s when you exceed quota.</td></tr>
+        <tr><td><strong>Provisioned (reserved throughput)</strong></td><td>Dedicated model processing capacity in units, usually by monthly or yearly commitment</td><td>Predictable latency, cost certainty at scale</td><td>Over 100% utilization returns 429s immediately. You pay even when idle.</td></tr>
+        <tr><td><strong>Global / multi-region routing</strong></td><td>The provider routes to wherever capacity exists</td><td>Higher availability and limits</td><td>Data residency rules, latency varies by where requests land</td></tr>
+      </tbody></table></div>
+      <h3 id="how-429s-work">How 429s Work</h3>
+      <ol class="steps">
+        <li><strong>Estimate</strong>The service estimates tokens for each request, including the maximum output requested, and counts them against the per-minute limit.</li>
+        <li><strong>Reject</strong>When the limit is reached it returns <strong>429 Too Many Requests</strong> with a retry-after header, and remaining-tokens and remaining-requests headers.</li>
+        <li><strong>Retry</strong>Clients and SDKs often retry automatically. That's good with backoff and jitter, but bad without them, because it turns throttling into a retry storm (<a href="deep-dives.html#retry-storms-and-cascading-failure">deep dive</a>).</li>
+      </ol>
+      <div class="callout warn"><div class="callout-title">The Hidden 429</div><p>If the gateway or SDK retries quietly, users see <strong>slowness</strong>, not errors. When P95 rises, always ask: "How many 429s did we get from the model, including retried ones?"</p></div>
+      <div class="callout tip"><div class="callout-title">Setting max_tokens Too High Wastes Quota</div><p>Many services count the requested maximum output against the limit at request time. A feature that asks for 4,000 output tokens but uses 300 burns quota it never uses. It's a cheap fix that teams often miss.</p></div>
+
+      <h2 id="regional-capacity">Regional Capacity and Failover</h2>
+      <ul>
+        <li>Capacity is per region and per model. A popular new model may simply have no spare capacity in your region.</li>
+        <li>A <strong>secondary deployment</strong> in another region (behind the gateway) protects against regional outages and throttling, if it's tested and has quota.</li>
+        <li>Failover moves the load. The secondary needs enough quota to absorb it, or it fails too.</li>
+      </ul>
+      <div class="script"><strong>Ask:</strong> "If our primary region throttled for an hour, where would traffic go, does that region have the quota, and when did we last test it?"</div>
+
+      <h2 id="model-lifecycle">Model Lifecycle</h2>
+      <p>Hosted models have <strong>versions</strong>, and older versions have <strong>retirement dates</strong>. Deployments may be set to auto-upgrade to a new default version. A new version can be faster or slower, write longer or shorter answers, and behave differently with your prompts and filters.</p>
+      <ul class="checklist" data-key="model-lifecycle">
+        <li>Every production deployment pins a version, or someone owns the auto-upgrade decision.</li>
+        <li>There's a calendar of retirement dates per deployment, with an owner.</li>
+        <li>Upgrades go through evals, plus a canary for latency, output length, and errors (<a href="rag-and-agents.html#evals">evals</a>).</li>
+      </ul>
+
+      <h2 id="cost">Cost</h2>
+      <p>Cost scales with tokens. The main levers are shorter prompts, less retrieved context, capped output, caching, smaller models for simple tasks, and on-device handling (Nimbus's local-first design is also a cost strategy). Reliability incidents often have a cost signature: a fallback surge sends device work to the cloud and the bill spikes.</p>
+
+      <h2 id="questions-to-ask">Questions to Ask</h2>
+      <div class="table-wrap"><table><thead><tr><th>Situation</th><th>Question</th></tr></thead><tbody>
+        <tr><td>Latency up</td><td>"TTFT or generation? Did input or output tokens change? Any hidden 429 retries?"</td></tr>
+        <tr><td>429s</td><td>"Which deployment, what share of TPM is used at peak, and who is consuming it?"</td></tr>
+        <tr><td>Planning a launch</td><td>"What's the expected peak TPM, and what's our headroom in each region?"</td></tr>
+        <tr><td>Model upgrade</td><td>"What did evals show for quality, output length, and latency? What's the rollback?"</td></tr>
+        <tr><td>Cost spike</td><td>"Tokens per request, or request count? Which feature? Did the device-to-cloud fallback rate change?"</td></tr>
+      </tbody></table></div>
+
+      <details><summary>Go Deeper</summary>
+        <ul>
+          <li><strong>KV cache:</strong> during decode the server keeps the attention state for each request in GPU memory. Long contexts use more of it, which limits how many requests fit at once.</li>
+          <li><strong>Batching:</strong> serving systems batch requests together for efficiency. Under heavy load, batches get bigger and per-request latency rises.</li>
+          <li><strong>Prompt caching:</strong> some services reuse the prefill work for repeated prompt prefixes, which cuts TTFT and cost. Put stable content (system prompts) first.</li>
+        </ul>
+      </details>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Incident Operations · Reliability Ops Playbook</title>
+  <meta name="description" content="How incidents run: the contract NOC as Incident Coordinator, SRE as Technical Lead, pre-agreed action requests, escalation timers, Slack and Teams bridging, and closing.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="op-incident">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Run the Operation</div>
+      <div class="eyebrow">Run the Operation · Incidents</div>
+      <h1>Incident Operations</h1>
+      <p class="lede">How your organization runs an incident: who coordinates, who leads technically, how actions get requested and executed, and how the record is kept. You don't run these steps yourself. You make sure they happen, and you hold the vendor and the team to them.</p>
+      <div class="tldr"><ul>
+        <li><strong>The contract NOC is the Incident Coordinator (IC).</strong> An SRE is the Technical Lead. Owners (CFTs, Cloud Infrastructure, partners) execute.</li>
+        <li>The NOC has no production tooling, so it <strong>requests</strong> actions using pre-agreed requests, on timers.</li>
+        <li>You come in for <strong>decisions, unblocking, and executive communication</strong> (<a href="../leaders/during-an-incident.html">During an Incident</a>).</li>
+      </ul></div>
+      <h2 id="who-does-what">Who Does What</h2>
+      <div class="table-wrap"><table><thead><tr><th>Role</th><th>Who</th><th>Job</th></tr></thead><tbody>
+        <tr><td><strong>Incident Coordinator</strong></td><td>Contract NOC (on shift)</td><td>Declare, run the channel and cadence, page, bridge Slack and Teams, send action requests, keep the record</td></tr>
+        <tr><td><strong>Technical Lead</strong></td><td>SRE on-call (US or India by time of day)</td><td>Find the layer, recommend mitigations with evidence</td></tr>
+        <tr><td><strong>Owners</strong></td><td>CFTs, Cloud Infrastructure, partners via the iPaaS</td><td>Execute changes on their systems</td></tr>
+        <tr><td><strong>Senior Manager (you)</strong></td><td>—</td><td>Decide, unblock, comms buffer, exec SITREPs, After Action Review</td></tr>
+        <tr><td><strong>Operations Lead</strong></td><td>Your Ops lead</td><td>Vendor follow-up, record quality, postmortem scheduling, metrics</td></tr>
+      </tbody></table></div>
+<h2 id="the-ic-loop">The IC Loop</h2>
+      <ol class="steps">
+        <li><strong>What's the impact now?</strong>Ask the Technical Lead for the user-facing number, or re-run the sweep query yourself.</li>
+        <li><strong>What are we trying, and who's on it?</strong>Each workstream has one name next to it.</li>
+        <li><strong>Who haven't we heard from?</strong>Check the ladder timers for every paged team and every open action request.</li>
+        <li><strong>Is any decision waiting?</strong>Get it made: by the Tech Lead (technical), the owner (their system), or the senior manager (business).</li>
+        <li><strong>Update.</strong>Post the Slack update, mirror it to Teams through the bridge, and update the pinned record.</li>
+      </ol>
+
+<h2 id="assigning-roles">Assigning Roles</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Who</th><th>Job</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Incident Coordinator</strong></td><td>NOC on shift</td><td>People, cadence, decisions log, escalation, record</td></tr>
+            <tr><td><strong>Technical Lead</strong></td><td>SRE on-call</td><td>Diagnosis, technical options, and recommended mitigations</td></tr>
+            <tr><td><strong>Owners</strong></td><td>CFT and Cloud Infrastructure engineers</td><td>Execute changes on their systems</td></tr>
+            <tr><td><strong>Bridge</strong></td><td>A second NOC person, or the IC</td><td>Mirror between Slack and Teams</td></tr>
+            <tr><td><strong>Scribe</strong></td><td>A second NOC person, or the IC</td><td>Timeline and pinned record</td></tr>
+            <tr><td><strong>Comms buffer</strong></td><td>Senior manager (Sev 1), IC (Sev 2)</td><td>Fields executive and stakeholder questions</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+<h2 id="running-across-slack-and-teams">Running Across Slack and Teams</h2>
+      <ul>
+        <li><strong>Decisions only count in Slack.</strong> Anything agreed in a Teams call gets posted in Slack, prefixed with <code>[from Teams]</code>.</li>
+        <li><strong>Join the Teams call</strong> if a Teams-only CFT is doing most of the work, and keep a bridge person on Slack.</li>
+        <li><strong>Use the Slack workflows</strong> for declaring and the timeline. They don't exist in Teams.</li>
+        <li>Templates: <a href="../incident-response.html#communication-templates">updates</a> and the <a href="../ways-of-working.html#slack-and-teams">Teams mirror</a>.</li>
+      </ul>
+
+<h2 id="chasing-non-responding-cfts">Chasing Non-Responding CFTs</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>After first page</th><th>IC action</th></tr></thead>
+          <tbody>
+            <tr><td><strong>15 min</strong></td><td>Re-page. Ask in the CFT's own channel (Slack or Teams) for <em>anyone</em> from the team.</td></tr>
+            <tr><td><strong>30 min</strong></td><td>Page the CFT engineering manager ("Nimbus CFT leads" policy), and tell the senior manager in the channel.</td></tr>
+            <tr><td><strong>45 min</strong></td><td>Ask the senior manager to escalate to CFT leadership.</td></tr>
+            <tr><td><strong>Meanwhile</strong></td><td>With the Tech Lead, look for actions another owner can take, such as Cloud Infrastructure shifting traffic or enabling spillover. Missing CFTs shouldn't block every option.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+<h2 id="handling-executive-interruptions">Handling Executive Interruptions</h2>
+      <p>Leaders under pressure sometimes dive into the details: they ask for raw queries, message responders directly, open side calls, or ask for root cause while users are still affected. (At Nimbus, see Morgan in <a href="../environment.html#the-people">The People</a>.) Each interruption costs minutes. Handling this politely and firmly is part of coordinating.</p>
+      <ol class="steps">
+        <li><strong>Name a comms buffer early.</strong>For Sev 1 it's the senior manager. For Sev 2 it's you. Announce it: "Questions about status go to @buffer, so responders can focus."</li>
+        <li><strong>Redirect, don't ignore.</strong>Acknowledge the question, point to the next update, and make sure it gets answered there.</li>
+        <li><strong>Pull side calls back.</strong>If a separate call or Teams thread starts, ask that its decisions be posted in Slack, and invite the starter into the main channel.</li>
+        <li><strong>Give them a job.</strong>Executives are most useful making decisions: spend, priorities, contacting other leaders.</li>
+        <li><strong>Escalate kindly.</strong>If the interruptions continue, ask the senior manager to step in privately.</li>
+      </ol>
+      <h3 id="scripts-you-can-paste">Scripts You Can Paste</h3>
+      <p class="script">"Thanks. Good question. The next update is at 14:30, and I'll make sure it answers that."</p>
+      <p class="script">"The Tech Lead is mid-investigation, so I'll take questions for them. What do you need to know?"</p>
+      <p class="script">"Could we keep decisions in #inc-… so everyone's working from the same plan? I'll summarize the Teams call there."</p>
+      <p class="script">"We could use your help with one decision: approving spillover capacity, about $X per hour. Can you make that call?"</p>
+      <p>Record interruptions neutrally in the timeline. They're a legitimate <a href="../postmortems/index.html">postmortem</a> topic, framed as a system issue (no exec update format, no comms buffer), never as a person.</p>
+
+<h2 id="handing-over-ic">Handing Over IC</h2>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">IC Handover<span class="answers">Post in the channel; the new IC replies "I have IC"</span></span></div>
+<pre><code>IC handover to @[name] at HH:MM.
+Impact now: [..]   Severity: [..]   Technical Lead: [..]
+Workstreams: [who — what]
+Open action requests: [owner — action — requested HH:MM — next check HH:MM]
+Waiting on: [CFT / Cloud Infrastructure — since HH:MM]
+Comms buffer: [..]   Next update due: HH:MM</code></pre>
+      </div>
+
+<h2 id="closing-the-incident">Closing the Incident</h2>
+      <ul class="checklist" data-key="noc-close">
+        <li>The Technical Lead confirms impact has been at baseline for <strong>30 minutes</strong>. Post the resolution update in Slack, mirror it to Teams, and resolve in PagerDuty.</li>
+        <li>Temporary changes still in effect have an owner and an undo time.</li>
+        <li><strong>File the Jira ticket</strong> within 24 hours, using the pinned record (<a href="../ways-of-working.html#keeping-a-record-without-jira">how</a>).</li>
+        <li><strong>Schedule the postmortem</strong> before standing down (required for Sev 1–2), and invite every CFT involved, Teams users included. Use the <a href="../postmortems/index.html">postmortem process</a>.</li>
+        <li>Hand the <strong>timeline</strong> to the postmortem author.</li>
+        <li>Assign a <strong>runbook owner</strong> if no playbook fit.</li>
+      </ul>
+
+<h2 id="how-to-ask">How to Ask</h2>
+      <ol class="steps">
+        <li><strong>Name the owner.</strong>Page their PagerDuty service, or @ the named on-call. Never say "anyone".</li>
+        <li><strong>Name the action.</strong>Use the action names below where you can, so there's no ambiguity.</li>
+        <li><strong>Give the reason in one line,</strong> with the impact numbers.</li>
+        <li><strong>Set a check-back time,</strong> and start the ladder timer.</li>
+        <li><strong>Record it</strong> in the pinned record: requested at, acknowledged at, done at.</li>
+      </ol>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Action Request<span class="answers">Post in #inc-… and the PagerDuty note</span></span></div>
+<pre><code>@[owner on-call] ACTION REQUEST: [action name]
+Why: [impact numbers, e.g. Device Care errors 9% (baseline &lt;1%)]
+Requested by: NOC (IC) on recommendation of [Technical Lead]
+Please confirm when done. I'll check back at HH:MM.
+Undo if needed: [..]</code></pre>
+      </div>
+
+<h2 id="pre-agreed-requests">Pre-Agreed Requests</h2>
+      <p>The owners below have agreed to perform these on NOC request <strong>within 15 minutes</strong> for Sev 1–2, without needing a long discussion. They're low risk and easy to reverse.</p>
+
+      <section class="playbook" id="req-pause-tips">
+        <div class="playbook-head"><h2>Pause the Next Step Background Batch</h2>
+          <div class="meta"><span class="badge neutral">Executes: Insights CFT</span><span class="badge neutral">Risk: low (tips arrive late)</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Request when</div><div>429s or latency on <code>chat-small</code> are hurting Device Care, and the batch is running.</div></div>
+          <div class="pb-section"><div class="pb-label">They do</div><div>Set the <code>next_step.batch_enabled</code> flag (Nimbus-specific) to <code>false</code>.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>Flag back to <code>true</code>. The batch resumes from its queue.</div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="req-halt-rollout">
+        <div class="playbook-head"><h2>Halt a Desktop Client or Local Model Rollout</h2>
+          <div class="meta"><span class="badge neutral">Executes: Client CFT / release manager</span><span class="badge neutral">Risk: low (delays a release)</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Request when</div><div>Errors, 401s, crashes, or <strong>local-to-cloud fallbacks</strong> are concentrated in the version that's ramping, including on-device model updates.</div></div>
+          <div class="pb-section"><div class="pb-label">They do</div><div>Pause the ramp in the release dashboard. Users who already updated keep the new version.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>Resume the ramp once a fix is confirmed.</div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="req-restart-instance">
+        <div class="playbook-head"><h2>Restart One Unhealthy Service Instance</h2>
+          <div class="meta"><span class="badge neutral">Executes: owning CFT or Cloud Infrastructure</span><span class="badge neutral">Risk: low, one at a time</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Request when</div><div>One instance is much slower or failing health checks (a likely Rust async runtime stall), and its peers are healthy.</div></div>
+          <div class="pb-section"><div class="pb-label">They do</div><div>Restart that one instance. Keep the instance name for the investigation.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>None needed. If <em>all</em> instances look bad, it's not an instance problem.</div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="req-scale-out">
+        <div class="playbook-head"><h2>Scale Out a Service by a Small Step</h2>
+          <div class="meta"><span class="badge neutral">Executes: owning CFT or Cloud Infrastructure</span><span class="badge neutral">Risk: low (cost)</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Request when</div><div>Every instance is CPU- or queue-saturated and dependencies look healthy. <strong>Not</strong> for 429s, because more instances mean more model calls.</div></div>
+          <div class="pb-section"><div class="pb-label">They do</div><div>Add up to 50% more instances, within the service's documented maximum.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>Return to the previous count after the incident.</div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="req-status-banner">
+        <div class="playbook-head"><h2>Turn on the In-App "Degraded Service" Banner</h2>
+          <div class="meta"><span class="badge neutral">Executes: Client CFT (server-driven config)</span><span class="badge neutral">Approval: senior manager for custom text</span></div></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Request when</div><div>Sev 1–2 is declared and users are visibly affected.</div></div>
+          <div class="pb-section"><div class="pb-label">They do</div><div>Enable <code>service_banner</code> with the approved "Some features are slower than usual" text.</div></div>
+          <div class="pb-section"><div class="pb-label">Undo</div><div>Disable when the incident is resolved.</div></div>
+        </div>
+      </section>
+
+<h2 id="not-pre-agreed">Not Pre-Agreed: Through the Technical Lead</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Action</th><th>Who decides</th><th>Why it needs judgment</th></tr></thead>
+          <tbody>
+            <tr><td>Rolling back a service deployment</td><td>Owning CFT, on the Tech Lead's recommendation</td><td>May conflict with data or config changes</td></tr>
+            <tr><td>Changing routing policy (local vs cloud)</td><td>Client CFT</td><td>Can move a lot of load onto the cloud at once</td></tr>
+            <tr><td>Region failover, quota, PTU, or spillover</td><td>Cloud Infrastructure, plus the senior manager for cost</td><td>Capacity, data residency, cost</td></tr>
+            <tr><td>WAF rules, APIM auth policies, secrets</td><td>Cloud Infrastructure (with security for WAF)</td><td>Security and wide 401 risk</td></tr>
+            <tr><td>Content filter changes</td><td>Responsible-AI policy owners</td><td>Policy approval required</td></tr>
+            <tr><td>Purging the CDN cache</td><td>Cloud Infrastructure</td><td>Can overload the origin</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+<h2 id="future-noc-executable-actions">Future: NOC-Executable Actions</h2>
+      <p>Once the NOC has tooling (scoped permissions, audited buttons, or runbook automation), the pre-agreed requests above are the first candidates to become things the NOC can do itself. Until then, every request costs a handoff and a wait. Tracking how long requests take is the best argument for the tooling. See the <a href="../leaders/investing.html#tooling-and-process-asks">manager asks</a>.</p>
+      <ul class="checklist" data-key="noc-tooling-roadmap">
+        <li>Measure request-to-done time for each pre-agreed request (from pinned records).</li>
+        <li>Agree which actions the NOC may run directly, with owners and security.</li>
+        <li>Build scoped, audited tooling for them (for example, a runbook automation job with a confirmation step).</li>
+        <li>Move each action from "request" to "NOC executes", one at a time, after a game day.</li>
+      </ul>
+
+<h2 id="workstreams">Workstreams</h2>
+      <p>As soon as more than one person is investigating, split the work and tell the IC:</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Workstream Post<span class="answers">Post in #inc-…; the IC copies it into the pinned record</span></span></div>
+<pre><code>Technical workstreams as of HH:MM:
+1. Mitigation — [name] — evaluating [pause batch / failover]
+2. Diagnosis — [name] — checking [edge vs origin / fallback rate]
+3. Change review — [name] — deploys, rollouts, AzureActivity last 24h
+Next technical summary to IC at HH:MM.</code></pre>
+      </div>
+
+<h2 id="recommending-mitigations">Recommending Mitigations</h2>
+      <p>You don't execute changes, and neither does the NOC. Owners do. Make it easy for them to say yes:</p>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Mitigation Recommendation<span class="answers">To the IC, who turns it into an action request</span></span></div>
+<pre><code>Recommend: [action] by [owner team]
+Why: [evidence — query link + numbers]
+Expected effect: [..] within ~[N] min
+Risk: [low/medium — what could go wrong]
+Undo: [how]
+If declined: [next best option]</code></pre>
+      </div>
+      <ul>
+        <li><strong>Prefer reversible actions:</strong> pause, halt, shift, or degrade before you redeploy.</li>
+        <li><strong>One change at a time,</strong> so you can tell what worked.</li>
+        <li><strong>Decisions that cost money or quality</strong> go to the senior manager through the IC.</li>
+      </ul>
+
+<h2 id="working-with-owners">Working With Owners</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Owner</th><th>What works</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Feature CFTs</strong></td><td>They know their code and you know the system. Ask what changed, share the per-hop query, and suggest the rollback. Respect that they make the call on their service.</td></tr>
+            <tr><td><strong>Client CFT</strong></td><td>Device orchestrator, on-device model, and releases. Bring the <a href="../queries.html#q-routing-split">routing split</a> and <a href="../queries.html#q-fallback-rate">fallback</a> data by client version.</td></tr>
+            <tr><td><strong>Cloud Infrastructure</strong></td><td>Evidence first, through their PagerDuty and process. If they push back, ask what evidence they need. Escalate disagreements through the IC to the senior manager. See <a href="../ways-of-working.html#working-with-cloud-infrastructure">Working With Cloud Infrastructure</a>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+<h2 id="protecting-focus">Protecting Focus</h2>
+      <p>A leader DMs you: "What query are you running? Why isn't this fixed?" Every answer costs minutes and your train of thought, and there's usually a follow-up. (At Nimbus, see Morgan in <a href="../environment.html#the-people">The People</a>.)</p>
+      <ul>
+        <li><strong>Don't answer DMs mid-investigation.</strong> Reply once and move on: "I'm heads-down; @IC has the latest and I'll update them at HH:MM."</li>
+        <li><strong>Share one chart, not raw queries.</strong> When leaders need to see something, post a single chart in the channel through the IC.</li>
+        <li><strong>Don't debate hypotheses with spectators.</strong> Write them in the channel. Anyone with evidence can add to them.</li>
+        <li><strong>Ask the IC for cover.</strong> "@IC can you take questions for a while? I need 15 minutes." That's a normal request.</li>
+      </ul>
+      <p class="script">"I'm heads-down on the fix. @IC has the latest status and I'll brief them at 14:30. Thanks for understanding."</p>
+
+<h2 id="technical-handover">Technical Handover</h2>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Technical Lead Handover<span class="answers">Shift change or fatigue</span></span></div>
+<pre><code>Technical Lead handover to @[name] at HH:MM.
+Current theory: [..] (confidence: low/med/high)
+Ruled out: [..]
+Mitigations in effect: [action — owner — undo]
+Open recommendations: [..]
+Key queries: [links]</code></pre>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>
