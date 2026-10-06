@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Manager Role Card · Nimbus SRE</title>
-  <meta name="description" content="Printable one-page quick reference for the Senior Manager · Decide, Unblock, Follow Through role.">
+  <title>LAYERS Pocket Card · Nimbus SRE</title>
+  <meta name="description" content="Printable one-page quick reference for the Senior Manager · The LAYERS Framework role.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -18,17 +18,20 @@
     <article class="prose">
       <div class="breadcrumb no-print"><a href="../index.html">Home</a> / <a href="index.html">Role Cards</a></div>
       <div class="print-card">
-        <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, Unblock, Follow Through</div>
-        <h1 data-notoc style="font-size:1.9rem;margin-bottom:.2em">Manager Role Card</h1>
+        <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · The LAYERS Framework</div>
+        <h1 data-notoc class="card-title">LAYERS Pocket Card</h1>
         <div class="hero-actions no-print"><button type="button" class="btn primary" onclick="window.print()">Print This Card</button></div>
-        <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px">
-          <div class="card"><h3 data-notoc>Ask Once</h3><ul style="margin:.3em 0 0;padding-left:1.1em;font-size:.9rem"><li>Who's coordinating (NOC IC)?</li><li>What's the impact, in numbers?</li><li>What's the mitigation, and when's the next update?</li><li>What do you need from me?</li></ul></div>
-          <div class="card"><h3 data-notoc>Decisions Only You Make</h3><ul style="margin:.3em 0 0;padding-left:1.1em;font-size:.9rem"><li>Spend (spillover, capacity)</li><li>Quality vs availability</li><li>Which feature to protect</li><li>Failover (residency, cost)</li><li>Halting releases</li><li>Customer and public messaging</li></ul></div>
-          <div class="card"><h3 data-notoc>Unblock</h3><ul style="margin:.3em 0 0;padding-left:1.1em;font-size:.9rem"><li>CFT silent 45 min: call their leadership</li><li>Cloud Infrastructure disputes: escalate peer to peer with data</li><li>Stalled NOC requests: you can unblock them</li></ul></div>
-          <div class="card"><h3 data-notoc>Don't Be Morgan</h3><ul style="margin:.3em 0 0;padding-left:1.1em;font-size:.9rem"><li>No root-cause questions mid-incident</li><li>No DMs to responders</li><li>No side calls</li><li>Be the comms buffer instead</li></ul></div>
-          <div class="card"><h3 data-notoc>After</h3><ul style="margin:.3em 0 0;padding-left:1.1em;font-size:.9rem"><li>Thank responders by name</li><li>Chair the Sev 1–2 postmortem</li><li>Fund action items, review monthly</li></ul></div>
+        <div class="card-grid print-grid">
+          <div class="card"><h3 data-notoc>L · Locate</h3><ul><li>NOC: Which feature? One version, region, or partner, or everyone?</li><li>SRE: Which layer, and how do you know?</li><li>Exec: "It's in [layer], affecting [features]."</li></ul></div>
+          <div class="card"><h3 data-notoc>A · Assess</h3><ul><li>NOC: Number now vs normal? Trend?</li><li>SRE: P50 or only P95? Counting user-visible failures?</li><li>Exec: "[X%] of [feature] users, for [time]."</li></ul></div>
+          <div class="card"><h3 data-notoc>Y · Yesterday</h3><ul><li>NOC: Same time yesterday? Any release or partner notice?</li><li>SRE: What changed in the hour before it started?</li><li>Exec: "Started at [time], lines up with [change]."</li></ul></div>
+          <div class="card"><h3 data-notoc>E · Evidence</h3><ul><li>NOC: Which query shows it? Paste the link.</li><li>SRE: Confidence? What would prove us wrong?</li><li>Exec: "We're [confident / still confirming]."</li></ul></div>
+          <div class="card"><h3 data-notoc>R · Response</h3><ul><li>NOC: Owner paged? Which pre-agreed request?</li><li>SRE: Safest reversible fix? What do you need from me?</li><li>Exec: "We're [action]. Decision needed: [X]."</li></ul></div>
+          <div class="card"><h3 data-notoc>S · Sustain</h3><ul><li>NOC: What would have helped you see it earlier?</li><li>SRE: Detection, design, or process gap? One high-leverage fix?</li><li>Exec: "To prevent recurrence: [actions, dates]."</li></ul></div>
+          <div class="card"><h3 data-notoc>Only You Decide</h3><ul><li>Spend · quality trade-offs · which feature to protect</li><li>Disable a partner · failover · halt a release</li><li>Customer messaging · pulling in people</li></ul></div>
+          <div class="card"><h3 data-notoc>Stay Out of the Weeds</h3><ul><li>Ask what you need to decide, not how it works</li><li>One channel, no DMs, no side calls</li><li>Be the comms buffer for other leaders</li></ul></div>
         </div>
-        <p style="font-size:.8rem;margin-top:.8em">Full guide: <a href="../leaders/during-an-incident.html">During an Incident</a> (https://lemonadevodka.github.io/sre-incident-companion/leaders/during-an-incident.html) · <a href="../leaders/jargon.html">Jargon</a> (https://lemonadevodka.github.io/sre-incident-companion/leaders/jargon.html) · <a href="../postmortems/index.html">Postmortems</a> (https://lemonadevodka.github.io/sre-incident-companion/postmortems/index.html)</p>
+        <p class="small card-links">Full guide: <a href="../leaders/layers-framework.html">LAYERS</a> (https://lemonadevodka.github.io/sre-incident-companion/leaders/layers-framework.html) · <a href="../leaders/executive-updates.html#sitrep-builder">SITREP</a> (https://lemonadevodka.github.io/sre-incident-companion/leaders/executive-updates.html#sitrep-builder) · <a href="../leaders/post-incident.html">After Action</a> (https://lemonadevodka.github.io/sre-incident-companion/leaders/post-incident.html)</p>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>

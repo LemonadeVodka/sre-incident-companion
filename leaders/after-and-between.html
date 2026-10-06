@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Manager: After & Between Incidents · Nimbus SRE</title>
-  <meta name="description" content="Postmortems, follow-through, the monthly operations health check, and red flags for Nimbus senior managers.">
+  <title>Operating Rhythm · Nimbus SRE</title>
+  <meta name="description" content="The senior manager's reliability cadence: daily check, weekly latency and error review by layer, monthly health check, quarterly executive and partner reviews, and red flags.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -17,66 +17,76 @@
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
-      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
-      <h1>After &amp; Between Incidents</h1>
-      <p class="lede">What happens after an incident decides whether you have it again. Between incidents, a few good questions each month tell you more than any dashboard.</p>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Between Incidents</div>
+      <h1>Operating Rhythm</h1>
+      <p class="lede">Reliability is managed between incidents, not during them. A steady rhythm of short, well-asked reviews (daily, weekly, monthly, quarterly) catches problems early, grows your team, and gives executives a picture they can trust.</p>
       <div class="tldr">
         <ul>
-          <li>Thank responders, keep postmortems <strong>blameless</strong>, and <strong>fund the action items</strong>.</li>
-          <li>As a new team, the most valuable follow-up is often <strong>a runbook</strong>. Make sure one gets written.</li>
-          <li>Each month, review SLO health, detection source, CFT response times, runbook coverage, and action-item completion.</li>
+          <li><strong>Daily (5 min):</strong> scan the NOC handoff for triage threads and open actions.</li>
+          <li><strong>Weekly (30 min):</strong> latency and error review <strong>by layer</strong>, plus the triage-thread review with the NOC.</li>
+          <li><strong>Monthly (45 min):</strong> health check, postmortem actions, NOC and SRE growth.</li>
+          <li><strong>Quarterly:</strong> executive reliability report, and partner and capacity reviews.</li>
         </ul>
       </div>
-      <div class="callout tip">
-        <div class="callout-title">Postmortems Are a First-Class Track</div>
-        <p>We're weak at postmortems, so they have their own section: <a href="../postmortems/index.html">process</a>, <a href="../postmortems/template.html">template</a>, <a href="../postmortems/review-meeting.html">how to run the review</a>, and <a href="../postmortems/action-items.html">action-item follow-through</a>. Managers are expected to chair Sev 1–2 reviews.</p>
-      </div>
 
-      <h2 id="after-the-incident">After the Incident</h2>
-      <ul class="checklist" data-key="leader-after">
-        <li><strong>Thank the responders</strong>, by name and in public. Incidents are stressful, and recognition makes people willing to take on-call.</li>
-        <li><strong>Attend the postmortem review</strong> for Sev 1–2. Listen more than you talk.</li>
-        <li><strong>Protect blamelessness.</strong> If anyone asks "who did this?", redirect to "how did the system allow this?". People hide information when they fear blame, and hidden information causes the next outage.</li>
-        <li><strong>Fund the action items.</strong> Make sure each one has an owner, a date, and room in the roadmap. Action items that never get done mean you'll have the same incident again.</li>
-        <li><strong>Check a runbook was assigned.</strong> We're a new team, so every incident should leave one behind.</li>
-        <li><strong>Follow up in 30 days.</strong> Ask: "Which action items are done, and which are stuck?"</li>
+      <h2 id="daily">Daily: Five-Minute Check</h2>
+      <ul class="checklist" data-key="rhythm-daily">
+        <li>Read the NOC shift handoff. Any <strong>triage threads</strong> still open? Any requests waiting on owners?</li>
+        <li>Any incident needing an executive SITREP or follow-up today?</li>
+        <li>Anything trending toward a limit (capacity, partner rate limits, error budget)?</li>
       </ul>
-      <h3 id="good-postmortem-questions">Good Postmortem Questions</h3>
-      <ul>
-        <li>"How did we find out? Would we have found out without a customer telling us?"</li>
-        <li>"What made this harder to diagnose than it should have been?"</li>
-        <li>"Where did we lose time? Was it detection, finding the owner, or deciding?"</li>
-        <li>"What would have to be true for this to never happen again, and what's a realistic step toward that?"</li>
-        <li>"Did anyone feel they couldn't escalate or speak up?"</li>
-      </ul>
-      <h2 id="between-incidents">Between Incidents: Monthly Health Check</h2>
-      <p>Ask these in your monthly operations review. You'll learn more than any status dashboard can show you.</p>
+
+      <h2 id="weekly-review">Weekly: Latency &amp; Error Review by Layer</h2>
+      <p>A 30-minute review with the SRE lead and a NOC representative. Use <strong>LAYERS in review mode</strong> (Assess, Yesterday, Evidence, Sustain) and go layer by layer.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Minutes</th><th>Agenda</th><th>Your questions</th></tr></thead>
+          <tbody>
+            <tr><td>0–10</td><td>P50 / P95 and error rate per feature vs last week and the SLO</td><td>"Which layer's latency or errors moved most? Why?"</td></tr>
+            <tr><td>10–15</td><td>AI capacity and quota: tokens per minute at peak, any 429s</td><td>"How close to the limit are we at peak? What's the next launch going to add?"</td></tr>
+            <tr><td>15–20</td><td>Device and partners: fallback rate, partner errors and latency</td><td>"Any partner trending worse? Any client version with a falling local share?"</td></tr>
+            <tr><td>20–25</td><td>Triage-thread review with the NOC</td><td>"Which should have been incidents? What would have helped decide faster?"</td></tr>
+            <tr><td>25–30</td><td>Open postmortem actions and runbooks</td><td>"What's blocked, and what do you need from me?"</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Send executives the three-to-five-line <a href="executive-updates.html#cadence">weekly reliability note</a> afterwards.</p>
+
+      <h2 id="between-incidents">Monthly: Health Check</h2>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Question</th><th>Why it matters</th></tr></thead>
           <tbody>
-            <tr><td>"Are we meeting our SLOs for the top features? How much error budget is left?"</td><td>This is the clearest sign of reliability from the user's point of view.</td></tr>
-            <tr><td>"How were our incidents detected: alerts or customers?"</td><td>Customer-detected incidents mean we can't see our own product.</td></tr>
-            <tr><td>"How long from the page to knowing who owns the problem?"</td><td>In an immature org, unclear ownership is often the biggest delay.</td></tr>
-            <tr><td>"How many pages did on-call get, and how many needed action?"</td><td>Noisy alerts burn people out and train them to ignore pages.</td></tr>
-            <tr><td>"How long did CFTs take to acknowledge pages this month? Which CFTs still have no PagerDuty service?"</td><td>Slow CFT response is one of our biggest known delays. These numbers come from pinned incident records.</td></tr>
-            <tr><td>"How many runbooks did we write this month? How many of last month's incidents had one?"</td><td>We're a new team. Runbook coverage is how we stop solving the same incident from scratch.</td></tr>
-            <tr><td>"What share of postmortem action items are done?"</td><td>This shows whether you're learning or just writing documents.</td></tr>
-            <tr><td>"What share of our features have a dashboard and an SLO?"</td><td>Today it's under 10%. Track it until it's 100% for interactive features.</td></tr>
-            <tr><td>"Where do teams share capacity, and who decides priority when it runs out?"</td><td>Noisy-neighbor incidents are a governance problem as much as a technical one.</td></tr>
+            <tr><td>"Are we meeting SLOs for the top features? How much error budget is left?"</td><td>The clearest view of reliability from the user's side.</td></tr>
+            <tr><td>"How were incidents detected: alerts, the NOC sweep, or customers?"</td><td>Customer-detected incidents mean we can't see our own product.</td></tr>
+            <tr><td>"Time from first signal to declare? Any missed declarations?"</td><td>Measures the NOC's Triage-or-Incident judgment.</td></tr>
+            <tr><td>"How long did CFTs and Cloud Infrastructure take to act on requests?"</td><td>Slow response is a known delay, and the numbers come from pinned records.</td></tr>
+            <tr><td>"Where is each NOC member on the competency ladder?"</td><td>Tracks NOC growth (<a href="enabling-the-noc.html#competency-ladder">ladder</a>).</td></tr>
+            <tr><td>"How many postmortem actions are done, and how many runbooks were written?"</td><td>Shows whether we're learning.</td></tr>
+            <tr><td>"What share of features have a dashboard and an SLO?"</td><td>Under 10% today. Track it upward.</td></tr>
           </tbody>
         </table>
       </div>
+
+      <h2 id="quarterly">Quarterly: Report Upward and Outward</h2>
+      <div class="card-grid">
+        <div class="card t-lead"><h3>Executive Reliability Report</h3><p>SLO attainment by feature, the top 3 incidents and what changed, partner reliability, capacity outlook, and the investments needed. BLUF first.</p></div>
+        <div class="card t-lead"><h3>Partner Reliability Review</h3><p>For each partner: availability, latency, incidents, SLA breaches, and open asks. Raise repeat problems with the partner's account team.</p></div>
+        <div class="card t-lead"><h3>Capacity Review</h3><p>AI capacity at peak vs limits, upcoming launches, the fallback surge headroom, and the cost outlook.</p></div>
+        <div class="card t-lead"><h3>People Review</h3><p>NOC level-ups, SRE growth, on-call load, and tooling progress (for example, NOC executable actions).</p></div>
+      </div>
+
       <h2 id="red-flags">Red Flags</h2>
       <div class="callout danger">
-        <div class="callout-title">Act when you see these</div>
+        <div class="callout-title">Act When You See These</div>
         <ul>
-          <li>Incidents keep happening with <strong>no Incident Commander</strong>, or with two parallel channels.</li>
-          <li>The <strong>same incident repeats</strong> because the action items weren't done.</li>
-          <li>One engineer is the <strong>only person</strong> who can diagnose a feature.</li>
-          <li>On-call engineers are <strong>afraid to escalate</strong> or to declare an incident.</li>
-          <li>Alerts go to channels that <strong>nobody owns</strong>.</li>
-          <li>Teams argue about <strong>whose problem it is</strong> while users are affected.</li>
+          <li>Incidents with <strong>no coordinator</strong>, or two parallel channels.</li>
+          <li>The <strong>same incident repeating</strong> because actions weren't done.</li>
+          <li><strong>Late declarations</strong>: triage threads that sat for an hour before becoming Sev 1–2.</li>
+          <li>One engineer is the <strong>only person</strong> who can diagnose a feature or a partner integration.</li>
+          <li>The NOC or engineers are <strong>afraid to escalate</strong>.</li>
+          <li>A partner breaching its SLA <strong>with no conversation</strong> about it.</li>
+          <li>Teams arguing about <strong>whose problem it is</strong> while users are affected.</li>
         </ul>
       </div>
     </article>

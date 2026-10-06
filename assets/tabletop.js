@@ -76,7 +76,7 @@
 
   function picker() {
     return '<h2 id="pick-a-scenario">Pick a Scenario</h2><div class="card-grid">' + S.map(function (x) {
-      return '<button type="button" class="card" style="text-align:left;cursor:pointer;font:inherit" data-pick="' + x.id + '"><span class="badge sev2">' + esc(x.sev) +
+      return '<button type="button" class="card" data-pick="' + x.id + '"><span class="badge sev2">' + esc(x.sev) +
         '</span><h3>' + esc(x.title) + '</h3><p>' + esc(x.setup) + "</p></button>";
     }).join("") + "</div>";
   }
@@ -106,7 +106,7 @@
         return '<button type="button" data-score="' + d.id + '" data-val="' + l + '" aria-pressed="' + (v === l) + '">' + l + "</button>";
       }).join("") + "</div></td></tr>";
     }).join("") + "</tbody></table></div>";
-    html += '<label class="pm-form" style="display:block">Notes and action items<textarea id="tt-notes" rows="5">' + esc(state.notes || "") + "</textarea></label>";
+    html += '<label class="pm-form">Notes and action items<textarea id="tt-notes" rows="5">' + esc(state.notes || "") + "</textarea></label>";
     html += '<div class="hero-actions"><button type="button" class="btn primary" data-act="export">Copy Debrief Summary</button></div>';
     html += '<div class="code-card"><div class="code-head"><span class="lang">Markdown</span><span class="title">Debrief Summary</span></div><pre><code id="tt-summary">' + esc(summary(x)) + "</code></pre></div>";
     return html;

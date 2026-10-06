@@ -26,7 +26,8 @@
           <li><strong>Nimbus</strong> is a desktop AI companion. The <strong>desktop client, the local Agent, and the cloud services are all written in Rust</strong>.</li>
           <li>A <strong>device orchestrator</strong> decides whether each request is answered <strong>on the device</strong> by a small local model, or sent to the cloud: <strong>Front Door (CDN) → APIM → cloud orchestrator → feature services → Azure AI Foundry</strong>.</li>
           <li>Most incidents involve <strong>AI latency</strong>, <strong>error rates</strong>, <strong>CDN/edge errors</strong>, and <strong>401s</strong>. Latency is measured at <strong>P50 and P95</strong> only.</li>
-          <li>People: the <strong>NOC coordinates</strong> incidents but can't take actions yet, <strong>SRE is centralized</strong>, five feature CFTs own features, and the powerful <strong>Cloud Infrastructure CFT</strong> owns the shared cloud.</li>
+          <li>Some features depend on <strong>third-party partners</strong> (meeting platforms, productivity suites, OEM device APIs, partner AI skills) through connectors owned by a <strong>Partner Integrations CFT</strong>.</li>
+          <li>People: an <strong>offshore NOC</strong> coordinates incidents but can't take actions yet, <strong>SRE is centralized</strong>, five feature CFTs own features, and the powerful <strong>Cloud Infrastructure CFT</strong> owns the shared cloud.</li>
           <li>We're a <strong>new, immature team</strong>: under 10% dashboard coverage, few runbooks, weak postmortems, a locked-down Jira, PagerDuty for paging, and CFTs split between Slack and Teams.</li>
         </ul>
       </div>
@@ -37,9 +38,9 @@
       </div>
 
       <div class="card-grid">
-        <a class="card t-noc" href="noc/index.html" style="border-top:4px solid var(--noc)"><h3>NOC: Focus On</h3><p>The request path (so you can tell where errors come from), who owns what, and what normal looks like.</p></a>
-        <a class="card t-sre" href="sre/index.html" style="border-top:4px solid var(--sre)"><h3>SRE: Focus On</h3><p>The two orchestrators, Rust specifics, the telemetry pipeline and its gaps, and which logs live where.</p></a>
-        <a class="card t-lead" href="leaders/index.html" style="border-top:4px solid var(--lead)"><h3>Managers: Focus On</h3><p>Shared dependencies, Cloud Infrastructure's role, ownership gray zones, and the tools &amp; process landscape.</p></a>
+        <a class="card t-noc" href="noc/index.html"><h3>NOC: Focus On</h3><p>The request path (so you can tell where errors come from), who owns what, and what normal looks like.</p></a>
+        <a class="card t-sre" href="sre/index.html"><h3>SRE: Focus On</h3><p>The two orchestrators, Rust specifics, the telemetry pipeline and its gaps, and which logs live where.</p></a>
+        <a class="card t-lead" href="leaders/index.html"><h3>Managers: Focus On</h3><p>Shared dependencies, Cloud Infrastructure's role, ownership gray zones, and the tools &amp; process landscape.</p></a>
       </div>
 
       <h2 id="what-nimbus-is">What Nimbus Is</h2>
@@ -60,12 +61,12 @@
 
           <rect class="d-box" x="10" y="40" width="210" height="245" rx="10"/>
           <text class="d-text" x="115" y="63" text-anchor="middle">Desktop (Rust)</text>
-          <rect class="d-box" x="25" y="76" width="180" height="40" rx="8" style="fill:var(--surface)"/>
+          <rect class="d-box-plain" x="25" y="76" width="180" height="40" rx="8"/>
           <text class="d-sub" x="115" y="101" text-anchor="middle">Nimbus app</text>
           <rect class="d-box-accent" x="25" y="132" width="180" height="50" rx="8"/>
           <text class="d-text" x="115" y="154" text-anchor="middle">Device orchestrator</text>
           <text class="d-sub" x="115" y="172" text-anchor="middle">local or cloud?</text>
-          <rect class="d-box" x="25" y="222" width="180" height="50" rx="8" style="fill:var(--surface)"/>
+          <rect class="d-box-plain" x="25" y="222" width="180" height="50" rx="8"/>
           <text class="d-text" x="115" y="244" text-anchor="middle">On-device model</text>
           <text class="d-sub" x="115" y="262" text-anchor="middle">NPU · answers locally</text>
           <path class="d-line" d="M115 116 V128" marker-end="url(#arr)"/>
@@ -108,6 +109,10 @@
           <text class="d-text" x="745" y="312" text-anchor="middle">Retrieval</text>
           <text class="d-sub" x="745" y="330" text-anchor="middle">AI Search · Graph</text>
 
+          <rect class="d-box-partner" x="840" y="290" width="150" height="50" rx="10"/>
+          <text class="d-text" x="915" y="312" text-anchor="middle">Partners</text>
+          <text class="d-sub" x="915" y="330" text-anchor="middle">Zoom · M365 · OEM</text>
+          <path class="d-line" d="M820 250 H830 V315 H836" marker-end="url(#arr)"/>
           <path class="d-line" d="M205 157 H246" marker-end="url(#arr)"/>
           <text class="d-accent-text" x="212" y="148">cloud</text>
           <path class="d-line" d="M360 155 H376" marker-end="url(#arr)"/>
@@ -145,7 +150,7 @@
           <path class="d-line" d="M720 417 H745 V442 H766" marker-end="url(#arr)"/>
           <path class="d-line" d="M720 487 H745 V464 H766" marker-end="url(#arr)"/>
         </svg>
-        <figcaption>Device (left), cloud request path (top right), and telemetry (bottom). Amber marks shared choke points. Pink and ⚠ mark known gaps.</figcaption>
+        <figcaption>Device (left), cloud request path (top right), third-party partners (dotted, right), and telemetry (bottom). Amber marks shared choke points. Pink and ⚠ mark known gaps.</figcaption>
       </figure>
 
       <h3 id="a-request-step-by-step">A Request, Step by Step</h3>
@@ -156,6 +161,7 @@
         <li><strong>APIM gateway</strong>Validates the token, applies rate limits, and forwards to the cloud orchestrator.</li>
         <li><strong>Cloud orchestrator</strong>Owned by Cloud Infrastructure. It routes each request to the right feature service and applies cross-feature policies. Every cloud request passes through it, so when it degrades, <em>every</em> feature degrades.</li>
         <li><strong>Feature service</strong>The CFT's Rust service builds the prompt, calls retrieval and tools, then calls Foundry with a managed identity.</li>
+        <li><strong>Partner integrations</strong>Some features call third-party services through connectors: Meeting Recap pulls Zoom and Webex transcripts, Smart Search and Writing Assist use Microsoft 365 and Google Workspace context, and Device Care calls OEM warranty and driver APIs. Partners have their own outages, rate limits (429), and OAuth tokens that expire (401).</li>
         <li><strong>Azure AI Foundry</strong>The model streams tokens back. Over PTU capacity, requests spill to pay-as-you-go or get <strong>429s</strong>.</li>
       </ol>
       <div class="callout tip">
@@ -178,7 +184,44 @@
       </div>
       <p>The <a href="queries.html#q-routing-split">local vs cloud split</a> and <a href="queries.html#q-fallback-rate">fallback rate</a> queries watch these patterns.</p>
 
-      <h2 id="what-rust-means-for-incidents">What Rust Means for Incidents</h2>
+<h2 id="partner-integrations">Partner Integrations</h2>
+      <p>Partners extend what Nimbus can do, but they add dependencies we don't control. When a partner fails, our job is to <strong>contain</strong> it (disable that connector, degrade gracefully, tell users) and to <strong>work the relationship</strong>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Partner type</th><th>Feature</th><th>Auth</th><th>Typical limits</th><th>Escalation</th><th>SLA</th></tr></thead>
+          <tbody>
+            <tr><td>Meeting platforms (Zoom, Webex)</td><td>Meeting Recap</td><td>OAuth per user</td><td>Per-app rate limits</td><td>Partner support + account manager</td><td>99.9% API availability</td></tr>
+            <tr><td>Productivity suites (Microsoft 365 / Graph, Google Workspace)</td><td>Smart Search, Writing Assist</td><td>OAuth with consent</td><td>Throttling (429 with retry-after)</td><td>Partner support portal</td><td>Per partner terms</td></tr>
+            <tr><td>OEM device-support APIs</td><td>Device Care</td><td>API key / mTLS</td><td>Contracted request volume</td><td>Named OEM engineering contact</td><td>Contractual, reviewed quarterly</td></tr>
+            <tr><td>Partner-hosted AI skills / agents</td><td>Routed from the cloud orchestrator</td><td>Service-to-service tokens</td><td>Per-skill quotas</td><td>Partner on-call (for strategic partners)</td><td>Per agreement</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Partner failure</th><th>What you see</th><th>Contain it by</th></tr></thead>
+          <tbody>
+            <tr><td>Partner outage or slowness</td><td>One feature fails or slows for that partner's users only</td><td>Disable the connector (per-partner flag), show a fallback, check their status page</td></tr>
+            <tr><td>Rate limits (429)</td><td>Errors at busy times, worse with retries</td><td>Backoff, queueing, lower concurrency, a limit increase from the partner</td></tr>
+            <tr><td>Expired OAuth token or consent (401)</td><td>Some users' integrations stop working</td><td>Fix the token refresh, prompt users to reconnect</td></tr>
+            <tr><td>API or schema change</td><td>Our connector errors after the partner releases</td><td>Roll forward the connector, and watch partner deprecation notices</td></tr>
+            <tr><td>Webhook delays</td><td>Recaps or updates arrive late</td><td>Polling fallback, user messaging</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="the-people">The People</h2>
+      <p>Incidents are as much about people as systems. These are the people in our story:</p>
+      <div class="card-grid wide">
+        <div class="card t-noc"><h3>The NOC (Offshore)</h3><p>An offshore team that watches 24/7, declares, and coordinates every incident. Many work in a second language, and technical depth is still growing. They have no production tooling yet, so they request actions from owners. They're at their best with clear scripts, plain English, and safety to escalate.</p></div>
+        <div class="card t-sre"><h3>Centralized SRE</h3><p>A small central team that provides the Technical Lead. They're not embedded in any CFT, so they have broad knowledge but rely on owners to make changes.</p></div>
+        <div class="card"><h3>The CFTs</h3><p>Five feature CFTs, the Client CFT, and the Partner Integrations CFT. They own the code. Some have no PagerDuty rotation, and two work in Microsoft Teams.</p></div>
+        <div class="card"><h3>Cloud Infrastructure</h3><p>Powerful and essential. They own the shared cloud and run their own change process. Evidence moves them, and accusations don't.</p></div>
+        <div class="card t-lead"><h3>The Senior Manager</h3><p>You. You decide, unblock, develop the NOC and SRE, and report to executives. The <a href="leaders/index.html">manager track</a> is built for this role.</p></div>
+        <div class="card"><h3>Morgan, the Director</h3><p>Morgan (they/them) is a well-meaning director under pressure from above. In incidents, Morgan tends to dive into the weeds: asking for raw queries, messaging engineers directly, opening side calls, and asking for root cause before users are back. Morgan appears in the <a href="tabletop.html">tabletop exercises</a> and the <a href="postmortems/example.html">worked postmortem</a>. The guidance for handling this pattern is generic and applies to any leader.</p></div>
+      </div>
+
+            <h2 id="what-rust-means-for-incidents">What Rust Means for Incidents</h2>
       <p>Rust removes whole classes of crashes, such as null pointers and data races, but it has its own failure modes. You'll see these in Nimbus:</p>
       <div class="table-wrap">
         <table>
@@ -219,6 +262,7 @@
             <tr><td>Investigation and <strong>technical lead</strong></td><td><strong>SRE on-call</strong> (central team, not embedded in CFTs)</td><td>PagerDuty "Nimbus SRE"</td><td>Confirmed user impact, any Sev 1–2, or unclear cause</td></tr>
             <tr><td>Desktop app, Agent, <strong>device orchestrator</strong>, on-device model</td><td>Client CFT</td><td>PagerDuty (business hours + Sev 1)</td><td>One client version affected, crashes, local/cloud ratio shifts, fallback surges</td></tr>
             <tr><td>Front Door, APIM, auth policies, <strong>cloud orchestrator</strong>, Foundry capacity</td><td><strong>Cloud Infrastructure CFT</strong></td><td>PagerDuty 24/7</td><td>Edge 5xx/403, 401s across features, gateway or orchestrator latency, 429s, model 5xx</td></tr>
+            <tr><td><strong>Partner integrations</strong> (connectors, partner relationships)</td><td>Partner Integrations CFT</td><td>PagerDuty (business hours + Sev 1)</td><td>One partner's users affected, partner 401/429/5xx, partner API changes</td></tr>
             <tr><td>Feature services (one per feature)</td><td>Owning CFT</td><td>PagerDuty, but <em>not every CFT has a service yet</em></td><td>Problem limited to one feature</td></tr>
             <tr><td>Telemetry, Collector, Grafana</td><td>Cloud Infrastructure (Observability, 2 people)</td><td>Business hours</td><td>Telemetry missing everywhere, Collector down</td></tr>
           </tbody>

@@ -74,6 +74,36 @@
         </table>
       </div>
 
+      <h2 id="layers-and-ai-terms">Layers and AI Terms</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>They say</th><th>It means</th><th>Why you care</th></tr></thead>
+          <tbody>
+            <tr><td>"Which layer?"</td><td>Which part of the request path: device, edge, gateway, orchestrator, feature, partner, or model</td><td>The layer tells you the owner and the right questions. See <a href="ai-product-layers.html">Know the Layers</a>.</td></tr>
+            <tr><td>"Orchestrator"</td><td>The part that decides where a request goes: on the device (local vs cloud), or in the cloud (which feature)</td><td>Orchestrators sit in front of everything. When they fail, many features fail together.</td></tr>
+            <tr><td>"On-device" / "local model"</td><td>A small AI model on the user's PC that answers simple requests</td><td>Fast and free, but if it fails the cloud absorbs the work.</td></tr>
+            <tr><td>"Fallback surge"</td><td>Local answers failing, so the work moves to the cloud</td><td>Causes cloud slowness and 429s with no server-side change.</td></tr>
+            <tr><td>"Tokens"</td><td>Units of text the AI reads and writes</td><td>More tokens means slower, more expensive, and quota used up faster.</td></tr>
+            <tr><td>"Partner integration" / "connector"</td><td>Our link to a third-party service (Zoom, Microsoft 365, OEM APIs)</td><td>Partner outages break features. We contain them, and can't fix them.</td></tr>
+            <tr><td>"Circuit breaker" / "kill switch"</td><td>Automatically or manually stopping calls to a failing dependency</td><td>Keeps one bad partner or service from dragging everything down.</td></tr>
+            <tr><td>"Triage thread"</td><td>A NOC note for "maybe a problem", time-boxed to 15 minutes</td><td>The step before declaring. When in doubt, declare.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="reporting-terms">Reporting Terms</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><strong>BLUF</strong></td><td>Bottom Line Up Front: the one sentence an executive needs first.</td></tr>
+            <tr><td><strong>SITREP</strong></td><td>Situation report: situation, impact, cause, actions, decisions needed, next update.</td></tr>
+            <tr><td><strong>AAR</strong></td><td>After Action Review: what was supposed to happen, what happened, why the difference, and what we sustain or improve.</td></tr>
+            <tr><td><strong>LAYERS</strong></td><td>Our question framework: Locate, Assess, Yesterday, Evidence, Response, Sustain.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
       <h2 id="process-words">Process Words</h2>
       <div class="table-wrap">
         <table>

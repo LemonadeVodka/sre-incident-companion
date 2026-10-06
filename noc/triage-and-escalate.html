@@ -30,6 +30,35 @@
         </ul>
       </div>
 
+<h2 id="triage-or-incident">Triage or Incident?</h2>
+      <p>Not sure if it's an incident yet? Use three states, four yes/no questions, and one time box. <strong>When in doubt, declare.</strong> Declaring is cheap, and you can always downgrade.</p>
+      <div class="states">
+        <div><div class="state-title"><i class="light green"></i>Watch</div><p>Something looks odd, but there's no user impact and it's inside normal ranges.</p><p><b>Do:</b> note it in the shift log and re-check at the next sweep.</p></div>
+        <div><div class="state-title"><i class="light amber"></i>Triage</div><p>Possibly affecting users, but the cause is unclear.</p><p><b>Do:</b> open a triage thread (not an incident), FYI the likely owner, and <b>time-box 15 minutes</b>.</p></div>
+        <div><div class="state-title"><i class="light red"></i>Incident</div><p>User impact is confirmed or likely.</p><p><b>Do:</b> declare and coordinate.</p></div>
+      </div>
+      <div class="panel" id="declare-app" aria-live="polite">
+        <noscript>
+          <ol>
+            <li><b>Users:</b> are users affected, or about to be?</li>
+            <li><b>Size and time:</b> clearly above normal (2× errors or 1.5× P95) and lasting more than 10 minutes?</li>
+            <li><b>Spread:</b> on a shared layer (edge, gateway, orchestrator, model, partner), or more than one feature?</li>
+            <li><b>Help:</b> do we need more than one team, or a decision we can't make?</li>
+          </ol>
+          <p>Yes to 1 and 2, or yes to 3 or 4: <b>declare</b>. Yes to only 1 or 2: <b>triage</b> (15 minutes). All no: <b>watch</b>. Still unsure after 15 minutes: <b>declare</b>.</p>
+        </noscript>
+      </div>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">Triage Thread Note<span class="answers">Post in the NOC channel, not as an incident</span></span></div>
+<pre><code>TRIAGE (not an incident yet): [what you see + numbers] since [time].
+Likely owner: @[owner] (FYI). Re-check at [time + 15 min].
+If still unsure then → declare.</code></pre>
+      </div>
+      <ul>
+        <li>If a triage becomes an incident, <b>its thread becomes the start of the timeline</b>.</li>
+        <li>Triage threads are reviewed weekly with your manager. Nobody is criticized for declaring.</li>
+      </ul>
+
       <h2 id="first-15-minutes">The First 15 Minutes</h2>
       <ul class="checklist" data-key="noc-first15">
         <li><strong>Min 0–2: Acknowledge</strong> in PagerDuty.</li>
@@ -124,5 +153,6 @@ Next update HH:MM. What do you need from me?</code></pre>
 </div>
 <footer class="site-footer" id="footer"></footer>
 <script src="../assets/site.js"></script>
+<script src="../assets/declare.js"></script>
 </body>
 </html>

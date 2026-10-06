@@ -19,7 +19,7 @@
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
       <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
       <h1>Scenarios in Plain English</h1>
-      <p class="lede">These are our nine most likely incidents, without the jargon. Each one tells you what's happening, what users feel, the typical fix and how long it takes, the decisions you may be asked to make, and the questions to ask. Engineers use the matching <a href="../playbooks.html">playbooks</a>.</p>
+      <p class="lede">These are our ten most likely incidents, without the jargon. Each one tells you what's happening, what users feel, the typical fix and how long it takes, the decisions you may be asked to make, and the questions to ask. Engineers use the matching <a href="../playbooks.html">playbooks</a>.</p>
       <div class="tldr">
         <ul>
           <li>Most of our incidents are <strong>slowness</strong>, <strong>failures</strong>, <strong>CDN problems</strong>, or <strong>sign-in rejections</strong>.</li>
@@ -34,7 +34,8 @@
         <a class="card" href="#s-client-rollout"><h3>A New App Version Is Misbehaving</h3><p>Problems are limited to users who received the latest desktop app update..</p></a>
         <a class="card" href="#s-dashboards-green"><h3>Users Complain but Our Monitoring Says Fine</h3><p>Support tickets or social posts say Nimbus is broken, but our monitoring shows nothing wrong..</p></a>
         <a class="card" href="#s-cdn-edge"><h3>The Front Door (CDN) Is Failing</h3><p>The internet-facing entrance to our services is failing to reach them, or our security firewall is blocking requests..</p></a>
-        <a class="card" href="#s-401-surge"><h3>Users or Services Are Being Refused at Sign-In</h3><p>The system is rejecting credentials ("401s").</p></a>
+        <a class="card" href="#s-401-surge"><h3>Users or Services Are Being Refused at Sign-in</h3><p>The system is rejecting credentials ("401s").</p></a>
+        <a class="card" href="#s-partner-degraded"><h3>A Partner Service Is Down</h3><p>A third-party integration fails, and one feature breaks for that partner's users.</p></a>
         <a class="card" href="#s-fallback-surge"><h3>Devices Suddenly Lean on the Cloud</h3><p>On-device answers start failing, so devices send that work to the cloud.</p></a>
       </div>
 
@@ -46,6 +47,7 @@
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>Usually a recent change by that team, such as a new release or a bigger AI prompt. A rollback typically fixes it within 30–60 minutes.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Approve a rollback even if it delays that team's launch.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Did something change recently? Can we roll it back? How many users are affected?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Feature Services<br><b>Ask the NOC:</b> Which feature is slow? Did this team deploy today?<br><b>Ask SRE:</b> Which hop grew (model, retrieval, our code)? Did prompts get bigger?<br><b>Tell executives:</b> "[Feature] is slower after a recent change. The team is rolling it back."</div></div>
           <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-latency-one-feature">The engineering playbook →</a></div></div>
         </div>
       </section>
@@ -58,6 +60,7 @@
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>Pause the background workload, or buy overflow capacity. Usually under 30 minutes once someone decides.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Which feature gets priority, and whether to approve the extra spend for overflow capacity.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Whose traffic is using the capacity? Can it pause? What does overflow cost per hour?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Model Provider (capacity)<br><b>Ask the NOC:</b> Is it 429? Which deployment? Is a background job running?<br><b>Ask SRE:</b> Who is using the quota (tokens per minute by caller)? Is it a retry storm?<br><b>Tell executives:</b> "We hit our AI capacity limit. We've paused background work and may need overflow capacity at about $X per hour."</div></div>
           <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-429-surge">The engineering playbook →</a></div></div>
         </div>
       </section>
@@ -70,6 +73,7 @@
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>Switch to our backup region, and open a Microsoft support case. Anywhere from 15 minutes to several hours, depending on Microsoft.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Approve failover (check data residency and cost), notify executives, and approve customer messaging.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it on Microsoft's side? Is a support case open, and at what severity? Can we use the other region?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Model Provider<br><b>Ask the NOC:</b> Is Azure status green? Is it one region or all?<br><b>Ask SRE:</b> One deployment or all? Can we fail over, and with what capacity?<br><b>Tell executives:</b> "Our AI provider is having problems. We're moving traffic to our backup region and have opened a case."</div></div>
           <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-foundry-5xx">The engineering playbook →</a></div></div>
         </div>
       </section>
@@ -82,6 +86,7 @@
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>Free up capacity, or shrink the request. Often within an hour.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Whether to accept slightly lower answer quality (a smaller model, less context) for speed, temporarily.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it capacity or how we build the request? How noticeable is it to users?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Model Provider / Feature<br><b>Ask the NOC:</b> Which feature feels slow to start? Since when?<br><b>Ask SRE:</b> First token or generation? Capacity queueing or prompt size?<br><b>Tell executives:</b> "Answers are slower to start because of [capacity / bigger requests]. Fix expected within [time]."</div></div>
           <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-slow-first-token">The engineering playbook →</a></div></div>
         </div>
       </section>
@@ -94,6 +99,7 @@
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>Pause the rollout immediately (the NOC can do this), then the team fixes the bug. Pausing takes minutes. The fix takes days.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Hold the release, and coordinate messaging with release management, partners, and support.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Has the rollout been paused? What share of users have the new version?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Device<br><b>Ask the NOC:</b> Is it only the newest app version? Has the halt been requested?<br><b>Ask SRE:</b> What changed in the build: API, retries, token refresh?<br><b>Tell executives:</b> "A new app update is causing errors for [X%] of users. The rollout is paused."</div></div>
           <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-client-rollout">The engineering playbook →</a></div></div>
         </div>
       </section>
@@ -106,6 +112,7 @@
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>First the team has to <em>measure</em> the problem. Time varies, and it often reveals a monitoring gap.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Treat "customers told us before our monitoring did" as a serious finding, and fund the fix.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>How do we know how many users are affected? Why didn't our monitoring catch it?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Telemetry / Device<br><b>Ask the NOC:</b> Did data volume drop? Collect 3–5 user reports.<br><b>Ask SRE:</b> What part of the path is invisible to us right now?<br><b>Tell executives:</b> "Customers noticed a problem before our monitoring did. We're measuring the impact and closing that gap."</div></div>
           <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-dashboards-green">The engineering playbook →</a></div></div>
         </div>
       </section>
@@ -118,18 +125,20 @@
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>Cloud Infrastructure fixes the connection, reverts a firewall rule, or reroutes traffic. 15–60 minutes is typical. Some causes are on Microsoft's side.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Approve rerouting or rollback of a security rule (security sign-off), and approve customer messaging, since impact is usually broad.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it all users or some regions? Did anyone change a firewall or CDN setting? Is it Microsoft's edge?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Edge / CDN<br><b>Ask the NOC:</b> Is the edge 5xx up? All regions? Are our services quiet?<br><b>Ask SRE:</b> Edge or origin? What does the error info say? Any WAF or CDN change?<br><b>Tell executives:</b> "Many users can't connect because of our network entry point. We're rolling back a recent change."</div></div>
           <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-cdn-edge">The engineering playbook →</a></div></div>
         </div>
       </section>
 
       <section class="playbook" id="s-401-surge">
-        <div class="playbook-head"><h2>Users or Services Are Being Refused at Sign-In</h2></div>
+        <div class="playbook-head"><h2>Users or Services Are Being Refused at Sign-in</h2></div>
         <div class="playbook-body">
           <div class="pb-section"><div class="pb-label">What's happening</div><div>The system is rejecting credentials ("401s"). This can be all users (a server-side sign-in change), one app version (a bug), or our own services (an expired secret).</div></div>
           <div class="pb-section"><div class="pb-label">What users feel</div><div>Features refuse to work, or "please sign in again" loops. Sometimes total lockout.</div></div>
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>Undo the recent sign-in or configuration change, or renew the expired secret. Fast once the cause is found, often under an hour.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Approve an emergency change to sign-in settings, and customer messaging if many users are locked out.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it everyone or one app version? Did anything change in sign-in, keys, or certificates? When do our secrets expire?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Gateway & Auth<br><b>Ask the NOC:</b> All APIs or one? One app version or all?<br><b>Ask SRE:</b> Which layer rejected the token? What changed or expired?<br><b>Tell executives:</b> "Some users are being asked to sign in again. We've found the configuration change and are reverting it."</div></div>
           <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-401-surge">The engineering playbook →</a></div></div>
         </div>
       </section>
@@ -142,7 +151,21 @@
           <div class="pb-section"><div class="pb-label">Typical fix</div><div>Pause the device update (Client CFT) and add cloud capacity or pause background work (Cloud Infrastructure). Under an hour once both teams are engaged.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Approve the extra cloud spend, and hold the device release. Make sure the Client CFT and Cloud Infrastructure are working on it <em>together</em>.</div></div>
           <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Did a device or AI model update just go out? Are both the device team and the cloud team on the call?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Device Orchestrator → Model Provider<br><b>Ask the NOC:</b> Is a device or model update rolling out? Did the local share drop?<br><b>Ask SRE:</b> Fallback rate by local model version? Can the cloud absorb it?<br><b>Tell executives:</b> "A device update is pushing extra work to the cloud. We've paused it and added capacity."</div></div>
           <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-fallback-surge">The engineering playbook →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="s-partner-degraded">
+        <div class="playbook-head"><h2>A Partner Service Is Down</h2></div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">What's happening</div><div>A third-party partner (for example a meeting platform, a productivity suite, or a device maker's support API) is slow or failing. Our systems are fine, but the feature that depends on that partner breaks for its users.</div></div>
+          <div class="pb-section"><div class="pb-label">What users feel</div><div>For example, Meeting Recap fails only for Zoom meetings, or Device Care can't check warranty status.</div></div>
+          <div class="pb-section"><div class="pb-label">Typical fix</div><div>We can't fix the partner. We contain it: disable that one connector, show a friendly message or fallback, and work with the partner. Duration depends on them.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">You may decide</div><div>Disable the integration temporarily, approve customer messaging that names the partner, and escalate through the partner's executive or account contact if their support is slow.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Ask</div><div>Is it the partner or our connector? Does the partner's status page confirm it? Who owns the partner relationship right now? Is this an SLA breach?</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">LAYERS</div><div><b>Layer:</b> Partner Integrations<br><b>Ask the NOC:</b> One partner or all? What does their status page say? Has the partner contact been notified?<br><b>Ask SRE:</b> Partner-side or our connector (schema change, token refresh)? Is there a circuit breaker and a per-partner kill switch?<br><b>Tell executives:</b> "[Partner] is having an outage that affects [feature] for their users. Our systems are fine. We've disabled the integration and are working with the partner."</div></div>
+          <div class="pb-section"><div class="pb-label">Engineers use</div><div><a href="../playbooks.html#pb-partner-degraded">The engineering playbook →</a></div></div>
         </div>
       </section>
     </article>

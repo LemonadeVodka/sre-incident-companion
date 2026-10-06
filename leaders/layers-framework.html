@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The LAYERS Framework · Nimbus SRE</title>
+  <meta name="description" content="A six-step question framework for senior managers (Locate, Assess, Yesterday, Evidence, Response, Sustain) with NOC, SRE, and executive versions for latency and error rates at every layer of an AI product.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead-framework">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Core Framework</div>
+      <h1>The LAYERS Framework</h1>
+      <p class="lede">Six questions, asked in order and at the right layer, turn a vague "the AI is slow" into a located, measured, evidenced problem with an owner and a plan. Each question comes in three versions: one that helps the <strong>NOC</strong> see, one that makes <strong>SRE engineers</strong> think, and one that tells <strong>executives</strong> what matters.</p>
+
+      <div class="tldr">
+        <ul>
+          <li><strong>Locate · Assess · Yesterday · Evidence · Response · Sustain.</strong></li>
+          <li>In a live incident use L-A-Y-E-R. In weekly reviews use A-Y-E-S. In design reviews use L-R-S. In postmortems use Y-E-R-S.</li>
+          <li>Your goal isn't to know the answers. It's to make sure <strong>someone can answer with data</strong>, and to notice when they can't.</li>
+        </ul>
+      </div>
+
+      <div class="acro">
+        <a href="#step-l"><b>L</b><span>Locate</span><small>Which layer?</small></a>
+        <a href="#step-a"><b>A</b><span>Assess</span><small>How bad, for whom?</small></a>
+        <a href="#step-y"><b>Y</b><span>Yesterday</span><small>Compared to what?</small></a>
+        <a href="#step-e"><b>E</b><span>Evidence</span><small>How sure?</small></a>
+        <a href="#step-r"><b>R</b><span>Response</span><small>What now?</small></a>
+        <a href="#step-s"><b>S</b><span>Sustain</span><small>Never again?</small></a>
+      </div>
+
+      <h2 id="question-builder">Question Builder</h2>
+      <p>Pick the signal, your audience, the situation, and the layer (if you know it). You'll get a question set to copy into your notes, a 1:1 doc, or the incident channel. Your last choice is remembered in this browser.</p>
+      <div id="qb-app" aria-live="polite"></div>
+      <div id="qb-static"><p class="small">JavaScript is off. Use the step-by-step questions and the question bank below.</p></div>
+
+      <h2 id="step-l">L · Locate: Which Layer Is It In?</h2>
+      <div class="panel"><p class="panel-statement">Where in the path is this happening: device, edge, gateway, orchestrator, feature, partner, or model?</p></div>
+      <div class="card-grid wide">
+        <div class="card t-noc"><span class="role-label">Ask the NOC (plain English)</span><ul><li>Which feature is affected? One, or many?</li><li>Which sweep query shows it? Send me the screenshot.</li><li>Is it one client version, one region, or one partner, or everyone?</li></ul></div>
+        <div class="card t-sre"><span class="role-label">Ask SRE (spur technical thinking)</span><ul><li>Which layer is returning the errors or adding the time? How do you know it's that layer and not the one in front of it?</li><li>Does the layer comparison (edge vs gateway vs service vs model) agree with your theory?</li><li>If this layer were healthy, what would we expect to see one layer up and one layer down?</li></ul></div>
+        <div class="card t-lead"><span class="role-label">Tell executives</span><ul><li>The problem is in [layer], which affects [features]. The rest of the product is working normally.</li></ul></div>
+      </div>
+      <div class="wgb two">
+        <div><span class="q-level q-best">A Good Answer</span><p>Names a layer and shows the data that places it there, for example: "Errors start at the gateway. Edge traffic is normal, and backends barely see the requests."</p></div>
+        <div><span class="q-level q-weak">Red Flags</span><ul><li>"The AI is slow." (no layer)</li><li>"It's probably the network." (no evidence)</li><li>Different people name different layers and nobody reconciles them</li></ul></div>
+      </div>
+
+      <h2 id="step-a">A · Assess: How Bad, and for Whom?</h2>
+      <div class="panel"><p class="panel-statement">How many users are affected, how far from normal, and is it the typical experience (P50) or the bad-day experience (P95)?</p></div>
+      <div class="card-grid wide">
+        <div class="card t-noc"><span class="role-label">Ask the NOC (plain English)</span><ul><li>What is the number now, and what is normal for this hour?</li><li>Is it more than 2× normal errors, or 1.5× normal P95?</li><li>Is it getting better, worse, or flat over the last 15 minutes?</li></ul></div>
+        <div class="card t-sre"><span class="role-label">Ask SRE (spur technical thinking)</span><ul><li>Is P50 moving or only P95? What does that tell you about who is affected?</li><li>What share of requests or users is affected? Are we counting with itemCount (sampling)?</li><li>Is the error rate counting the right things: user-visible failures, not retries we recover from?</li></ul></div>
+        <div class="card t-lead"><span class="role-label">Tell executives</span><ul><li>About [X%] of [feature] users are seeing [slow responses / errors] for [duration]. Normal is [baseline].</li></ul></div>
+      </div>
+      <div class="wgb two">
+        <div><span class="q-level q-best">A Good Answer</span><p>A number, a baseline, and a trend: "P95 is 14 s against a normal 6 s, about 1 in 8 Writing Assist users, rising for 20 minutes."</p></div>
+        <div><span class="q-level q-weak">Red Flags</span><ul><li>"Lots of errors."</li><li>An average instead of P50/P95</li><li>No baseline, so nobody knows whether this is normal</li></ul></div>
+      </div>
+
+      <h2 id="step-y">Y · Yesterday: Compared to What? What Changed?</h2>
+      <div class="panel"><p class="panel-statement">What is normal for this time, and what changed just before it started?</p></div>
+      <div class="card-grid wide">
+        <div class="card t-noc"><span class="role-label">Ask the NOC (plain English)</span><ul><li>Did this happen at the same time yesterday or last week?</li><li>Was there a release, rollout, or partner notice in the last 24 hours?</li><li>When exactly did it start? Write down the time.</li></ul></div>
+        <div class="card t-sre"><span class="role-label">Ask SRE (spur technical thinking)</span><ul><li>What's the first timestamp it deviates from baseline, and what changed within an hour before it (deploys, flags, model version, routing policy, partner changes)?</li><li>Could traffic itself have changed (a launch, a time zone waking up, a batch job)?</li><li>If nothing changed on our side, what changed on someone else's (Cloud Infrastructure, partner, provider)?</li></ul></div>
+        <div class="card t-lead"><span class="role-label">Tell executives</span><ul><li>It started at [time] and lines up with [change / no known change yet].</li></ul></div>
+      </div>
+      <div class="wgb two">
+        <div><span class="q-level q-best">A Good Answer</span><p>A start time and a candidate change, with a correlation shown on a chart.</p></div>
+        <div><span class="q-level q-weak">Red Flags</span><ul><li>"Nothing changed." (without checking the deploy and change logs)</li><li>Comparing with the wrong baseline (a weekday vs a weekend)</li></ul></div>
+      </div>
+
+      <h2 id="step-e">E · Evidence: How Sure Are We?</h2>
+      <div class="panel"><p class="panel-statement">What data shows that, how confident are you, and what would prove us wrong?</p></div>
+      <div class="card-grid wide">
+        <div class="card t-noc"><span class="role-label">Ask the NOC (plain English)</span><ul><li>Which query or screen shows this? Paste the link.</li><li>Did two different checks show the same thing?</li></ul></div>
+        <div class="card t-sre"><span class="role-label">Ask SRE (spur technical thinking)</span><ul><li>What's your confidence: low, medium, or high? What would raise it?</li><li>What else could explain the same chart? How would we rule it out cheaply?</li><li>Is any telemetry missing or sampled that could be hiding the real picture?</li></ul></div>
+        <div class="card t-lead"><span class="role-label">Tell executives</span><ul><li>We're [highly confident / fairly confident / still investigating] that the cause is [X].</li></ul></div>
+      </div>
+      <div class="wgb two">
+        <div><span class="q-level q-best">A Good Answer</span><p>States confidence honestly and names the next check that would confirm it or rule it out.</p></div>
+        <div><span class="q-level q-weak">Red Flags</span><ul><li>Certainty without data</li><li>A single hypothesis defended against all evidence</li><li>"We can't see that." accepted without a plan to get visibility</li></ul></div>
+      </div>
+
+      <h2 id="step-r">R · Response: What Are We Doing About It?</h2>
+      <div class="panel"><p class="panel-statement">What's the safest reversible fix, who owns it, what does it cost, and when will we know it worked?</p></div>
+      <div class="card-grid wide">
+        <div class="card t-noc"><span class="role-label">Ask the NOC (plain English)</span><ul><li>Who owns this layer, and have they been paged? When?</li><li>Which pre-agreed request fits (pause, halt, restart, banner)? Has it been sent?</li><li>When is the next update?</li></ul></div>
+        <div class="card t-sre"><span class="role-label">Ask SRE (spur technical thinking)</span><ul><li>What's the most reversible mitigation, and what's the risk if it's wrong?</li><li>Can we degrade gracefully instead of failing (a smaller model, no retrieval, disable one partner connector)?</li><li>What decision do you need from me, and by when?</li></ul></div>
+        <div class="card t-lead"><span class="role-label">Tell executives</span><ul><li>We're [action] now. We expect improvement by [time]. [Decision needed: X / No decision needed.]</li></ul></div>
+      </div>
+      <div class="wgb two">
+        <div><span class="q-level q-best">A Good Answer</span><p>One owner, one reversible action, an expected effect, and a check time. Decisions are escalated with options and cost.</p></div>
+        <div><span class="q-level q-weak">Red Flags</span><ul><li>Debugging the root cause while users stay broken</li><li>"Someone should…" (no owner)</li><li>A risky change with no undo plan</li></ul></div>
+      </div>
+
+      <h2 id="step-s">S · Sustain: How Do We Keep It From Coming Back?</h2>
+      <div class="panel"><p class="panel-statement">What will we change so we see this sooner next time, or never see it again?</p></div>
+      <div class="card-grid wide">
+        <div class="card t-noc"><span class="role-label">Ask the NOC (plain English)</span><ul><li>What would have helped you spot this earlier?</li><li>Which runbook or sweep query should we add or fix?</li></ul></div>
+        <div class="card t-sre"><span class="role-label">Ask SRE (spur technical thinking)</span><ul><li>Is this a detection gap, a design gap, or a process gap? What's the one change with the most leverage?</li><li>Should this become an SLO, an alert on burn rate, a release gate, or an architectural change (isolation, circuit breaker, capacity)?</li><li>Which postmortem actions do you need me to get funded or prioritized?</li></ul></div>
+        <div class="card t-lead"><span class="role-label">Tell executives</span><ul><li>To prevent recurrence we're [actions] by [dates]. We need [investment / nothing].</li></ul></div>
+      </div>
+      <div class="wgb two">
+        <div><span class="q-level q-best">A Good Answer</span><p>2–5 specific, owned, dated actions that change the system, not "be more careful".</p></div>
+        <div><span class="q-level q-weak">Red Flags</span><ul><li>No postmortem</li><li>Actions with no owner or date</li><li>Repeating last quarter's action items</li></ul></div>
+      </div>
+
+      <h2 id="question-bank">Question Bank: Every Layer</h2>
+      <p>The full set of layer-specific questions for latency and errors. Learn the layers on <a href="ai-product-layers.html">Know the Layers</a>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Layer</th><th>What it looks like</th><th>Ask the NOC</th><th>Ask SRE</th><th>Tell executives</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Device &amp; On-Device Model</strong><br><span class="small">Client team (Nimbus: Client CFT)</span></td>
+              <td><b>Latency:</b> Quick tasks slow on some devices. Slow app startup. The local model is slow on older hardware or a new driver.<br><b>Errors:</b> Crashes, local model failures, TLS/proxy failures that never reach the server, clock skew causing 401s.</td>
+              <td><ul><li>Is it one device model, one client version, or one driver version?</li><li>Do support tickets mention a specific laptop or update?</li><li>Is the crash or error tied to the newest client version?</li><li>Is the server quiet even though users complain? (The failure may be before the cloud.)</li></ul></td>
+              <td><ul><li>Is client telemetry showing local inference time by hardware or driver?</li><li>Did a local model or driver update ship? What's its rollout percentage?</li><li>Are failures visible only in client telemetry? What's our coverage there?</li><li>Should we halt the client or model rollout? What's the health gate?</li></ul></td>
+              <td>Some users on [device/version] see slower quick tasks. Cloud features are unaffected.<br><br>A recent app update is failing for [X%] of users. The rollout is paused.</td></tr>
+            <tr><td><strong>Device Orchestrator (Local vs Cloud)</strong><br><span class="small">Client team (Nimbus: Client CFT)</span></td>
+              <td><b>Latency:</b> Cloud traffic and latency rise with no server change, because local answers are falling back to the cloud.<br><b>Errors:</b> Routing misconfiguration sends requests to the wrong place. A fallback surge triggers cloud 429s.</td>
+              <td><ul><li>Did the share of local answers drop (sweep 7)?</li><li>Is a client or local model rollout in progress right now?</li><li>Did 429s start at the same time as a client rollout?</li></ul></td>
+              <td><ul><li>What's the fallback rate by local model version? Does the rise follow the rollout curve?</li><li>Is the cloud sized for a fallback surge? Do we cap fallback traffic per version?</li><li>Was the routing policy changed? Is it canaried?</li><li>Is fallback rate part of the release gate?</li></ul></td>
+              <td>A device update is pushing extra work to the cloud, slowing [features]. We've paused the update and added capacity.<br><br>A routing change caused errors for [feature]. It has been reverted.</td></tr>
+            <tr><td><strong>Edge / CDN / WAF</strong><br><span class="small">Platform team (Nimbus: Cloud Infrastructure)</span></td>
+              <td><b>Latency:</b> Slow everywhere at once. Origin timeouts (504).<br><b>Errors:</b> 502/503/504 at the edge, 403 from WAF rules. Our services may look quiet.</td>
+              <td><ul><li>Is the edge 5xx rate up (sweep 3)?</li><li>Is it all regions or one?</li><li>Is App Insights unusually quiet while users can't connect?</li><li>Are there 403s? Did a security rule change?</li></ul></td>
+              <td><ul><li>Is the edge slow, or is it waiting on the origin behind it? Compare edge time with gateway time.</li><li>Any CDN, DNS, or certificate change?</li><li>What does the edge error info say (origin connection, timeout, probe)?</li><li>Can we roll back the WAF/CDN change safely? Who approves?</li></ul></td>
+              <td>Our internet entry point is slow for [regions]. The platform team is on it with the provider.<br><br>Many users can't connect because of a problem at our network entry point. We're rolling back a recent change.</td></tr>
+            <tr><td><strong>Gateway &amp; Auth</strong><br><span class="small">Platform team (Nimbus: Cloud Infrastructure)</span></td>
+              <td><b>Latency:</b> Added time in the gateway itself (policies, token validation).<br><b>Errors:</b> 401s (token rejected), 429s (rate limits), auth config changes, signing key rollover.</td>
+              <td><ul><li>Is it slow for all features?</li><li>Are 401s on all APIs or one (sweep 4)? One client version or all?</li></ul></td>
+              <td><ul><li>What's gateway time minus backend time? Did a policy change add work per request?</li><li>Which layer rejected the token? Cohort: everyone, one build, or scattered devices (clock skew)?</li><li>Did any secret, certificate, or policy change or expire?</li></ul></td>
+              <td>A gateway configuration is adding delay to all features.<br><br>Some users are being asked to sign in again or are blocked. We've found the configuration change and are reverting it.</td></tr>
+            <tr><td><strong>Cloud Orchestrator</strong><br><span class="small">Platform team (Nimbus: Cloud Infrastructure)</span></td>
+              <td><b>Latency:</b> Every feature slows together while models and services look normal inside.<br><b>Errors:</b> Errors across all features at once.</td>
+              <td><ul><li>Are all features slow at the same time?</li><li>Did errors start in all features at the same minute?</li></ul></td>
+              <td><ul><li>Is the orchestrator saturated, or is one feature exhausting it? Do we have per-feature bulkheads?</li><li>Was a routing change deployed? Is there a canary for routing changes?</li></ul></td>
+              <td>A shared routing component is slowing every feature. The platform team is scaling it.<br><br>A shared component failed and affected every feature. We've rolled it back.</td></tr>
+            <tr><td><strong>Feature Services &amp; Retrieval</strong><br><span class="small">Feature teams (Nimbus: feature CFTs)</span></td>
+              <td><b>Latency:</b> One feature slow. Retrieval slow. Bigger prompts. A stalled instance (Rust runtime).<br><b>Errors:</b> 5xx or panics in one feature, failing dependencies.</td>
+              <td><ul><li>Is it only one feature? Which one?</li><li>Is one instance much slower than others?</li><li>Did errors start after this team's deploy?</li></ul></td>
+              <td><ul><li>Where is the time: our code, retrieval, or the model call? Show me P50/P95 per hop.</li><li>Did prompts or context grow (token growth)? Did a deploy add work to the hot path?</li><li>Top exceptions and panics? Correlated with application_Version?</li><li>Can we degrade gracefully (answer without retrieval)?</li></ul></td>
+              <td>[Feature] is slower after a recent change. The team is rolling it back.<br><br>[Feature] is failing for [X%] of requests after a change. We're rolling it back.</td></tr>
+            <tr><td><strong>Partner Integrations</strong><br><span class="small">Integrations team (Nimbus: Partner Integrations CFT)</span></td>
+              <td><b>Latency:</b> One feature slow only for users of one partner. Partner API slow. Webhooks delayed.<br><b>Errors:</b> Partner 5xx, partner rate limits (429), expired OAuth tokens or consent (401), API/schema changes.</td>
+              <td><ul><li>Is it one partner or all partners?</li><li>What does the partner's status page say?</li><li>Are errors only for one partner's users?</li><li>Has the partner escalation contact been notified?</li></ul></td>
+              <td><ul><li>Are our timeouts to the partner shorter than our own latency budget?</li><li>Do we have a circuit breaker and a degraded mode per partner?</li><li>Is it partner-side (status page, their errors) or our connector (schema change, token refresh)?</li><li>Can we disable just this connector with a flag and keep the rest working?</li></ul></td>
+              <td>A third-party partner ([partner]) is slow, affecting [feature] for their users. We've switched to a fallback and contacted them.<br><br>[Partner] is having an outage. Users of [feature] with [partner] are affected. Nothing is wrong with our systems. We've disabled the integration temporarily and are working with the partner.</td></tr>
+            <tr><td><strong>Model Provider (Capacity &amp; Quota)</strong><br><span class="small">Platform team (Nimbus: Cloud Infrastructure, with Azure)</span></td>
+              <td><b>Latency:</b> Slow first token (queueing), longer outputs, region problems, capacity saturation.<br><b>Errors:</b> 429 throttling (noisy neighbor, retry storms), provider 5xx, content-filter blocks.</td>
+              <td><ul><li>Are 429s or model latency up on one deployment or all?</li><li>Is it 429 or 5xx? (Different owners and fixes.)</li><li>Is Azure status green?</li></ul></td>
+              <td><ul><li>First-token time up or generation time up? Which tells us capacity vs output length?</li><li>How close are we to quota at peak? Who is using it (tokens per minute by caller)?</li><li>Did the model version change (auto-upgrade)?</li><li>Is a background workload or retry storm consuming quota?</li><li>Should we fail over regions? What's the capacity and data-residency impact?</li></ul></td>
+              <td>Our AI provider capacity is saturated, so responses are slower. We're adding overflow capacity at about $[X] per hour.<br><br>Our AI provider is [throttling / failing]. We're [shifting load / failing over]. The provider has been engaged.</td></tr>
+            <tr><td><strong>Telemetry &amp; Visibility</strong><br><span class="small">Platform team (Nimbus: Cloud Infrastructure Observability)</span></td>
+              <td><b>Latency:</b> Charts lag or show gaps. Sampling hides the slow tail.<br><b>Errors:</b> Users complain while dashboards stay green. Traces break between layers.</td>
+              <td><ul><li>Did data volume drop (sweep 6)? Missing data looks like health.</li><li>Users complain, but our numbers look fine? Raise it anyway.</li></ul></td>
+              <td><ul><li>Is the collector healthy? Is sampling hiding the P95 tail?</li><li>Which part of the path is invisible to us? What would it take to see it?</li></ul></td>
+              <td>We have a gap in monitoring that delayed detection. Closing it is an action item.<br><br>Customers noticed before our monitoring did. We're fixing that blind spot.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="using-it-well">Using It Well</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Ask, Then Listen</h3><p>One question at a time. Let silence work. Junior engineers often need a few seconds before they answer.</p></div>
+        <div class="card"><h3>Curious, Not Interrogating</h3><p>"Help me understand…" lands better than "Why didn't you…". The goal is shared understanding.</p></div>
+        <div class="card"><h3>Ask Once, in the Channel</h3><p>During incidents, ask in the incident channel through the coordinator, not in DMs.</p></div>
+        <div class="card"><h3>Notice Missing Answers</h3><p>"We can't see that" is a finding. Write it down as a Sustain action.</p></div>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+<script src="../assets/questions.js"></script>
+</body>
+</html>

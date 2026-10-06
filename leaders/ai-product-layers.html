@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Know the Layers · Nimbus SRE</title>
+  <meta name="description" content="A plain-language mental model of an AI product's layers, from device to model provider and partners, with how latency and errors show up in each.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead-layers">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Learn</div>
+      <h1>Know the Layers</h1>
+      <p class="lede">Every request to an AI product passes through several layers, and each one can make it slow or make it fail. If you can say <em>which layer</em> a problem is in, you know who owns it, which questions to ask, and how to explain it to executives. This is the most useful mental model you can have.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>An AI product has <strong>nine layers</strong> to think about, from the user's device to the model provider, plus the telemetry that lets us see them.</li>
+          <li>Each layer has a <strong>typical latency signature</strong> and a <strong>typical error signature</strong>. Learn to recognize them.</li>
+          <li>Each layer has an <strong>owner</strong>. Locating the layer is half the incident.</li>
+        </ul>
+      </div>
+
+      <h2 id="the-stack">The Stack</h2>
+      <div class="layers-stack">
+        <div><span class="lnum">01</span><div class="lbody"><b>Device &amp; On-Device Model</b><span>The app on the PC, and a small local AI model for quick tasks.</span></div></div>
+        <div><span class="lnum">02</span><div class="lbody"><b>Device Orchestrator</b><span>Decides whether to answer locally or call the cloud. Falls back to the cloud if local fails.</span></div></div>
+        <div><span class="lnum">03</span><div class="lbody"><b>Edge / CDN / WAF</b><span>The internet entrance: security firewall, TLS, caching.</span></div></div>
+        <div><span class="lnum">04</span><div class="lbody"><b>Gateway &amp; Auth</b><span>Checks credentials, applies rate limits, routes requests.</span></div></div>
+        <div><span class="lnum">05</span><div class="lbody"><b>Cloud Orchestrator</b><span>A shared router that sends each request to the right feature.</span></div></div>
+        <div><span class="lnum">06</span><div class="lbody"><b>Feature Services &amp; Retrieval</b><span>Each team's code: builds the prompt, finds context, calls the model.</span></div></div>
+        <div class="partner"><span class="lnum">07</span><div class="lbody"><b>Partner Integrations</b><span>Third-party services: meeting platforms, productivity suites, OEM device APIs, partner AI skills.</span></div></div>
+        <div><span class="lnum">08</span><div class="lbody"><b>Model Provider</b><span>The AI model service: reserved and overflow capacity, quotas, model versions.</span></div></div>
+        <div><span class="lnum">09</span><div class="lbody"><b>Telemetry</b><span>How we see all of the above. If it's blind, everything is.</span></div></div>
+      </div>
+      <p>At Nimbus, the full architecture with team ownership is on <a href="../environment.html#architecture">Background: Nimbus</a>.</p>
+
+      <h2 id="why-ai-products-are-different">Why AI Products Are Different</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Slow Is Normal</h3><p>A healthy model call can take seconds. You have to know each feature's normal P50 and P95, or every number looks alarming.</p></div>
+        <div class="card"><h3>Capacity Is Shared and Rationed</h3><p>Model capacity is measured in tokens per minute and shared across teams. One team's batch job can throttle another team's customers.</p></div>
+        <div class="card"><h3>Two Places to Answer</h3><p>On-device and cloud. When the device path fails, the cloud quietly absorbs the load until it can't.</p></div>
+        <div class="card"><h3>Dependencies You Don't Control</h3><p>The model provider and partners can change, slow down, or fail, and your fix is to contain the damage.</p></div>
+        <div class="card"><h3>Quality Is a Failure Mode</h3><p>A fast, successful, wrong answer is still an incident. Watch user feedback as well as error rates.</p></div>
+        <div class="card"><h3>Changes Hide Everywhere</h3><p>Prompts, model versions, routing policies, and content filters are all changes, even when no code shipped.</p></div>
+      </div>
+
+      <h2 id="layer-by-layer">Layer by Layer</h2>
+      <p>For each layer: what it does, who owns it, and how latency and errors show up. The questions to ask are in the <a href="layers-framework.html#question-builder">Question Builder</a>.</p>
+      <div class="card-grid wide">
+        <div class="card"><span class="badge neutral">Layer 01</span><h3>Device &amp; On-Device Model</h3><p>The app on the user's machine, and a small local AI model that answers simple requests without the cloud.</p>
+          <span class="role-label">Owner</span><p>Client team (Nimbus: Client CFT)</p>
+          <span class="role-label">Latency Looks Like</span><p>Quick tasks slow on some devices. Slow app startup. The local model is slow on older hardware or a new driver.</p>
+          <span class="role-label">Errors Look Like</span><p>Crashes, local model failures, TLS/proxy failures that never reach the server, clock skew causing 401s.</p></div>
+        <div class="card"><span class="badge neutral">Layer 02</span><h3>Device Orchestrator (Local vs Cloud)</h3><p>Decides whether each request is answered on the device or sent to the cloud. If local fails, it falls back to the cloud.</p>
+          <span class="role-label">Owner</span><p>Client team (Nimbus: Client CFT)</p>
+          <span class="role-label">Latency Looks Like</span><p>Cloud traffic and latency rise with no server change, because local answers are falling back to the cloud.</p>
+          <span class="role-label">Errors Look Like</span><p>Routing misconfiguration sends requests to the wrong place. A fallback surge triggers cloud 429s.</p></div>
+        <div class="card"><span class="badge neutral">Layer 03</span><h3>Edge / CDN / WAF</h3><p>The internet-facing entrance: TLS, caching, and the firewall (WAF) in front of everything.</p>
+          <span class="role-label">Owner</span><p>Platform team (Nimbus: Cloud Infrastructure)</p>
+          <span class="role-label">Latency Looks Like</span><p>Slow everywhere at once. Origin timeouts (504).</p>
+          <span class="role-label">Errors Look Like</span><p>502/503/504 at the edge, 403 from WAF rules. Our services may look quiet.</p></div>
+        <div class="card"><span class="badge neutral">Layer 04</span><h3>Gateway &amp; Auth</h3><p>Checks credentials, applies rate limits, and routes requests.</p>
+          <span class="role-label">Owner</span><p>Platform team (Nimbus: Cloud Infrastructure)</p>
+          <span class="role-label">Latency Looks Like</span><p>Added time in the gateway itself (policies, token validation).</p>
+          <span class="role-label">Errors Look Like</span><p>401s (token rejected), 429s (rate limits), auth config changes, signing key rollover.</p></div>
+        <div class="card"><span class="badge neutral">Layer 05</span><h3>Cloud Orchestrator</h3><p>The shared router that sends each cloud request to the right feature service.</p>
+          <span class="role-label">Owner</span><p>Platform team (Nimbus: Cloud Infrastructure)</p>
+          <span class="role-label">Latency Looks Like</span><p>Every feature slows together while models and services look normal inside.</p>
+          <span class="role-label">Errors Look Like</span><p>Errors across all features at once.</p></div>
+        <div class="card"><span class="badge neutral">Layer 06</span><h3>Feature Services &amp; Retrieval</h3><p>Each team's code: builds the prompt, retrieves context, calls the model.</p>
+          <span class="role-label">Owner</span><p>Feature teams (Nimbus: feature CFTs)</p>
+          <span class="role-label">Latency Looks Like</span><p>One feature slow. Retrieval slow. Bigger prompts. A stalled instance (Rust runtime).</p>
+          <span class="role-label">Errors Look Like</span><p>5xx or panics in one feature, failing dependencies.</p></div>
+        <div class="card"><span class="badge neutral">Layer 07</span><h3>Partner Integrations</h3><p>Connectors to third-party services: meeting platforms, productivity suites, OEM device APIs, partner AI skills.</p>
+          <span class="role-label">Owner</span><p>Integrations team (Nimbus: Partner Integrations CFT)</p>
+          <span class="role-label">Latency Looks Like</span><p>One feature slow only for users of one partner. Partner API slow. Webhooks delayed.</p>
+          <span class="role-label">Errors Look Like</span><p>Partner 5xx, partner rate limits (429), expired OAuth tokens or consent (401), API/schema changes.</p></div>
+        <div class="card"><span class="badge neutral">Layer 08</span><h3>Model Provider (Capacity &amp; Quota)</h3><p>The AI model service: reserved capacity (PTU), overflow capacity, quotas, model versions.</p>
+          <span class="role-label">Owner</span><p>Platform team (Nimbus: Cloud Infrastructure, with Azure)</p>
+          <span class="role-label">Latency Looks Like</span><p>Slow first token (queueing), longer outputs, region problems, capacity saturation.</p>
+          <span class="role-label">Errors Look Like</span><p>429 throttling (noisy neighbor, retry storms), provider 5xx, content-filter blocks.</p></div>
+        <div class="card"><span class="badge neutral">Layer 09</span><h3>Telemetry &amp; Visibility</h3><p>The data we use to see all of the above: SDKs, collector, App Insights, logs, dashboards.</p>
+          <span class="role-label">Owner</span><p>Platform team (Nimbus: Cloud Infrastructure Observability)</p>
+          <span class="role-label">Latency Looks Like</span><p>Charts lag or show gaps. Sampling hides the slow tail.</p>
+          <span class="role-label">Errors Look Like</span><p>Users complain while dashboards stay green. Traces break between layers.</p></div>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enabling SRE Engineers · Nimbus SRE</title>
+  <meta name="description" content="Question ladders from junior to senior SRE engineers that bring out technical considerations about latency, errors, AI capacity, partners, and design.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead-sre">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Develop People</div>
+      <h1>Enabling SRE Engineers</h1>
+      <p class="lede">Your best tool for developing engineers is the question that makes them think one level deeper than they would on their own. You're not checking their work. You're <strong>raising the technical bar of the conversation</strong>, and for junior engineers, giving them the steps to climb it.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Use <strong>question ladders</strong>: start where the engineer is, then climb one rung at a time.</li>
+          <li>Learn the <strong>AI-specific prompts</strong> (tokens, first token, capacity, fallback, retries, model versions, partners). They spark the most useful thinking.</li>
+          <li>"I don't know" is a good answer if it's followed by <strong>"and here's how I'd find out"</strong>.</li>
+        </ul>
+      </div>
+
+      <h2 id="the-question-ladder">The Question Ladder</h2>
+      <p>Climb one rung at a time. A junior engineer may start at rung 1. A senior engineer should be comfortable at rungs 4 and 5.</p>
+      <ol class="steps">
+        <li><strong>Show Me</strong>"Can you show me the chart you're looking at?" This grounds the conversation in data.</li>
+        <li><strong>What's Normal?</strong>"What does this look like on a normal day? Yesterday at this time?"</li>
+        <li><strong>Where Is It?</strong>"Which layer is adding the time or the errors? How would you prove it's that layer?"</li>
+        <li><strong>What Else?</strong>"What else could explain the same chart? What's the cheapest way to rule it out?"</li>
+        <li><strong>What Would You Change?</strong>"If you could change the design so this can't happen, or so we'd see it in a minute, what would it be?"</li>
+      </ol>
+
+      <h2 id="ai-specific-prompts">AI-Specific Technical Prompts</h2>
+      <div class="card-grid wide">
+        <div class="card t-sre"><h3>Latency</h3><ul>
+          <li>"Is first-token time up, or generation time? What does each tell us?"</li>
+          <li>"Did input or output tokens grow? From a prompt change, retrieval chunks, or a model version?"</li>
+          <li>"How close to capacity (PTU / tokens per minute) are we at peak?"</li>
+          <li>"Is P50 moving, or only P95? Who's in the slow 5%?"</li></ul></div>
+        <div class="card t-sre"><h3>Error Rates</h3><ul>
+          <li>"Which layer returned it? Edge, gateway, ours, partner, or model?"</li>
+          <li>"Are we counting user-visible failures, or retried successes too?"</li>
+          <li>"Is it 429 (capacity) or 5xx (broken)? Different owners, different fixes."</li>
+          <li>"Are retries making it worse? How many calls per request now vs normal?"</li></ul></div>
+        <div class="card t-sre"><h3>Device &amp; Routing</h3><ul>
+          <li>"What's the local vs cloud split by client version? Did the fallback rate change?"</li>
+          <li>"Is fallback rate part of the rollout health gate?"</li>
+          <li>"Can the cloud absorb a 30% fallback surge? Where's that written down?"</li></ul></div>
+        <div class="card t-sre"><h3>Partners</h3><ul>
+          <li>"Is it the partner or our connector? How do we tell?"</li>
+          <li>"Are our timeouts to the partner shorter than our own latency budget?"</li>
+          <li>"Do we have a circuit breaker and a degraded mode per partner? Can we turn off one connector alone?"</li>
+          <li>"Which partner SLA applies, and are we tracking it?"</li></ul></div>
+        <div class="card t-sre"><h3>Resilience &amp; Design</h3><ul>
+          <li>"What's the blast radius if this layer fails? Which features go down with it?"</li>
+          <li>"Are background and interactive workloads isolated?"</li>
+          <li>"What's the most reversible mitigation? How fast can we undo it?"</li></ul></div>
+        <div class="card t-sre"><h3>Visibility</h3><ul>
+          <li>"What can't we see right now? What would it take to see it?"</li>
+          <li>"Is sampling hiding the tail?"</li>
+          <li>"Which alert would have caught this 10 minutes earlier?"</li></ul></div>
+      </div>
+
+      <h2 id="questions-by-context">Questions by Context</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Context</th><th>Questions that raise the bar</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Design / launch review</strong></td><td>"What's the latency budget for this, and how does it move P95?" · "What happens when the layer below is slow or returns 429?" · "How will the NOC know it's broken, and what will they do?" · "Is there a runbook and an owner on PagerDuty before launch?"</td></tr>
+            <tr><td><strong>Weekly review</strong></td><td>"Which layer's P95 moved most this week, and why?" · "Which error codes grew?" · "Anything trending toward a limit (quota, capacity, partner rate limits)?"</td></tr>
+            <tr><td><strong>Postmortem</strong></td><td>"Where did we lose the most time: detecting, locating, or deciding?" · "Which action changes the system rather than asking people to try harder?"</td></tr>
+            <tr><td><strong>1:1 growth</strong></td><td>"What's a layer you don't understand well yet? How could you learn it this month?" · "What did you explain to the NOC this week?"</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="when-they-say-i-dont-know">When They Say "I Don't Know"</h2>
+      <div class="wgb">
+        <div><span class="q-level q-weak">Don't</span><p>Show disappointment, answer for them, or move on to someone more senior. They'll stop saying "I don't know" and start guessing.</p></div>
+        <div><span class="q-level q-good">Do</span><p>"Good, that's honest. How would you find out?" Then wait. If they're stuck, offer the next rung of the ladder.</p></div>
+        <div><span class="q-level q-best">Best</span><p>Come back later: "What did you find?" Close the loop, and the learning sticks.</p></div>
+      </div>
+
+      <h2 id="protecting-their-focus">Protecting Their Focus</h2>
+      <p>During incidents your engineers are the Technical Lead. Ask your questions <strong>through the coordinator, in the channel</strong>, at update times. Keep executives and other leaders off their DMs. Save the deep "why" questions for the postmortem.</p>
+
+      <h2 id="centralized-sre-leverage">Centralized SRE: Giving Them Leverage</h2>
+      <p>Our SREs serve every CFT but own none of their backlogs. Back them with the <strong>"SRE advises, CFT owns"</strong> agreement, liaison roles, and production readiness checks, and escalate stalled reliability work with CFT leadership yourself. See <a href="../sre/index.html#centralized-sre">Centralized SRE: How We Work</a>.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

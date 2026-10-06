@@ -61,7 +61,7 @@ requests
 
       <h2 id="make-it-yours">Make It Yours</h2>
       <div class="panel">
-        <p style="margin-top:0">Type your environment's values. Every <mark class="p-nimbus">amber</mark> value on this site updates as you type, and copied queries include your values. Your values are saved in this browser only.</p>
+        <p>Type your environment's values. Every <mark class="p-nimbus">amber</mark> value on this site updates as you type, and copied queries include your values. Your values are saved in this browser only.</p>
         <form class="myq" id="myq" onsubmit="return false">
           <label>Service name (<code>cloud_RoleName</code>)<input data-param="role" placeholder="writing-assist-svc" autocomplete="off"></label>
           <label>Feature attribute key<input data-param="featureKey" placeholder="feature.experience" autocomplete="off"></label>
@@ -70,7 +70,7 @@ requests
           <label>Shared model deployment<input data-param="targetDeployment" placeholder="chat-small" autocomplete="off"></label>
           <label>First-token attribute key<input data-param="ttftKey" placeholder="nimbus.ttft_ms" autocomplete="off"></label>
         </form>
-        <p style="margin-bottom:0"><button type="button" class="link-btn" id="myq-reset">Reset to Nimbus defaults</button></p>
+        <p><button type="button" class="link-btn" id="myq-reset">Reset to Nimbus defaults</button></p>
       </div>
       <div class="callout tip">
         <div class="callout-title">Using these in Grafana</div>
@@ -168,6 +168,34 @@ customEvents
             top_reasons = make_set_if(reason, isnotempty(reason), 5) by model, bin(timestamp, 1h)
 | extend fallback_pct = round(100.0 * fallbacks / decisions, 2)
 | order by timestamp desc, fallback_pct desc</code></pre>
+      </div>
+
+      <h2 id="partner-integrations">Partner Integrations</h2>
+      <div class="code-card" id="q-partner-health">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">P50 / P95 and Errors by Partner<span class="answers">Is one partner slow or failing, or all of them?</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 6h;                                                                          // [TUNE] how far back to look
+let partnerHosts = dynamic(["api.zoom.us", "graph.microsoft.com", "oem-support.example"]); // [NIMBUS] partner API hostnames
+// ── Query ──────────────────────────────────
+dependencies
+| where timestamp > ago(window) and target has_any (partnerHosts)
+| summarize calls = sum(itemCount), p50_ms = percentile(duration, 50), p95_ms = percentile(duration, 95),
+            failed = sumif(itemCount, success == false) by target, bin(timestamp, 15m)
+| extend fail_pct = round(100.0 * failed / calls, 2)
+| order by timestamp desc, fail_pct desc</code></pre>
+      </div>
+      <div class="code-card" id="q-partner-auth">
+        <div class="code-head"><span class="lang">KQL</span><span class="title">Partner 401 / 429 / 5xx Breakdown<span class="answers">Expired auth, rate limits, or a partner outage?</span></span></div>
+<pre><code>// ── Parameters ─────────────────────────────
+let window = 6h;                                                                          // [TUNE] how far back to look
+let partnerHosts = dynamic(["api.zoom.us", "graph.microsoft.com", "oem-support.example"]); // [NIMBUS] partner API hostnames
+// ── Query ──────────────────────────────────
+dependencies
+| where timestamp > ago(window) and target has_any (partnerHosts) and success == false
+| extend kind = case(resultCode == "401", "401 auth (token/consent)", resultCode == "429", "429 partner rate limit",
+                     toint(resultCode) >= 500, "5xx partner failure", "other")
+| summarize failures = sum(itemCount), first_seen = min(timestamp) by target, kind
+| order by failures desc</code></pre>
       </div>
 
       <h2 id="errors">Errors</h2>

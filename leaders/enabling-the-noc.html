@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Enabling the NOC · Nimbus SRE</title>
+  <meta name="description" content="How a senior manager can grow an offshore, lower-technical NOC: plain English, scripts, a competency ladder, the Triage or Incident decision, and coaching across time zones.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead-noc">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Develop People</div>
+      <h1>Enabling the NOC</h1>
+      <p class="lede">Our NOC is offshore, works in a second language for many, and is still building technical depth. They also run every declared incident. That combination fails if we expect expert judgment, and works well if we give them <strong>clear scripts, simple decisions, plain English, and safety to escalate</strong>. Your questions are the main tool for growing them.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Replace judgment calls with <strong>scripts and yes/no questions</strong>, such as the <a href="../noc/triage-and-escalate.html#triage-or-incident">Triage or Incident?</a> check.</li>
+          <li>Use <strong>plain English</strong>: short sentences, no idioms, one idea per line, numbers instead of adjectives.</li>
+          <li>Grow them up a <strong>competency ladder</strong>: Observe → Compare → Locate → Escalate Well → Suggest.</li>
+          <li>Protect one rule above all: <strong>nobody is criticized for declaring or escalating</strong>.</li>
+        </ul>
+      </div>
+
+      <h2 id="principles">Principles</h2>
+      <div class="card-grid">
+        <div class="card t-noc"><h3>Scripts Over Judgment</h3><p>Turn every recurring decision into a checklist or yes/no question. Judgment grows from repetition, not from being thrown in.</p></div>
+        <div class="card t-noc"><h3>Plain English</h3><p>Short sentences. No idioms ("ballpark", "on fire"). Numbers, not "a lot". Templates they can fill in.</p></div>
+        <div class="card t-noc"><h3>See the Layers</h3><p>Put the <a href="ai-product-layers.html#the-stack">layer stack</a> on the wall. "Which layer?" is easier with a picture.</p></div>
+        <div class="card t-noc"><h3>Safe to Escalate</h3><p>Early escalation is praised, always. A NOC afraid of being wrong escalates late, and late is expensive.</p></div>
+        <div class="card t-noc"><h3>Explain the Why</h3><p>When you redirect, explain why in one line. That's how rules turn into understanding.</p></div>
+        <div class="card t-noc"><h3>Respect the Time Zone</h3><p>They often handle the first hour alone. Make sure the runbooks, contacts, and PagerDuty routes work without anyone awake on our side.</p></div>
+      </div>
+
+      <h2 id="competency-ladder">The NOC Competency Ladder</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Level</th><th>The NOC can…</th><th>Your coaching question</th><th>You know they're there when…</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1 · Observe</strong></td><td>Run the shift sweep and report numbers accurately</td><td>"What's the number now? Show me the screen."</td><td>Handoffs include numbers and start times</td></tr>
+            <tr><td><strong>2 · Compare</strong></td><td>Compare against yesterday or the baseline, and say whether it's normal</td><td>"Is that normal for this hour? How do you know?"</td><td>They say "2× normal" instead of "high"</td></tr>
+            <tr><td><strong>3 · Locate</strong></td><td>Name the likely layer and the owner from the which-layer table</td><td>"Which layer do you think this is? Why?"</td><td>First pages go to the right owner more than 80% of the time</td></tr>
+            <tr><td><strong>4 · Escalate Well</strong></td><td>Declare correctly, page through PagerDuty, and write a complete brief</td><td>"What does the Technical Lead need to know in one message?"</td><td>SRE rarely has to ask follow-up questions</td></tr>
+            <tr><td><strong>5 · Suggest</strong></td><td>Recommend a pre-agreed request, or spot a pattern across shifts</td><td>"What would you request, and from whom?"</td><td>They propose runbook and alert improvements</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="triage-or-incident-coaching">Coaching "Triage or Incident?"</h2>
+      <p>The NOC's hardest call is often whether something is an incident at all. Give them the <a href="../noc/triage-and-escalate.html#triage-or-incident">three-state check</a> (Watch, Triage, Incident) and its four questions: <strong>Users? Size and time? Spread? Need help?</strong>, with a <strong>15-minute triage time box</strong>. Then:</p>
+      <ul class="checklist" data-key="lead-noc-triage">
+        <li>Run a <strong>weekly 15-minute review</strong> of triage threads: which should have been incidents, and which were noise.</li>
+        <li>Praise every early declaration in public, even the ones that turned out to be nothing.</li>
+        <li>Track <strong>missed declarations</strong> (a triage that became Sev 1–2 late) and <strong>time from first signal to declare</strong>.</li>
+        <li>When a call was wrong, ask "What would have helped you decide?" Never ask "Why didn't you?"</li>
+      </ul>
+
+      <h2 id="layers-for-the-noc">LAYERS for the NOC</h2>
+      <p>Use the NOC versions of each step. They're observable, often yes/no, and easy to answer in a second language.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Step</th><th>Ask the NOC</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Locate</strong></td><td>"Which feature? One, or many?" · "One client version, one region, one partner, or everyone?"</td></tr>
+            <tr><td><strong>Assess</strong></td><td>"What is the number now? What is normal?" · "Better, worse, or the same as 15 minutes ago?"</td></tr>
+            <tr><td><strong>Yesterday</strong></td><td>"Same time yesterday?" · "Any release or partner notice today?" · "What time did it start?"</td></tr>
+            <tr><td><strong>Evidence</strong></td><td>"Which query shows it? Paste the link." · "Did two checks agree?"</td></tr>
+            <tr><td><strong>Response</strong></td><td>"Who owns it? Paged when?" · "Which pre-agreed request fits?" · "Next update time?"</td></tr>
+            <tr><td><strong>Sustain</strong></td><td>"What would have helped you see this earlier?" · "Which runbook should we fix?"</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="plain-english-templates">Plain-English Templates</h2>
+      <div class="code-card">
+        <div class="code-head"><span class="lang">Text</span><span class="title">NOC Status Line<span class="answers">One line, every update</span></span></div>
+<pre><code>[TIME] [FEATURE] [LAYER if known]: [NUMBER now] vs [NUMBER normal]. Trend: [up/down/flat]. Owner paged: [team, time]. Next check: [time].</code></pre>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Instead of</th><th>Write</th></tr></thead>
+          <tbody>
+            <tr><td>"Things look pretty bad on Device Care."</td><td>"Device Care errors: 9%. Normal: 0.6%. Since 14:05."</td></tr>
+            <tr><td>"Can someone take a look ASAP?"</td><td>"@Device on-call: please check Device Care errors now. I will check again at 14:30."</td></tr>
+            <tr><td>"It's kind of slow."</td><td>"Writing Assist P95: 14 seconds. Normal: 6 seconds."</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="coaching-rhythm">Coaching Rhythm</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>When</th><th>What</th></tr></thead>
+          <tbody>
+            <tr><td>After every incident</td><td>One thing they did well, and one skill to try next time. In writing, in plain English.</td></tr>
+            <tr><td>Weekly (overlapping hours)</td><td>15-minute triage-thread review, plus one noisy alert turned into a runbook.</td></tr>
+            <tr><td>Monthly</td><td>A tabletop where the NOC coordinates. Place each person on the competency ladder.</td></tr>
+            <tr><td>Quarterly</td><td>Review the NOC tooling roadmap (moving from requesting actions to doing them), and celebrate level-ups.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="measuring-progress">Measuring Progress</h2>
+      <ul>
+        <li><strong>Time from first signal to declare</strong>: trending down.</li>
+        <li><strong>First page to the right owner</strong>: above 80%.</li>
+        <li><strong>Handoff completeness</strong>: SRE follow-up questions per incident trending down.</li>
+        <li><strong>Missed declarations</strong>: rare, and each one reviewed blamelessly.</li>
+        <li><strong>Runbooks contributed by the NOC</strong>: rising.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

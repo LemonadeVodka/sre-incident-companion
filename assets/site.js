@@ -28,9 +28,16 @@
     ]},
     { group: "Senior Manager", track: "lead", items: [
       { id: "lead", href: "leaders/index.html", title: "Manager Path" },
+      { id: "lead-layers", href: "leaders/ai-product-layers.html", title: "Know the Layers" },
+      { id: "lead-primer", href: "leaders/latency-and-errors.html", title: "Latency & Errors Primer" },
+      { id: "lead-framework", href: "leaders/layers-framework.html", title: "The LAYERS Framework" },
+      { id: "lead-noc", href: "leaders/enabling-the-noc.html", title: "Enabling the NOC" },
+      { id: "lead-sre", href: "leaders/enabling-sre.html", title: "Enabling SRE Engineers" },
+      { id: "lead-exec", href: "leaders/executive-updates.html", title: "Updating Executives" },
       { id: "lead-during", href: "leaders/during-an-incident.html", title: "During an Incident" },
+      { id: "lead-post", href: "leaders/post-incident.html", title: "Post-Incident Actions" },
       { id: "lead-scenarios", href: "leaders/scenarios.html", title: "Scenarios in Plain English" },
-      { id: "lead-after", href: "leaders/after-and-between.html", title: "After & Between Incidents" },
+      { id: "lead-after", href: "leaders/after-and-between.html", title: "Operating Rhythm" },
       { id: "lead-invest", href: "leaders/investing.html", title: "Investing in Reliability" },
       { id: "lead-jargon", href: "leaders/jargon.html", title: "Jargon Decoder" }
     ]},
@@ -102,11 +109,11 @@
     var themeBtn = header.querySelector(".theme-btn");
     var isDark = function () {
       var t = document.documentElement.getAttribute("data-theme");
-      return t === "dark";
+      return t !== "light";
     };
     var paintTheme = function () {
       themeBtn.innerHTML = isDark() ? SUN : MOON;
-      themeBtn.setAttribute("aria-label", isDark() ? "Switch to newsprint edition" : "Switch to night edition"); themeBtn.title = isDark() ? "Newsprint edition" : "Night edition";
+      themeBtn.setAttribute("aria-label", isDark() ? "Switch to Day Ops theme" : "Switch to Night Ops theme"); themeBtn.title = isDark() ? "Day Ops" : "Night Ops";
     };
     paintTheme();
     themeBtn.addEventListener("click", function () {

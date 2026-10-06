@@ -66,12 +66,12 @@
   }
   function render() {
     var roles = state.role === "all" ? ["noc", "sre", "lead"] : [state.role];
-    var html = '<div class="seg-row"><span><b>Level</b></span>' + seg("level", LEVELS, state.level) +
-      '<span><b>Role</b></span>' + seg("role", { all: "All", noc: "NOC", sre: "SRE", lead: "Manager" }, state.role) + "</div>";
-    html += '<div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">' + Q.map(function (d) {
+    var html = '<div class="seg-row"><span class="seg-label">Level</span>' + seg("level", LEVELS, state.level) +
+      '<span class="seg-label">Role</span>' + seg("role", { all: "All", noc: "NOC", sre: "SRE", lead: "Manager" }, state.role) + "</div>";
+    html += '<div class="card-grid wide">' + Q.map(function (d) {
       return '<div class="card"><span class="q-level q-' + state.level + '">' + LEVELS[state.level] + '</span><h3>' + esc(d.name) + "</h3>" +
-        roles.map(function (r) { return '<p style="margin:.5em 0 0"><b style="font-family:var(--ui);font-size:.8rem">' + ROLES[r] + "</b><br>" + esc(d[state.level][r]) + "</p>"; }).join("") +
-        '<p style="margin-top:.7em;font-size:.82rem"><i>At Nimbus: ' + esc(d.nimbus) + "</i></p></div>";
+        roles.map(function (r) { return '<span class="role-label">' + ROLES[r] + "</span><p>" + esc(d[state.level][r]) + "</p>"; }).join("") +
+        '<p class="nimbus-note">At Nimbus: ' + esc(d.nimbus) + "</p></div>";
     }).join("") + "</div>";
     app.innerHTML = html;
     try { localStorage.setItem("nimbus-quality", JSON.stringify(state)); } catch (e) { /* ignore */ }

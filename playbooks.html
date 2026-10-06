@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Starter Playbooks · Nimbus SRE</title>
-  <meta name="description" content="Nine starter playbooks for the most likely Nimbus incidents, each with NOC, SRE, and manager actions.">
+  <meta name="description" content="Ten starter playbooks for the most likely Nimbus incidents, each with NOC, SRE, and manager actions.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -19,7 +19,7 @@
       <div class="breadcrumb"><a href="index.html">Home</a> / Shared toolkit</div>
       <div class="eyebrow">Shared · all roles</div>
       <h1>Starter Playbooks</h1>
-      <p class="lede">We're a new team without many runbooks yet. These nine <strong>starter playbooks</strong> cover the incidents we expect most. They aren't battle-tested: improve them after every incident, and copy one as the starting point for a new runbook.</p>
+      <p class="lede">We're a new team without many runbooks yet. These ten <strong>starter playbooks</strong> cover the incidents we expect most. They aren't battle-tested: improve them after every incident, and copy one as the starting point for a new runbook.</p>
       <div class="tldr">
         <ul>
           <li>Every playbook has the same shape: <strong>Symptoms → Check First → Likely Causes → Verify</strong>, then <strong>NOC Coordinates → SRE Leads → Manager Lens</strong>, then <strong>Weak / Good / Best</strong> and <strong>Postmortem Focus</strong>.</li>
@@ -45,6 +45,7 @@
         <a class="card" href="#pb-cdn-edge"><span class="badge neutral">Edge</span><h3>CDN / Front Door Errors</h3><p>Owner: Cloud Infrastructure</p></a>
         <a class="card" href="#pb-401-surge"><span class="badge neutral">Auth</span><h3>401 Surge</h3><p>Owner: Cloud Infrastructure / Client CFT</p></a>
         <a class="card" href="#pb-fallback-surge"><span class="badge neutral">Device</span><h3>Local-to-Cloud Fallback Surge</h3><p>Owner: Client CFT + Cloud Infrastructure</p></a>
+        <a class="card" href="#pb-partner-degraded"><span class="badge neutral">Partner</span><h3>Partner Integration Degraded</h3><p>Owner: Partner Integrations CFT</p></a>
       </div>
 
       <section class="playbook" id="pb-latency-one-feature">
@@ -206,6 +207,24 @@
           <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "Did a device or model update go out, and are both teams on it?" Decide: hold the device release, and approve temporary cloud spend.</div></div>
           <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>The cloud teams fight 429s while nobody looks at devices.</p></div><div><span class="q-level q-good">Good</span><p>The fallback rate is correlated with the rollout, the rollout is halted, and capacity is added. Both teams work together.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus the fallback rate is a rollout health gate, and the cloud caps fallback traffic per version.</p></div></div></div></div>
           <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>Why wasn't fallback rate a release gate? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
+        </div>
+      </section>
+
+      <section class="playbook" id="pb-partner-degraded">
+        <div class="playbook-head">
+          <h2>Partner Integration Degraded</h2>
+          <div class="meta"><span class="badge sev2">Sev 2–3 (one feature, one partner)</span><span class="badge neutral">Owner: Partner Integrations CFT</span><span class="badge neutral">Starter · improve after use</span></div>
+        </div>
+        <div class="playbook-body">
+          <div class="pb-section"><div class="pb-label">Symptoms</div><div><ul><li>One feature fails or slows only for users of one partner (for example Meeting Recap with Zoom).</li><li>Partner dependency latency or errors rise. Other partners and features are normal.</li><li>Partner 401s (expired OAuth or consent) or 429s (partner rate limits).</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Check first</div><div><ol><li><a href="queries.html#q-partner-health">P50/P95 and errors by partner</a>: one partner or all?</li><li><a href="queries.html#q-partner-auth">Partner 401/429 breakdown</a>: auth, limits, or partner outage?</li><li>The partner's status page and any partner notices (API changes, deprecations).</li><li><a href="sre/investigate.html#q-activity">Who changed what</a> and our connector deploys: did we change the connector?</li></ol></div></div>
+          <div class="pb-section"><div class="pb-label">Likely causes</div><div><ul><li>A partner outage or degradation.</li><li>Partner API or schema change breaking our connector.</li><li>OAuth token refresh or consent expiry (401).</li><li>Hitting partner rate limits (429), often from retries.</li><li>Webhook delays on the partner side.</li></ul></div></div>
+          <div class="pb-section"><div class="pb-label">Verify</div><div>Partner dependency errors and latency back to baseline, or the connector cleanly disabled with a user-facing fallback.</div></div>
+          <div class="pb-section role-row noc"><div class="pb-label">NOC coordinates</div><div>Declare and coordinate. Check the partner's status page, notify the partner contact, and page the Partner Integrations CFT plus SRE. If the partner is down, request the per-partner kill switch from the Partner Integrations CFT.</div></div>
+          <div class="pb-section role-row sre"><div class="pb-label">SRE leads</div><div>Separate partner-side from connector-side. Recommend disabling just that connector with a graceful fallback. Check that timeouts and the circuit breaker kept the rest of the feature healthy.</div></div>
+          <div class="pb-section role-row lead"><div class="pb-label">Manager lens</div><div>Ask: "Partner or us? Who owns the partner relationship right now?" Decide: disable the integration, approve messaging that names the partner, and escalate through the partner's account or executive contact.</div></div>
+          <div class="pb-section"><div class="pb-label">Weak / Good / Best</div><div><div class="wgb"><div><span class="q-level q-weak">Weak</span><p>We debug our own code for an hour while the partner's status page shows an outage.</p></div><div><span class="q-level q-good">Good</span><p>The partner layer is located quickly, the connector disabled with a fallback, and the partner engaged through their escalation path.</p></div><div><span class="q-level q-best">Best in Class</span><p>Everything in Good, plus per-partner circuit breakers, synthetic checks against each partner, SLA tracking, and a quarterly partner review.</p></div></div></div></div>
+          <div class="pb-section"><div class="pb-label">Postmortem focus</div><div>Did our design contain the partner failure, or did it spread? Is the partner meeting its SLA? <a href="postmortems/template.html">Start the postmortem →</a></div></div>
         </div>
       </section>
     </article>

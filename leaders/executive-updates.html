@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Updating Executives · Nimbus SRE</title>
+  <meta name="description" content="How senior managers brief executive leadership on AI reliability: BLUF, SITREP templates, translating latency and error metrics into business impact, confidence language, and a SITREP builder.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="lead-exec">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">Nimbus SRE</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../noc/index.html">NOC track</a><a href="../sre/index.html">SRE track</a><a href="../leaders/index.html">Manager track</a><a href="../playbooks.html">Playbooks</a><a href="../queries.html">Queries</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Report Upward</div>
+      <h1>Updating Executives</h1>
+      <p class="lede">Executives need three things: <strong>what it means for customers and the business</strong>, <strong>how confident we are</strong>, and <strong>whether they need to decide anything</strong>. Give them that, briefly and on a schedule, and they stop reaching past you into the incident.</p>
+
+      <div class="tldr">
+        <ul>
+          <li>Lead with the <strong>BLUF</strong> (bottom line up front): one sentence on impact, status, and any decision needed.</li>
+          <li>Follow with a <strong>SITREP</strong>: Situation, Impact, Cause (with confidence), Actions, Decisions Needed, Next Update.</li>
+          <li><strong>Translate metrics</strong> into user terms. Never send a raw chart without a sentence explaining it.</li>
+          <li>Say how confident you are, honestly: <strong>known, likely, or unknown</strong>.</li>
+        </ul>
+      </div>
+
+      <h2 id="translate-the-metrics">Translate the Metrics</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Engineers say</th><th>Executives hear</th></tr></thead>
+          <tbody>
+            <tr><td>"P95 latency is 14 s (normal 6 s)."</td><td>"1 in 20 Writing Assist users is waiting more than twice as long as usual."</td></tr>
+            <tr><td>"Error rate is 9% (baseline 0.6%)."</td><td>"About 1 in 11 Device Care requests is failing. Normally it's fewer than 1 in 100."</td></tr>
+            <tr><td>"429s on chat-small."</td><td>"We've hit our AI capacity limit for this feature, so some requests are being turned away."</td></tr>
+            <tr><td>"401s on client 4.13.0."</td><td>"Users on the newest app version are being asked to sign in again. The rollout is paused."</td></tr>
+            <tr><td>"Edge 5xx, OriginConnectionError."</td><td>"Many users can't connect, because of a problem at our network entry point."</td></tr>
+            <tr><td>"Zoom connector 5xx, partner status degraded."</td><td>"A partner (Zoom) is having an outage. Meeting Recap for Zoom users is affected. Our systems are fine."</td></tr>
+            <tr><td>"Fallback rate 31% on local model v2.3."</td><td>"A device update is failing and pushing extra work to the cloud. That update is paused."</td></tr>
+            <tr><td>"Burn rate 14×."</td><td>"At this rate we'd use a month's reliability allowance in two days."</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="confidence-language">Confidence Language</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Known</h3><p>"We have confirmed…" Use only when the data shows it and the fix proved it.</p></div>
+        <div class="card"><h3>Likely</h3><p>"We believe… and are confirming by [time]." The honest default mid-incident.</p></div>
+        <div class="card"><h3>Unknown</h3><p>"We don't yet know the cause. Our leading theory is X, and we'll update at [time]." Better than false certainty.</p></div>
+      </div>
+
+      <h2 id="sitrep-builder">SITREP Builder</h2>
+      <p>Fill in what you know. The SITREP updates as you type. Copy it into email, Teams, or Slack. Your draft stays in this browser only.</p>
+      <form id="sitrep-form" class="pm-form" onsubmit="return false">
+        <div class="myq">
+          <label>Type<select name="type"><option value="live">Live incident</option><option value="post">Post-incident</option><option value="weekly">Weekly reliability</option></select></label>
+          <label>Severity<select name="sev"><option value="">—</option><option>Sev 1</option><option>Sev 2</option><option>Sev 3</option></select></label>
+          <label>Short name<input name="title" placeholder="Device Care slow responses"></label>
+          <label>As of (time)<input name="time" placeholder="14:30 UTC"></label>
+          <label>Feature<input name="feature" placeholder="Device Care"></label>
+          <label>Symptom<input name="symptom" placeholder="failing for some requests"></label>
+          <label>Impact<input name="impact" placeholder="about 9% of Device Care requests"></label>
+          <label>Duration<input name="duration" placeholder="45 minutes"></label>
+          <label>Normal / baseline<input name="baseline" placeholder="under 1%"></label>
+          <label>Status<select name="status"><option>Investigating</option><option>Mitigating</option><option>Monitoring recovery</option><option>Resolved</option></select></label>
+          <label>Confidence in cause<select name="conf"><option value="medium">Likely</option><option value="high">Known</option><option value="low">Unknown</option></select></label>
+          <label>Next update<input name="next" placeholder="15:00 UTC"></label>
+          <label>Expected recovery<input name="eta" placeholder="within 30 minutes"></label>
+        </div>
+        <label>Situation (plain language, which layer)<textarea name="situation" rows="2" placeholder="Our AI capacity for Device Care is full because a background job is using it."></textarea></label>
+        <label>Cause<input name="cause" placeholder="a background batch job is consuming shared AI capacity"></label>
+        <label>Actions (who is doing what)<textarea name="actions" rows="2" placeholder="Paused the batch job (Insights team); adding overflow capacity (Cloud Infrastructure)."></textarea></label>
+        <label>Decision needed from executives (optional)<input name="decision" placeholder="approve overflow capacity at about $900/hour"></label>
+        <label>Prevention (post-incident)<textarea name="prevent" rows="2" placeholder="Separate capacity for background work (Nov 1); alert at 80% capacity (Oct 8)."></textarea></label>
+        <label>Weekly summary (weekly type)<textarea name="summary" rows="2" placeholder="Reliability met target for 4 of 5 features; Meeting Recap missed due to a partner outage."></textarea></label>
+      </form>
+      <div class="hero-actions no-print">
+        <button type="button" class="btn primary" id="sitrep-copy">Copy SITREP</button>
+        <button type="button" class="btn" id="sitrep-clear">Clear</button>
+      </div>
+      <div class="code-card"><div class="code-head"><span class="lang">SITREP</span><span class="title">Preview<span class="answers">BLUF first, then the details</span></span></div><pre><code id="sitrep-out"></code></pre></div>
+
+      <h2 id="cadence">Cadence</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Situation</th><th>Send</th><th>When</th></tr></thead>
+          <tbody>
+            <tr><td>Sev 1</td><td>Live SITREP</td><td>Within 30 min of declaring, then every 30 min</td></tr>
+            <tr><td>Sev 2 with executive interest</td><td>Live SITREP</td><td>At declaration, at mitigation, at resolution</td></tr>
+            <tr><td>After Sev 1–2</td><td>Post-incident SITREP</td><td>Within 24 hours (see <a href="post-incident.html">Post-Incident Actions</a>)</td></tr>
+            <tr><td>Every week</td><td>Weekly reliability note</td><td>Same day each week, three to five lines</td></tr>
+            <tr><td>Every quarter</td><td>Reliability report</td><td>SLO attainment, top incidents, partner reliability, investments needed</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="when-executives-dive-in">When Executives Dive In</h2>
+      <p>Some leaders, under pressure from above, dive into the details: they ask for raw queries, message engineers directly, or open side calls. (At Nimbus, this is <a href="../environment.html#the-people">Morgan, the director</a> in our background story.) Your job is to be the <strong>comms buffer</strong>:</p>
+      <ul>
+        <li>Get ahead of them with a SITREP before they ask.</li>
+        <li>Offer a direct line: "I'll update you every 30 minutes. The team needs to stay heads-down."</li>
+        <li>Give them a real job: a decision, or an escalation to another org's leadership or a partner's executive.</li>
+        <li>Afterwards, raise it neutrally in the postmortem as a process gap (no exec update format), never as a person.</li>
+      </ul>
+      <p class="script">"I'll be your single point of contact. You'll get a SITREP from me every 30 minutes. Could you help us get the partner's VP on the phone? That's our biggest blocker right now."</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+<script src="../assets/exec-update.js"></script>
+</body>
+</html>

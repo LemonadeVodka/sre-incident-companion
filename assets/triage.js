@@ -15,6 +15,7 @@
         { label: "Error Rate Is High", sub: "Failures, 4xx/5xx, exceptions", go: "err_type" },
         { label: "Everything Is Failing at Once", sub: "All features, \"can't connect\"", go: "r_cdn" },
         { label: "Cloud Load Up With No Server Change", sub: "429s/traffic climbing, maybe after a client or model rollout", go: "r_fallback" },
+        { label: "One Partner Integration Failing", sub: "Only users of one partner (e.g. Zoom) affected", go: "r_partner" },
         { label: "Users Complain, Signals Look Fine", sub: "Support tickets, quiet telemetry", go: "r_blind" },
         { label: "An Alert Fired and I Don't Know Why", sub: "Unfamiliar alert, unclear owner", go: "r_alert" },
         { label: "I'm a Manager Joining", sub: "What should I do and ask?", go: "r_leader" }
@@ -72,6 +73,12 @@
       noc: ["Check what client or on-device model version is ramping.", "Send the halt-rollout request to the Client CFT.", "Declare, page Cloud Infrastructure and SRE, and get both teams into one channel."],
       sre: ["Confirm with the fallback rate by local model version, and the local vs cloud split.", "Recommend capacity or background-load shedding to Cloud Infrastructure.", "Check which features are absorbing the extra cloud load."],
       links: [["Playbook: fallback surge", "playbooks.html#pb-fallback-surge"], ["Fallback rate", "queries.html#q-fallback-rate"], ["Routing split", "queries.html#q-routing-split"]]
+    },
+    r_partner: {
+      title: "Partner Integration Degraded",
+      noc: ["Check the partner's status page, and confirm only that partner's users are affected.", "Declare and page the Partner Integrations CFT and SRE. Notify the partner contact.", "If the partner is down, request the per-partner kill switch from the Partner Integrations CFT."],
+      sre: ["Partner-side or our connector? Check 401 (token/consent), 429 (rate limit), or 5xx (outage).", "Recommend disabling only that connector, with a user-facing fallback.", "Confirm timeouts and the circuit breaker kept the rest of the feature healthy."],
+      links: [["Playbook: partner degraded", "playbooks.html#pb-partner-degraded"], ["Partner health", "queries.html#q-partner-health"], ["Partner 401/429", "queries.html#q-partner-auth"]]
     },
     r_alert: {
       title: "Unknown Alert: Make It Known in 5 Minutes",
@@ -145,8 +152,8 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function list(title, cls, items) {
     if (!items || !items.length) return "";
-    return '<div class="leader ' + cls + '" style="margin:12px 0"><div class="leader-head" style="padding:8px 14px">' + title + '</div>' +
-      '<div class="leader-grid" style="padding:8px 14px 2px"><ol>' + items.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ol></div></div>";
+    return '<div class="leader ' + cls + '"><div class="leader-head">' + title + '</div>' +
+      '<div class="leader-grid"><ol>' + items.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ol></div></div>";
   }
 
   function render(id) {
@@ -164,7 +171,7 @@
       html += '<div class="triage-result"><h3 tabindex="-1">' + esc(r.title) + "</h3>" +
         list("NOC Coordinator: Do Now", "noc", r.noc) + list("SRE Technical Lead: Investigate", "sre", r.sre) + list("Manager: Do and Ask", "lead", r.lead) +
         '<div class="triage-links">' + r.links.map(function (l) { return '<a class="btn" href="' + root + l[1] + '">' + esc(l[0]) + "</a>"; }).join("") + "</div>" +
-        '<p class="triage-help" style="margin-top:12px">No playbook fits? Follow the <a href="' + root + 'sre/investigate.html#method-when-there-is-no-runbook">no-runbook method</a> and write one afterwards.</p></div>';
+        '<p class="triage-help">No playbook fits? Follow the <a href="' + root + 'sre/investigate.html#method-when-there-is-no-runbook">no-runbook method</a> and write one afterwards.</p></div>';
     }
     if (history.length) html += '<div class="triage-nav"><button type="button" class="link-btn" data-act="back">← Back</button><button type="button" class="link-btn" data-act="restart">Start Over</button></div>';
     app.innerHTML = html;

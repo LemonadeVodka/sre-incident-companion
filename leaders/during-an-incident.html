@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Manager: During an Incident · Nimbus SRE</title>
-  <meta name="description" content="What a senior manager should do, ask, avoid, and decide during a Nimbus incident.">
+  <title>During an Incident · Nimbus SRE</title>
+  <meta name="description" content="What a senior manager does, asks, avoids, and decides during an incident, using the LAYERS framework in live mode.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
@@ -17,119 +17,98 @@
   <main class="content" id="main">
     <article class="prose">
       <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Senior Manager</a></div>
-      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, unblock, follow through</div>
+      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Live Operations</div>
       <h1>During an Incident</h1>
-      <p class="lede">You don't need to read KQL to make an incident go better. Make sure the response is organized, make the decisions only you can make, and protect the people doing the work.</p>
+      <p class="lede">In a live incident, your job is to make sure the response is organized, to ask the few questions that sharpen it, to make the decisions only you can make, and to keep executives informed so they don't reach into the room.</p>
       <div class="tldr">
         <ul>
-          <li>Ask four questions, once: <strong>Who is coordinating (the NOC IC)? What's the impact in numbers? What's the mitigation and next update? What do you need from me?</strong></li>
-          <li>Your unique value is in <strong>decisions</strong>: spend, quality trade-offs, customer messaging, and pulling in people.</li>
-          <li>You are the <strong>top rung of the escalation ladder</strong> when CFTs don't respond.</li>
-          <li><strong>Don't dive into the weeds</strong>, and help other leaders not to. See <a href="#when-a-leader-dives-too-deep">When a Leader Dives Too Deep</a>.</li>
+          <li>First check that a <strong>coordinator</strong> (NOC) and a <strong>Technical Lead</strong> (SRE) are in place.</li>
+          <li>Then run <strong>LAYERS in live mode</strong>: Locate, Assess, Yesterday, Evidence, Response. Ask once, in the channel, at update times.</li>
+          <li>Your unique value is <strong>decisions</strong> (spend, trade-offs, customer messaging, people) and <strong>unblocking</strong> stalled requests and silent teams.</li>
+          <li>Send executives a <strong>SITREP</strong> before they ask (<a href="executive-updates.html#sitrep-builder">builder</a>).</li>
         </ul>
       </div>
+
       <h2 id="your-job-in-one-sentence">Your Job in One Sentence</h2>
-      <div class="panel">
-        <p style="font-size:1.12rem;margin:0"><strong>Make it easy for the people fixing the problem to fix it, and make the business decisions they can't make themselves.</strong></p>
-      </div>
-      <p>The worst thing a senior leader can do in an incident is become another source of interruptions. The best thing is to remove obstacles: get the right team on the call, approve the costly mitigation quickly, and handle the executives so engineers don't have to.</p>
+      <div class="panel"><p class="panel-statement">Make it easy for the people fixing the problem to fix it, make the decisions they can't, and keep everyone above you informed and out of the way.</p></div>
 
-      <h2 id="during-an-incident">During an Incident</h2>
-      <h3 id="the-first-four-questions">The First Four Questions</h3>
-      <p>Ask these in the incident channel, once. The answers tell you almost everything you need to know.</p>
-      <ol class="steps">
-        <li><strong>"Who is coordinating?"</strong>At Nimbus the <strong>NOC is the Incident Coordinator</strong>, and an SRE is the Technical Lead. If either role is missing, getting it filled is the most important problem to solve.</li>
-        <li><strong>"What's the customer impact right now, in numbers?"</strong>For example: "About 12% of Device Care requests are failing." This tells you severity far better than technical detail does.</li>
-        <li><strong>"What's the current mitigation, and when is the next update?"</strong>This confirms the team is trying to stop the impact, not only investigating, and sets a rhythm so you don't need to ask again.</li>
-        <li><strong>"What do you need from me?"</strong>People, a decision, budget, or access to another team. Then deliver it quickly.</li>
-      </ol>
-
-      <h3 id="questions-by-phase">Questions by Phase</h3>
+      <h2 id="layers-in-live-mode">LAYERS in Live Mode</h2>
+      <p>Ask these in the incident channel, through the coordinator, at update times. Each answer you get (or don't get) tells you where the response is strong or stuck.</p>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Phase</th><th>Good questions</th><th>What a good answer sounds like</th></tr></thead>
+          <thead><tr><th>Step</th><th>Ask</th><th>A good answer sounds like</th></tr></thead>
           <tbody>
-            <tr><td><strong>Triage</strong></td><td>Is it confirmed? Which feature? How many users? What severity?</td><td>"Confirmed. Writing Assist only, about 20% of requests, Sev 2."</td></tr>
-            <tr><td><strong>Mitigation</strong></td><td>What are we trying first? What's the risk? How will we know it worked?</td><td>"Rolling back yesterday's deploy. Low risk. We'll see the error rate drop within 10 minutes."</td></tr>
-            <tr><td><strong>Escalation</strong></td><td>Is it ours or the shared platform's? Is the right team on the call? Do we need Microsoft support?</td><td>"It's on the shared model deployment. Cloud Infrastructure has joined, and an Azure case is open at Sev A."</td></tr>
-            <tr><td><strong>Resolution</strong></td><td>Is the impact gone, or just lower? How long have we been stable?</td><td>"Back to baseline for 30 minutes. Resolving now."</td></tr>
-            <tr><td><strong>Wrap-up</strong></td><td>Who writes the postmortem? When is the review?</td><td>"The IC drafts it by Thursday. The review is Friday with Cloud Infrastructure and the Create CFT."</td></tr>
+            <tr><td><strong>0 · Roles</strong></td><td>"Who's coordinating, and who's the Technical Lead?"</td><td>"NOC (Priya) is IC. SRE (Jordan) is Tech Lead."</td></tr>
+            <tr><td><strong>L · Locate</strong></td><td>"Which layer is it in, and how do we know?"</td><td>"The model provider layer: 429s on chat-small, and the gateway and edge are normal."</td></tr>
+            <tr><td><strong>A · Assess</strong></td><td>"How many users, compared to normal? P50 or P95?"</td><td>"9% of Device Care requests failing, normally under 1%, for 25 minutes."</td></tr>
+            <tr><td><strong>Y · Yesterday</strong></td><td>"What changed before it started?"</td><td>"The Proactive Tips batch started at 09:00, and a local model rollout reached 25% at 08:30."</td></tr>
+            <tr><td><strong>E · Evidence</strong></td><td>"How confident are you, and what would prove us wrong?"</td><td>"Medium. Tokens by caller shows the batch. Confirming the fallback rate next."</td></tr>
+            <tr><td><strong>R · Response</strong></td><td>"What's the safest reversible action, who owns it, and what do you need from me?"</td><td>"We've asked Insights to pause the batch. If it's not enough, we need approval for overflow capacity at about $900/h."</td></tr>
           </tbody>
         </table>
       </div>
-
-      <h3 id="avoid-during-an-incident">Avoid During an Incident</h3>
-      <div class="card-grid">
-        <div class="card"><h3>"What's the Root Cause?"</h3><p>That's a question for afterwards. During the incident, ask what's being done to reduce impact.</p></div>
-        <div class="card"><h3>Directing Engineers</h3><p>Even good ideas from a senior leader take over the room. Send suggestions to the IC instead.</p></div>
-        <div class="card"><h3>Side-Channel Pings</h3><p>Messaging engineers directly pulls them away from the work. Read the incident channel, or ask the comms lead.</p></div>
-        <div class="card"><h3>"Any Update?" Every 5 Minutes</h3><p>Updates come on a schedule. If the schedule isn't working for you, ask the IC to change it, once.</p></div>
-        <div class="card"><h3>A Big Audience on the Bridge</h3><p>Ten observers make it harder to coordinate. Join, listen, and leave if you aren't needed.</p></div>
-      </div>
-
-      <h2 id="when-a-leader-dives-too-deep">When a Leader Dives Too Deep</h2>
-      <div class="persona">
-        <div><b>Meet Morgan, the deep-diving director.</b> Morgan (they/them) cares a lot and is under pressure from above. In incidents they ask for the raw queries, challenge each hypothesis, ask "why isn't this fixed yet?" every few minutes, DM engineers directly, and sometimes open a separate call with a CFT. Each move feels like help to Morgan. To the responders, it's interruptions and stress, and the incident gets longer.</div>
-      </div>
-      <h3 id="recognize-it">Recognize It (Including in Yourself)</h3>
-      <ul>
-        <li>You're asking <em>how</em> something works rather than <em>what you need to decide</em>.</li>
-        <li>You're messaging responders directly instead of reading the channel.</li>
-        <li>You're asking for root cause while users are still affected.</li>
-        <li>You've started a second call or thread "just to get the real story".</li>
-      </ul>
-      <h3 id="redirect-a-peer-or-director">Redirect a Peer or Director</h3>
-      <ol class="steps">
-        <li><strong>Be their comms buffer.</strong>"I'll keep you updated every 15 minutes, so the team can stay heads-down."</li>
-        <li><strong>Give them something real to own.</strong>Escalating to another org's leadership, approving spend, or briefing executives above them.</li>
-        <li><strong>Ask privately, early.</strong>"Your questions are good, but they're pulling the Technical Lead off the fix. Can we route them through me?"</li>
-        <li><strong>Back the coordinator.</strong>If the NOC redirects Morgan, support them in the channel. The coordinator's authority depends on leaders respecting it.</li>
-      </ol>
-      <p class="script">"Morgan, I'll be your direct line. You'll get an update from me every 15 minutes. Could you help by calling Cloud Infrastructure's director? That's the blocker right now."</p>
-      <h3 id="afterwards">Afterwards</h3>
-      <p>Raise the pattern in the <a href="../postmortems/index.html">postmortem</a> as a <strong>contributing factor in the system</strong>, never as a person: "There was no executive update format and no named comms buffer, so leaders went straight to responders." The usual action items are an exec update template, a comms buffer role, and a short briefing for directors on how incidents run.</p>
+      <p>Keep <strong>S · Sustain</strong> for afterwards. Note ideas, but don't push prevention work while users are still affected. See <a href="post-incident.html">Post-Incident Actions</a>.</p>
 
       <h2 id="decisions-only-you-can-make">Decisions Only You Can Make</h2>
-      <p>These are where a senior manager adds the most value. When the team brings you one of these, decide quickly. A good decision now beats a perfect one in an hour.</p>
+      <p>When the team brings you one of these, decide quickly. A good decision now beats a perfect one in an hour.</p>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Decision</th><th>Typical Nimbus example</th><th>Ask before deciding</th></tr></thead>
+          <thead><tr><th>Decision</th><th>Typical example</th><th>Ask before deciding</th></tr></thead>
           <tbody>
-            <tr><td><strong>Spend money to restore service</strong></td><td>Turn on pay-as-you-go spillover or buy extra model capacity</td><td>"What does it cost per hour, and what does it fix?"</td></tr>
-            <tr><td><strong>Trade quality for availability</strong></td><td>Switch to a smaller model or turn off retrieval temporarily</td><td>"How much worse are answers, and for how long?"</td></tr>
-            <tr><td><strong>Choose which feature to protect</strong></td><td>Pause Proactive Tips so Device Care works</td><td>"Which users notice each option?"</td></tr>
-            <tr><td><strong>Move traffic to another region</strong></td><td>Fail over from East US 2 to Sweden Central</td><td>"Are there data-residency or contract implications?"</td></tr>
-            <tr><td><strong>Halt a release</strong></td><td>Stop the rollout of a new desktop build</td><td>"What's the partner or launch impact of pausing?"</td></tr>
-            <tr><td><strong>Tell customers or the public</strong></td><td>Status page, support macros, partner notification</td><td>"What do we know for certain, and when is the next update?"</td></tr>
-            <tr><td><strong>Pull people off other work</strong></td><td>Bring in an expert from another CFT</td><td>"Who exactly, and for how long?"</td></tr>
+            <tr><td><strong>Spend money to restore service</strong></td><td>Overflow (pay-as-you-go) model capacity</td><td>"What does it cost per hour, and what does it fix?"</td></tr>
+            <tr><td><strong>Trade quality for availability</strong></td><td>A smaller model, or no retrieval, temporarily</td><td>"How much worse are answers, and for how long?"</td></tr>
+            <tr><td><strong>Choose which feature to protect</strong></td><td>Pause background tips so Device Care works</td><td>"Which users notice each option?"</td></tr>
+            <tr><td><strong>Disable a partner integration</strong></td><td>Turn off the Zoom connector during their outage</td><td>"What do those users see instead? Who tells the partner?"</td></tr>
+            <tr><td><strong>Move traffic to another region</strong></td><td>Fail over the model deployment</td><td>"Any data-residency or contract implications?"</td></tr>
+            <tr><td><strong>Halt a release</strong></td><td>Stop a desktop app or local model rollout</td><td>"What's the launch or partner impact of pausing?"</td></tr>
+            <tr><td><strong>Tell customers or the public</strong></td><td>Status page, in-app banner, support messaging</td><td>"What do we know for certain, and when is the next update?"</td></tr>
+            <tr><td><strong>Pull people off other work</strong></td><td>An expert from another CFT</td><td>"Who exactly, and for how long?"</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h2 id="reading-an-incident-update">Reading an Incident Update</h2>
-      <p>A good update has five things. If one is missing, that's your question.</p>
-      <div class="card-grid">
-        <div class="card"><h3>Status</h3><p>Investigating, mitigating, monitoring, or resolved.</p></div>
-        <div class="card"><h3>Impact</h3><p>Who is affected and how badly, in numbers.</p></div>
-        <div class="card"><h3>What Changed</h3><p>What was tried since the last update, and what effect it had.</p></div>
-        <div class="card"><h3>Next Step</h3><p>What the team is doing now.</p></div>
-        <div class="card"><h3>Next Update Time</h3><p>A specific time, so you can stop checking.</p></div>
-      </div>
-      <p>See the <a href="../incident-response.html#communication-templates">communication templates</a>.</p>
-      <h2 id="working-with-cloud-infrastructure-leadership">Working With Cloud Infrastructure Leadership</h2>
-      <p>Cloud Infrastructure owns the shared cloud and has a lot of influence. In incidents, your job is to keep the relationship workable and the evidence flowing:</p>
+      <h2 id="unblocking">Unblocking</h2>
       <ul>
-        <li><strong>Escalate peer-to-peer.</strong> If their on-call disputes the evidence, call their manager or director directly and calmly, with the Technical Lead's data.</li>
-        <li><strong>Don't relitigate mid-incident.</strong> Disagreements about whose fault it is wait for the postmortem.</li>
-        <li><strong>Agree what happens next time.</strong> Joint postmortem actions with their management in the room are how shared layers improve.</li>
+        <li><strong>Silent CFTs:</strong> at 30 minutes the coordinator tells you. <strong>At 45 minutes</strong>, contact that CFT's leadership yourself (<a href="../ways-of-working.html#when-cfts-dont-respond">ladder</a>).</li>
+        <li><strong>Stalled NOC requests:</strong> the NOC can't change production. When an owner sits on a request, you're the one who can get it actioned.</li>
+        <li><strong>Cloud Infrastructure disputes:</strong> escalate peer to peer, calmly, with the Technical Lead's evidence. Don't argue about fault mid-incident.</li>
+        <li><strong>Partners:</strong> if the partner's support channel is slow, use the executive or account contact. Make sure someone owns the partner relationship during the incident.</li>
       </ul>
 
-      <h2 id="our-reality-slow-cfts-and-two-chat-tools">Our Reality: Slow CFTs and Two Chat Tools</h2>
+      <h2 id="reading-an-incident-update">Reading an Incident Update</h2>
+      <p>A good update has five parts. If one is missing, that's your question.</p>
+      <div class="card-grid">
+        <div class="card"><h3>Status</h3><p>Investigating, mitigating, monitoring, or resolved.</p></div>
+        <div class="card"><h3>Impact</h3><p>Who, how badly, in numbers, against a baseline.</p></div>
+        <div class="card"><h3>What Changed</h3><p>What was tried since the last update, and the effect.</p></div>
+        <div class="card"><h3>Next Step</h3><p>What the team is doing now, and who.</p></div>
+        <div class="card"><h3>Next Update</h3><p>A specific time, so you can stop checking.</p></div>
+      </div>
+
+      <h2 id="avoid-during-an-incident">Avoid During an Incident</h2>
+      <div class="card-grid">
+        <div class="card"><h3>"What's the Root Cause?"</h3><p>That's for afterwards. Ask what's being done to reduce impact.</p></div>
+        <div class="card"><h3>Directing Engineers</h3><p>Even good ideas from a leader take over the room. Route them through the coordinator.</p></div>
+        <div class="card"><h3>Direct Messages</h3><p>DMs pull responders off the work. Read the channel.</p></div>
+        <div class="card"><h3>Side Calls</h3><p>A second bridge splits decisions. Keep one channel.</p></div>
+        <div class="card"><h3>Diving Into the Weeds</h3><p>If you're asking how something works rather than what you need to decide, step back. Engineers can explain the details later, in the postmortem.</p></div>
+      </div>
+
+      <h2 id="when-other-leaders-dive-in">When Other Leaders Dive In</h2>
+      <p>Directors under pressure from above sometimes ask for raw queries, message engineers, or start side calls. At Nimbus, that's <a href="../environment.html#the-people">Morgan, in our background story</a>. Your job is to be the <strong>comms buffer</strong>:</p>
+      <ol class="steps">
+        <li><strong>Get ahead with a SITREP.</strong>Updates on a schedule remove most of the reasons to dive in.</li>
+        <li><strong>Offer a direct line.</strong>"I'll update you every 30 minutes, so the team can stay heads-down."</li>
+        <li><strong>Give them a real job.</strong>A decision, or an escalation to another org's leadership or a partner's executive.</li>
+        <li><strong>Back the coordinator.</strong>If the NOC redirects a leader, support them publicly.</li>
+        <li><strong>Raise it afterwards as a system gap.</strong>"No exec update format, no comms buffer." Never name a person.</li>
+      </ol>
+
+      <h2 id="our-reality">Our Reality</h2>
       <ul>
-        <li><strong>At 30 minutes</strong> with no CFT response, SRE will tell you in the channel. <strong>At 45 minutes</strong>, contact that CFT's leadership directly. That's your rung of the <a href="../ways-of-working.html#when-cfts-dont-respond">escalation ladder</a>.</li>
-        <li><strong>The NOC runs the incident but can't change production.</strong> When they request an action from a CFT or Cloud Infrastructure and it stalls, you're the one who can unblock it.</li>
-        <li><strong>Read the Slack incident channel.</strong> It's the source of truth. Teams-only CFTs get updates through a bridge person, so don't start a separate Teams thread with them about the incident.</li>
-        <li><strong>Don't ask for a Jira ticket mid-incident.</strong> Jira is locked down, so the record is kept in Slack and filed in Jira afterwards.</li>
+        <li><strong>The Slack incident channel is the source of truth.</strong> Teams-only CFTs are reached through a bridge person.</li>
+        <li><strong>Jira is locked down.</strong> The record lives in Slack and is filed in Jira afterwards. Don't ask for a ticket mid-incident.</li>
+        <li><strong>The NOC is offshore and still building technical depth.</strong> Keep your questions to them in plain English, one at a time (<a href="enabling-the-noc.html">how</a>).</li>
       </ul>
     </article>
     <nav class="pager" id="pager"></nav>
