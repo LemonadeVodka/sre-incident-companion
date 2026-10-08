@@ -3,32 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Incident Leadership: Be the Expert in the Room · Reliability Ops Playbook</title>
-  <meta name="description" content="A learning track for senior managers of SRE and NOC teams running an AI product: the LAYERS question framework for latency and error rates, enabling NOC and SRE engineers, and updating executives.">
+  <title>Incident Management Playbook · SRE & Ops Playbook</title>
+  <meta name="description" content="The senior manager's incident management playbook: deciding triage or incident, standing up the response, leading without diving into the weeds, asking LAYERS questions, updating executives, scenario runbooks, and tabletop practice.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body data-root="../" data-page="lead">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="../playbook/index.html">Frameworks</a></div>
-      <div class="track-banner t-lead"><i class="track-dot"></i>Senior Manager · Decide, Unblock, Develop, Report</div>
-      <h1>Be the Expert in the Room</h1>
-      <p class="lede">You don't need to write the queries. You need to ask the questions that make your NOC see clearly, make your SRE engineers think harder, and let you give your executives a clear, honest picture. This track gives you a framework to do that for an AI product, layer by layer, using the two signals that matter most: <strong>latency</strong> and <strong>error rates</strong>.</p>
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Incident Management</div>
+      <div class="eyebrow">Playbook 1 · Incident Management</div>
+      <h1>Incident Management Playbook</h1>
+      <p class="lede">In an incident, your NOC coordinates, your SREs lead the technical work, and the owning teams make the changes. Your job is to make sure the response is working: ask the questions that sharpen it, make the decisions only you can make, keep executives informed, and keep everyone else out of the way.</p>
 
-      <div class="tldr">
-        <ul>
-          <li><strong>LAYERS</strong> is a six-step question loop: <strong>L</strong>ocate, <strong>A</strong>ssess, <strong>Y</strong>esterday, <strong>E</strong>vidence, <strong>R</strong>esponse, <strong>S</strong>ustain.</li>
-          <li>Ask it <strong>at the right layer</strong>: device, local/cloud routing, edge, gateway, cloud orchestrator, feature services, partner integrations, model provider, or telemetry.</li>
-          <li>Every step has a version for <strong>the NOC</strong> (simple, scripted), for <strong>SRE engineers</strong> (spurs technical thinking), and for <strong>executives</strong> (business translation).</li>
-          <li>Use it in four places: <strong>live incidents, weekly reviews, design reviews, and postmortems</strong>.</li>
-        </ul>
+      <div class="tldr"><ul>
+        <li><strong>When in doubt, declare.</strong> Downgrading costs one message. A missed incident costs trust.</li>
+        <li><strong>Ask, don't take over.</strong> Use <strong>LAYERS</strong>: Locate, Assess, Yesterday, Evidence, Response, Sustain.</li>
+        <li><strong>Own the upward story.</strong> Send SITREPs on a cadence, with the bottom line first.</li>
+        <li><strong>Practice monthly</strong> with a tabletop, so the real thing feels familiar.</li>
+      </ul></div>
+
+<!--HUB-->
+      <h2 id="playbook-at-a-glance">Playbook at a Glance</h2>
+      <div class="table-wrap"><table class="glance"><tbody>
+        <tr><th>Use It When</th><td>Something looks wrong, an incident is declared, or you're preparing the team for the next one.</td></tr>
+        <tr><th>The Plays</th><td><ol><li><a href="../playbook/triage-or-incident.html">Decide: triage or incident?</a></li><li><a href="../operate/incident-operations.html">Stand up the response (NOC as IC, SRE as Tech Lead)</a></li><li><a href="../leaders/during-an-incident.html">Lead without diving in</a></li><li><a href="../leaders/layers-framework.html">Ask LAYERS questions</a></li><li><a href="../leaders/executive-updates.html">Update executives with a SITREP</a></li><li><a href="../playbooks.html">Use the scenario runbooks</a></li><li><a href="../tabletop.html">Practice monthly with a tabletop</a></li></ol></td></tr>
+        <tr><th>Frameworks</th><td><a href="../playbook/triage-or-incident.html">Triage or Incident?</a> · <a href="../leaders/layers-framework.html">LAYERS</a> · <a href="../leaders/executive-updates.html">SITREP &amp; BLUF</a> · <a href="../incident-response.html#severity-levels">Severity</a> · <a href="../playbook/raci-and-severity.html#raci">RACI</a></td></tr>
+        <tr><th>Templates</th><td><a href="../templates.html#exec-sitrep">Executive SITREP</a> · <a href="../templates.html#follow-the-sun-handoff">Follow-the-sun handoff</a> · <a href="../cards/manager.html">LAYERS pocket card</a></td></tr>
+        <tr><th>It's Working When</th><td>Time from first signal to declare is under 15 minutes. The NOC detects most incidents before customers do. SITREPs go out on cadence. No missed declarations turn up in review.</td></tr>
+      </tbody></table></div>
+      <div class="wgb">
+        <div><span class="q-level q-weak">Weak</span><p>Late declaration, the manager debugs, executives hear rumors first.</p></div>
+        <div><span class="q-level q-good">Good</span><p>Declared early, clear IC and Tech Lead, SITREPs on cadence, the manager decides and unblocks.</p></div>
+        <div><span class="q-level q-best">Best</span><p>The NOC runs it confidently, executives trust the cadence, and every incident improves a runbook.</p></div>
       </div>
+<!--/HUB-->
 
       <h2 id="the-layers-framework">The LAYERS Framework</h2>
       <div class="acro">
@@ -41,40 +55,24 @@
       </div>
       <p>Open the <a href="layers-framework.html#question-builder">Question Builder</a> to get a tailored question set for any layer, signal, audience, and situation.</p>
 
-      <h2 id="your-four-jobs">Your Four Jobs</h2>
+      <h2 id="your-jobs-in-an-incident">Your Jobs in an Incident</h2>
       <div class="card-grid">
         <a class="card t-lead" href="layers-framework.html"><h3>1. Ask the Right Questions</h3><p>LAYERS, at the right layer, for latency and errors. Make the team think, without doing their work for them.</p></a>
-        <a class="card t-noc" href="enabling-the-noc.html"><h3>2. Enable the NOC</h3><p>An offshore team with growing technical skills: plain English, scripts, a competency ladder, and safety to escalate.</p></a>
-        <a class="card t-sre" href="enabling-sre.html"><h3>3. Develop SRE Engineers</h3><p>Question ladders from junior to senior that bring out the technical considerations.</p></a>
-        <a class="card t-lead" href="executive-updates.html"><h3>4. Update Executives</h3><p>BLUF and SITREP: impact in business terms, honest confidence, and the decisions you need.</p></a>
+        <a class="card t-lead" href="during-an-incident.html#decisions-only-you-can-make"><h3>2. Make the Calls Only You Can</h3><p>Spend, kill switches, failover, customer messaging, and pulling in people.</p></a>
+        <a class="card t-lead" href="executive-updates.html"><h3>3. Update Executives</h3><p>BLUF and SITREP: impact in business terms, honest confidence, and the decisions you need.</p></a>
+        <a class="card t-lead" href="during-an-incident.html#when-other-leaders-dive-in"><h3>4. Be the Buffer</h3><p>Keep other leaders, including your director, from pulling responders off the fix.</p></a>
       </div>
-
-      <h2 id="learning-path">Learning Path</h2>
-      <ol class="steps">
-        <li><strong><a href="ai-product-layers.html">Know the Layers</a></strong>A mental model of an AI product, from the device to the model provider and partners. About 15 minutes.</li>
-        <li><strong><a href="latency-and-errors.html">Latency &amp; Errors Primer</a></strong>P50/P95, time to first token, and what each error code means and which layer sends it. About 20 minutes.</li>
-        <li><strong><a href="layers-framework.html">The LAYERS Framework</a></strong>The six steps, good vs red-flag answers, and the Question Builder. About 30 minutes, then practice.</li>
-        <li><strong><a href="enabling-the-noc.html">Enabling the NOC</a> and <a href="enabling-sre.html">Enabling SRE Engineers</a></strong>Coaching through questions.</li>
-        <li><strong><a href="executive-updates.html">Updating Executives</a></strong>The SITREP builder and translation table.</li>
-        <li><strong><a href="during-an-incident.html">During an Incident</a>, then <a href="post-incident.html">Post-Incident Actions</a></strong>LAYERS in live mode, then the After Action Review.</li>
-        <li><strong><a href="after-and-between.html">Operating Rhythm</a></strong>The weekly latency and error review, monthly health check, and quarterly exec report.</li>
-      </ol>
 
       <h2 id="how-the-roles-fit">How the Roles Fit</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Role</th><th>Job in an incident</th><th>What you give them</th></tr></thead>
-          <tbody>
-            <tr><td><span class="badge noc">NOC</span></td><td>Detect, decide <a href="../playbook/triage-or-incident.html">triage or incident</a>, coordinate, request actions</td><td>Scripts, plain-English templates, permission to declare early, and coaching</td></tr>
-            <tr><td><span class="badge sre">SRE</span></td><td>Technical Lead: find the layer, recommend mitigations</td><td>Good questions, protection from interruptions, leverage with other teams</td></tr>
-            <tr><td><span class="badge lead">You</span></td><td>Decide, unblock, develop people, report upward</td><td>The LAYERS framework, this track, and an honest picture</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="table-wrap"><table><thead><tr><th>Role</th><th>Job in an incident</th><th>What you give them</th></tr></thead><tbody>
+        <tr><td><span class="badge noc">NOC</span></td><td>Detect, decide <a href="../playbook/triage-or-incident.html">triage or incident</a>, coordinate, request actions</td><td>Scripts, plain-English templates, permission to declare early, and coaching</td></tr>
+        <tr><td><span class="badge sre">SRE</span></td><td>Technical Lead: find the layer, recommend mitigations</td><td>Good questions, protection from interruptions, and leverage with other teams</td></tr>
+        <tr><td><span class="badge lead">You</span></td><td>Decide, unblock, report upward</td><td>LAYERS, this playbook, and an honest picture</td></tr>
+      </tbody></table></div>
 
       <div class="anywhere">
         <div class="callout-title">Applies Anywhere</div>
-        <p>LAYERS works for any service, not only AI products. Swap in your own layers, keep the six questions. The Nimbus examples show how it plays out for a cross-device AI assistant with on-device and cloud models, a sync relay, and third-party partners.</p>
+        <p>LAYERS works for any service, not only AI products. Swap in your own layers and keep the six questions.</p>
       </div>
     </article>
     <nav class="pager" id="pager"></nav>

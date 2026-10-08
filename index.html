@@ -3,30 +3,43 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reliability Ops Manager's Playbook</title>
-  <meta name="description" content="A playbook for senior managers of reliability and service operations: frameworks, copy-paste templates, leading a contract NOC and global SRE team, managing up and politics, and a Technical Corner on cloud AI infrastructure. Worked example: Nimbus, a hybrid AI assistant.">
+  <title>The Senior Manager's SRE & Operations Playbook</title>
+  <meta name="description" content="Six playbooks for a senior manager of SRE and operations: incident management, post-incident and problem management, execution and delivery (the TPM hat), service operations, people and team, and stakeholders and politics, plus a Technical Corner on cloud AI infrastructure and a template library.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body data-root="./" data-page="index">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="./index.html">Reliability Ops Playbook</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">SRE &amp; Operations Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./playbook/index.html">Frameworks</a><a href="./operate/incident-operations.html">Incident Operations</a><a href="./team/contract-noc.html">Lead the Team</a><a href="./politics/index.html">Manage Up &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./leaders/index.html">1 · Incident Management</a><a href="./postmortems/index.html">2 · Post-Incident</a><a href="./delivery/index.html">3 · Execution &amp; Delivery</a><a href="./operate/service-model.html">4 · Service Operations</a><a href="./team/index.html">5 · People &amp; Team</a><a href="./politics/index.html">6 · Stakeholders &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
       <section class="hero">
-        <div class="eyebrow">Reliability &amp; Service Operations · Worked Example: Nimbus</div>
-        <h1 data-notoc>The Reliability Operations Manager's Playbook</h1>
-        <p class="lede">Frameworks, copy-paste templates, and technical depth for the senior manager who runs reliability for an AI product: leading a <strong>contract NOC</strong>, <strong>SREs across the US and India</strong>, and an <strong>Ops lead who's still growing</strong>, while managing up to a demanding, highly technical director. Every page uses Nimbus, a hybrid on-device and cloud AI assistant, as its worked example. The practices apply anywhere.</p>
+        <div class="eyebrow">SRE &amp; Operations Leadership · Worked Example: Nimbus</div>
+        <h1 data-notoc>The Senior Manager's SRE &amp; Operations Playbook</h1>
+        <p class="lede">Six playbooks, the frameworks behind them, copy-paste templates, and technical depth for the senior manager who runs SRE and operations for an AI product. It covers incidents, and also the daily work of running the team, the operation, and the politics: leading a <strong>contract NOC</strong>, <strong>SREs across the US and India</strong>, and an <strong>Ops lead who's still growing</strong>, while managing up to a demanding, highly technical director. Every page uses Nimbus, a hybrid on-device and cloud AI assistant, as its worked example. The practices apply anywhere.</p>
         <div class="hero-actions">
           <a class="btn danger" href="#in-an-incident">I'm in an Incident</a>
-          <a class="btn primary" href="templates.html">Template Library</a>
+          <a class="btn primary" href="#the-playbooks">The Six Playbooks</a>
+          <a class="btn" href="templates.html">Template Library</a>
           <a class="btn" href="how-to-use.html">How to Use This Playbook</a>
           <a class="btn" href="environment.html">Background: Nimbus</a>
         </div>
       </section>
+
+      <h2 id="the-playbooks">The Playbooks</h2>
+      <div class="card-grid">
+        <a class="card t-lead" href="leaders/index.html"><h3>1 · Incident Management</h3><p>Triage or incident, incident operations, LAYERS questions, SITREPs, severity, scenario runbooks, tabletops.</p></a>
+        <a class="card t-lead" href="postmortems/index.html"><h3>2 · Post-Incident &amp; Problems</h3><p>After Action Reviews, blameless postmortems, and action items followed through to done.</p></a>
+        <a class="card t-lead" href="delivery/index.html"><h3>3 · Execution &amp; Delivery</h3><p>Your TPM hat: the SRE daily over Linear, PULSE questions, capacity planning, dependencies, and RAID.</p></a>
+        <a class="card t-noc" href="operate/service-model.html"><h3>4 · Service Operations</h3><p>SLOs and error budgets, operating rhythm, metrics and reporting, vendors and partners, investment cases.</p></a>
+        <a class="card t-noc" href="team/index.html"><h3>5 · People &amp; Team</h3><p>A contract NOC, SREs across the US and India, your Ops lead, 1:1s, hiring, and morale.</p></a>
+        <a class="card t-noc" href="politics/index.html"><h3>6 · Stakeholders &amp; Politics</h3><p>Stakeholder maps, pre-wiring, decision memos, a technical low-EQ director, and escalation.</p></a>
+        <a class="card t-sre" href="tech/index.html"><h3>Technical Corner</h3><p>Cloud AI infrastructure at manager depth: serving, quota, RAG, agents, network, identity, observability, KQL.</p></a>
+        <a class="card t-sre" href="templates.html"><h3>Toolkit</h3><p>Template library, LAYERS pocket card, KQL library, Weak/Good/Best, and the Framework Index.</p></a>
+      </div>
 
       <h2 id="in-an-incident">In an Incident</h2>
       <ol class="steps">
@@ -68,6 +81,9 @@
       <h2 id="this-week">This Week</h2>
       <p>A weekly rhythm that keeps the operation healthy, the team growing, and your director informed. Tick items off as you go. The list resets in your browser only.</p>
       <ul class="checklist" data-key="this-week">
+        <li><strong>Daily:</strong> run the <a href="delivery/daily-standup.html">SRE daily</a> in the overlap hours. Walk the board right to left, and PULSE what's stuck.</li>
+        <li><strong>Before the daily:</strong> check your <a href="delivery/linear-operating-model.html#manager-views">Linear views</a> for aging, blocked, and not-ready work.</li>
+        <li><strong>Cycle start:</strong> run <a href="delivery/planning-and-capacity.html#cycle-planning">cycle planning</a> with the capacity split, and update the <a href="templates.html#raid-log">RAID log</a>.</li>
         <li><strong>Monday:</strong> send the <a href="templates.html#weekly-reliability-note">weekly reliability note</a> (or review your Ops lead's draft).</li>
         <li><strong>Vendor sync</strong> with the NOC delivery manager: scorecard trends, staffing, one improvement (<a href="team/contract-noc.html">how</a>).</li>
         <li><strong>1:1s</strong> with SREs in both regions and your Ops lead. Their agenda first (<a href="templates.html#one-on-one">template</a>).</li>
@@ -78,16 +94,6 @@
         <li><strong>Learn:</strong> one <a href="tech/index.html">Technical Corner</a> module, ideally with your Ops lead.</li>
         <li><strong>Recognize:</strong> thank one person by name, in public, for specific work (<a href="team/morale.html">morale</a>).</li>
       </ul>
-
-      <h2 id="your-playbook">Your Playbook</h2>
-      <div class="card-grid">
-        <a class="card t-lead" href="playbook/index.html"><h3>Frameworks</h3><p>LAYERS, Triage or Incident, SITREP, After Action Review, Decision Memo, RACI and severity, Weak/Good/Best.</p></a>
-        <a class="card t-lead" href="operate/service-model.html"><h3>Run the Operation</h3><p>Incident, problem, change, capacity, and vendor management. Metrics that matter, and the ones that mislead.</p></a>
-        <a class="card t-noc" href="team/contract-noc.html"><h3>Lead the Team</h3><p>A contract NOC, SREs across the US and India, your Ops lead, 1:1s, hiring, and morale.</p></a>
-        <a class="card t-sre" href="politics/index.html"><h3>Manage Up &amp; Politics</h3><p>Stakeholder maps, pre-wiring, a highly technical low-EQ director, escalation, and owning the narrative.</p></a>
-        <a class="card t-sre" href="tech/index.html"><h3>Technical Corner</h3><p>Cloud AI infrastructure at manager depth: serving, quota, RAG, agents, network, identity, observability, KQL.</p></a>
-        <a class="card t-lead" href="templates.html"><h3>Template Library</h3><p>SITREPs, reports, vendor scorecard, 1:1s, 30/60/90 plans, decision memo, pre-wire and escalation emails.</p></a>
-      </div>
 
       <h2 id="quick-templates">Quick Templates</h2>
       <div class="card-grid">

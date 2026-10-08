@@ -490,3 +490,11 @@ code, pre, kbd { font-variant-ligatures: none; font-feature-settings: "liga" 0, 
 .tpl-count { font: 700 .68rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
 .tpl-empty { color: var(--muted); font-style: italic; }
 section.tpl { scroll-margin-top: 80px; }
+tr[id] { scroll-margin-top: 80px; }
+.acro.five { grid-template-columns: repeat(5, 1fr); }
+@media (max-width: 760px) { .acro.five { grid-template-columns: repeat(2, 1fr); } }
+/* Playbook hub grid */
+.hub-grid .card h3 small { display: block; font: 700 .66rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.glance th { width: 22%; text-align: left; vertical-align: top; }
+.glance ol { margin: 0; padding-left: 1.2em; }
+@media (max-width: 600px) { .glance th, .glance td { display: block; width: auto; } .glance th { border-bottom: 0; padding-bottom: 0; } }

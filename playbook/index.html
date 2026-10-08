@@ -3,49 +3,70 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>All Frameworks · Reliability Ops Playbook</title>
-  <meta name="description" content="Every framework in the reliability operations manager's playbook: LAYERS, Triage or Incident, SITREP and BLUF, After Action Review, Decision Memo, RACI, severity, SBI, GROW, stakeholder mapping, and Weak/Good/Best.">
+  <title>Framework Index · SRE & Ops Playbook</title>
+  <meta name="description" content="Every framework in the Senior Manager's SRE & Operations Playbook, grouped by playbook: LAYERS, Triage or Incident, SITREP, After Action Review, PULSE, RAID, capacity split, SBI, GROW, stakeholder mapping, pre-wiring, Decision Memo, RACI, and Weak/Good/Best.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
   <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body data-root="../" data-page="playbook">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="../index.html">Home</a> / Playbook</div>
-      <div class="eyebrow">Playbook · Frameworks</div>
-      <h1>All Frameworks</h1>
-      <p class="lede">A small set of frameworks, used consistently, makes you predictable to your team, credible to your director, and fast in a crisis. Each one below tells you when to use it and links to the full page and its copy-paste template.</p>
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Framework Index</div>
+      <div class="eyebrow">Start · Framework Index</div>
+      <h1>Framework Index</h1>
+      <p class="lede">A small set of frameworks, used consistently, makes you predictable to your team, credible to your director, and fast in a crisis. Each one lives in the playbook where you use it. This page is the map: what each one is for, and where to find it.</p>
 
-      <h2 id="incidents-and-operations">Incidents and Operations</h2>
+      <h2 id="incident-management">Incident Management</h2>
       <div class="table-wrap"><table><thead><tr><th>Framework</th><th>Use it when</th><th>In one line</th></tr></thead><tbody>
         <tr><td><a href="triage-or-incident.html"><strong>Triage or Incident?</strong></a></td><td>Something looks off and nobody's sure</td><td>Watch → Triage (15 min) → Incident. When in doubt, declare.</td></tr>
         <tr><td><a href="../leaders/layers-framework.html"><strong>LAYERS</strong></a></td><td>Any latency or error problem, live or in review</td><td>Locate, Assess, Yesterday, Evidence, Response, Sustain, asked at the right layer</td></tr>
-        <tr><td><a href="raci-and-severity.html"><strong>Severity</strong></a></td><td>Deciding how big an incident is</td><td>Severity follows user impact. If unsure, go higher.</td></tr>
-        <tr><td><a href="../leaders/executive-updates.html"><strong>SITREP &amp; BLUF</strong></a></td><td>Updating executives</td><td>Bottom line first, then situation, impact, cause, actions, decisions, next update</td></tr>
-        <tr><td><a href="../leaders/post-incident.html"><strong>After Action Review</strong></a></td><td>After any significant incident</td><td>Supposed to happen, what happened, why the difference, sustain and improve</td></tr>
+        <tr><td><a href="../incident-response.html#severity-levels"><strong>Severity</strong></a></td><td>Deciding how big an incident is</td><td>Severity follows user impact. If unsure, go higher.</td></tr>
+        <tr><td><a href="../leaders/executive-updates.html"><strong>SITREP &amp; BLUF</strong></a></td><td>Updating executives</td><td>Bottom line first, then impact, cause, actions, decisions, next update</td></tr>
+      </tbody></table></div>
+
+      <h2 id="post-incident">Post-Incident &amp; Problem Management</h2>
+      <div class="table-wrap"><table><thead><tr><th>Framework</th><th>Use it when</th><th>In one line</th></tr></thead><tbody>
+        <tr><td><a href="../leaders/post-incident.html"><strong>After Action Review</strong></a></td><td>After any significant incident</td><td>What was supposed to happen, what happened, why the difference, what to sustain and improve</td></tr>
+        <tr><td><a href="../postmortems/index.html#quality-rubric"><strong>Postmortem Quality Rubric</strong></a></td><td>Reviewing a postmortem draft</td><td>Blameless, evidence-based, actions that change the system</td></tr>
+      </tbody></table></div>
+
+      <h2 id="execution-and-delivery">Execution &amp; Delivery (TPM Hat)</h2>
+      <div class="table-wrap"><table><thead><tr><th>Framework</th><th>Use it when</th><th>In one line</th></tr></thead><tbody>
+        <tr><td><a href="../delivery/daily-standup.html#walk-the-board"><strong>Walk the Board</strong></a></td><td>Every SRE daily</td><td>Right to left: Done → In Review → In Progress → Todo. Finishing beats starting.</td></tr>
+        <tr><td><a href="../delivery/daily-standup.html#pulse"><strong>PULSE</strong></a></td><td>An item is stuck, aging, or important</td><td>Priority, Unblock, Load, Scope, ETA</td></tr>
+        <tr><td><a href="../delivery/linear-operating-model.html#ready-and-done"><strong>Definition of Ready / Done</strong></a></td><td>Deciding if work can start or is finished</td><td>Owner, criteria, size, link / deployed, verified, documented, announced</td></tr>
+        <tr><td><a href="../delivery/planning-and-capacity.html#capacity-split"><strong>Capacity Split</strong></a></td><td>Cycle planning</td><td>About 50% projects, 30% KTLO and toil, 20% interrupts, tuned from data</td></tr>
+        <tr><td><a href="../delivery/risks-and-dependencies.html#raid-log"><strong>RAID</strong></a></td><td>Running any project with dependencies</td><td>Risks, Assumptions, Issues, Dependencies, each with an owner and date</td></tr>
+      </tbody></table></div>
+
+      <h2 id="service-operations">Service Operations</h2>
+      <div class="table-wrap"><table><thead><tr><th>Framework</th><th>Use it when</th><th>In one line</th></tr></thead><tbody>
+        <tr><td><a href="../operate/service-model.html#the-five-practices"><strong>Five Practices</strong></a></td><td>Designing how reliability work flows</td><td>Incident → problem → change → capacity → vendor</td></tr>
+        <tr><td><a href="../operate/service-model.html#slos-and-error-budgets"><strong>SLOs &amp; Error Budgets</strong></a></td><td>Agreeing "reliable enough" and trading off features</td><td>Budget spent → reliability work goes first</td></tr>
         <tr><td><a href="../response-quality.html"><strong>Weak / Good / Best</strong></a></td><td>Assessing a response or a team</td><td>Nine dimensions, three levels</td></tr>
       </tbody></table></div>
 
-      <h2 id="decisions-and-influence">Decisions and Influence</h2>
-      <div class="table-wrap"><table><thead><tr><th>Framework</th><th>Use it when</th><th>In one line</th></tr></thead><tbody>
-        <tr><td><a href="decision-memo.html"><strong>Decision Memo</strong></a></td><td>Asking for a decision, money, or priority</td><td>Context, options, recommendation, cost, risks, ask</td></tr>
-        <tr><td><a href="raci-and-severity.html#raci"><strong>RACI</strong></a></td><td>Ownership is unclear or disputed</td><td>One Accountable, clear Responsible, consulted vs informed</td></tr>
-        <tr><td><a href="../politics/stakeholders.html#stakeholder-map"><strong>Power × Interest Map</strong></a></td><td>Planning any cross-team initiative</td><td>Who to manage closely, satisfy, inform, or monitor</td></tr>
-        <tr><td><a href="../politics/stakeholders.html#pre-wiring"><strong>Pre-Wiring</strong></a></td><td>Before any important meeting</td><td>No surprises: 1:1s before the room</td></tr>
-      </tbody></table></div>
-
-      <h2 id="people">People</h2>
+      <h2 id="people">People &amp; Team</h2>
       <div class="table-wrap"><table><thead><tr><th>Framework</th><th>Use it when</th><th>In one line</th></tr></thead><tbody>
         <tr><td><a href="../team/one-on-ones.html#sbi-feedback"><strong>SBI</strong></a></td><td>Giving feedback, including upward</td><td>Situation, Behavior, Impact</td></tr>
         <tr><td><a href="../team/one-on-ones.html#grow-coaching"><strong>GROW</strong></a></td><td>Coaching instead of answering</td><td>Goal, Reality, Options, Will</td></tr>
         <tr><td><a href="../team/ops-lead.html#skill-will"><strong>Skill / Will</strong></a></td><td>Deciding how to lead someone on a task</td><td>Delegate, guide, excite, or direct</td></tr>
         <tr><td><a href="../leaders/enabling-sre.html#the-question-ladder"><strong>Question Ladder</strong></a></td><td>Developing engineers</td><td>Show me → what's normal → where → what else → what would you change</td></tr>
         <tr><td><a href="../leaders/enabling-the-noc.html#competency-ladder"><strong>NOC Competency Ladder</strong></a></td><td>Growing the NOC</td><td>Observe → Compare → Locate → Escalate well → Suggest</td></tr>
+      </tbody></table></div>
+
+      <h2 id="stakeholders-and-politics">Stakeholders &amp; Politics</h2>
+      <div class="table-wrap"><table><thead><tr><th>Framework</th><th>Use it when</th><th>In one line</th></tr></thead><tbody>
+        <tr><td><a href="../politics/stakeholders.html#stakeholder-map"><strong>Power × Interest Map</strong></a></td><td>Planning any cross-team initiative</td><td>Who to manage closely, keep satisfied, keep informed, or monitor</td></tr>
+        <tr><td><a href="../politics/stakeholders.html#pre-wiring"><strong>Pre-Wiring</strong></a></td><td>Before any important meeting</td><td>No surprises: 1:1s before the room</td></tr>
+        <tr><td><a href="decision-memo.html"><strong>Decision Memo</strong></a></td><td>Asking for a decision, money, or priority</td><td>Ask, context, options, recommendation, risks, who's aligned</td></tr>
+        <tr><td><a href="raci-and-severity.html#raci"><strong>RACI</strong></a></td><td>Ownership is unclear or disputed</td><td>One Accountable per row</td></tr>
+        <tr><td><a href="../politics/index.html#political-capital"><strong>Political Capital</strong></a></td><td>Before a big ask</td><td>Make deposits before withdrawals</td></tr>
       </tbody></table></div>
       <p>Every template for these is in the <a href="../templates.html">Template Library</a>.</p>
     </article>

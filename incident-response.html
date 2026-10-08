@@ -113,9 +113,9 @@
         <table>
           <thead><tr><th>Severity</th><th>Definition</th><th>Nimbus examples</th><th>Response</th></tr></thead>
           <tbody>
-            <tr><td><span class="badge sev1">Sev 1</span></td><td>Critical user impact across most users or several features</td><td>Foundry outage in the primary region, gateway down, Writing Assist and Search failing for more than 25% of requests</td><td>Page immediately. IC required. Updates every 30 min. Exec notification. Postmortem required.</td></tr>
-            <tr><td><span class="badge sev2">Sev 2</span></td><td>Major impact on one important feature, or partial impact across features</td><td>Device Care 429s above 10%, Writing Assist P95 above 3× baseline, new client build crashing</td><td>Page the owning CFT. IC required. Updates every 60 min. Postmortem required.</td></tr>
-            <tr><td><span class="badge sev3">Sev 3</span></td><td>Minor or contained impact, or a workaround exists</td><td>Next Step delayed, Catch Up slow but completing, a small cohort affected</td><td>Owning CFT during business hours. Ticket. Postmortem optional.</td></tr>
+            <tr><td><span class="badge sev1">Sev 1</span></td><td>Critical user impact across most users or several features</td><td>Edge or gateway outage, model provider down in the primary region, Ask Nimbus and Writing Assist failing for more than 25% of requests</td><td>Page immediately. IC required. Updates every 30 min. Exec notification. Postmortem required.</td></tr>
+            <tr><td><span class="badge sev2">Sev 2</span></td><td>Major impact on one important feature, or partial impact across features</td><td>Device Care 429s above 10%, Writing Assist P95 above 3× baseline, a local-to-cloud fallback surge, a major partner outage, a new client build crashing</td><td>Page the owning CFT. IC required. Updates every 60 min. Postmortem required.</td></tr>
+            <tr><td><span class="badge sev3">Sev 3</span></td><td>Minor or contained impact, or a workaround exists</td><td>Next Step delayed, Catch Up slow but completing, cross-device sync slow, a small cohort affected</td><td>Owning CFT during business hours. Ticket. Postmortem optional.</td></tr>
             <tr><td><span class="badge sev4">Sev 4</span></td><td>No current user impact, but a risk</td><td>Alert misrouted, dashboard broken, quota trending toward its limit</td><td>Backlog ticket</td></tr>
           </tbody>
         </table>

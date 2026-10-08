@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Risks & Dependencies · SRE & Ops Playbook</title>
+  <meta name="description" content="Managing delivery risk for an SRE team: a RAID log, dependency requests to CFTs and Cloud Infrastructure, when and how to escalate a dependency, and reporting project status upward.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="del-risks">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Execution &amp; Delivery</a></div>
+      <div class="eyebrow">Playbook 3 · Execution &amp; Delivery · Play 4</div>
+      <h1>Risks &amp; Dependencies</h1>
+      <p class="lede">With centralized SREs and a powerful Cloud Infrastructure team, much of your work depends on other teams. Projects rarely fail on the work you control. They fail on the dependency nobody chased. This play makes risks visible early and escalates them before they bite.</p>
+
+      <div class="tldr"><ul>
+        <li>Keep a <strong>RAID log</strong> per project, and review it weekly.</li>
+        <li>Every dependency gets a <strong>named person, a date, and a Linear issue</strong>, even if the other team uses Jira.</li>
+        <li><strong>Escalate on a trigger you agreed in advance</strong>, not when you're frustrated.</li>
+      </ul></div>
+
+      <h2 id="raid-log">The RAID Log</h2>
+      <div class="table-wrap"><table><thead><tr><th>Letter</th><th>Means</th><th>Nimbus example</th></tr></thead><tbody>
+        <tr><td><strong>R</strong>isks</td><td>Things that might happen and hurt delivery</td><td>"Cloud Infrastructure may not approve the secondary-region quota before launch."</td></tr>
+        <tr><td><strong>A</strong>ssumptions</td><td>Things we're treating as true but haven't confirmed</td><td>"The Insights CFT will accept a 30-minute delay on Next Step."</td></tr>
+        <tr><td><strong>I</strong>ssues</td><td>Risks that have happened</td><td>"The model version retirement date moved forward by a month."</td></tr>
+        <tr><td><strong>D</strong>ependencies</td><td>Work another team must deliver</td><td>"The Client CFT must ship trace-context propagation in client version X."</td></tr>
+      </tbody></table></div>
+      <p>For each entry: owner, likelihood and impact (for risks), next action, and date. Review it in the weekly project update.</p>
+
+      <h2 id="dependency-requests">Asking for a Dependency</h2>
+      <ol class="steps">
+        <li><strong>Find the Right Door</strong>Their intake process (Jira project, channel, or form), not a DM to a friendly engineer.</li>
+        <li><strong>Make It Easy to Say Yes</strong>What you need, why (user or SLO impact), by when, and the smallest version that would help.</li>
+        <li><strong>Track It on Your Board</strong>One Linear issue, linked to their ticket, with the <code>blocked</code> label until it moves.</li>
+        <li><strong>Follow Up on a Schedule</strong>Agree a date. If it passes, follow up once, then escalate.</li>
+      </ol>
+      <p>Use the <a href="../templates.html#dependency-request">dependency request template</a>.</p>
+
+      <h2 id="when-to-escalate">When to Escalate</h2>
+      <div class="table-wrap"><table><thead><tr><th>Trigger</th><th>Action</th></tr></thead><tbody>
+        <tr><td>No acknowledgement after 3 working days</td><td>Engineer follows up once, in their channel</td></tr>
+        <tr><td>No progress by the agreed date</td><td>You contact their manager, peer to peer</td></tr>
+        <tr><td>It now threatens a launch, an SLO, or a commitment to executives</td><td>Joint escalation to the shared leader, with options (<a href="../templates.html#escalation-email">template</a>)</td></tr>
+      </tbody></table></div>
+      <p>How to escalate without burning the relationship is on <a href="../politics/escalation-and-narrative.html">Escalation &amp; Narrative</a>. Build credit first with the <a href="../politics/index.html">political capital</a> habits.</p>
+
+      <h2 id="reporting-status">Reporting Status Upward</h2>
+      <ul>
+        <li><strong>Green / amber / red with a reason</strong>, not just a colour. "Amber: quota approval pending, decision by Oct 20."</li>
+        <li><strong>Report red early.</strong> Bad news gets worse with age, and a highly technical director will find it anyway.</li>
+        <li><strong>Pair every red with an ask</strong>: a decision, an escalation, or a scope cut.</li>
+        <li>Roll project updates into your <a href="../templates.html#weekly-reliability-note">weekly note</a>, using the <a href="../templates.html#linear-project-update">project update template</a>.</li>
+      </ul>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

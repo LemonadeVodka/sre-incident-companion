@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Execution & Delivery Playbook · SRE & Ops Playbook</title>
+  <meta name="description" content="The senior manager's TPM hat: running the SRE daily over a Linear board, keeping Linear honest, planning capacity, and managing dependencies and risk.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="del">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Execution &amp; Delivery</div>
+      <div class="eyebrow">Playbook 3 · Execution &amp; Delivery</div>
+      <h1>Execution &amp; Delivery Playbook</h1>
+      <p class="lede">Some days you're a people manager, some days an incident leader. Every day, you also wear a <strong>TPM hat</strong>: making sure the team's planned work flows, finishes, and lands on the things that matter. This playbook covers running the SRE daily over your Linear board, keeping Linear honest, planning capacity, and managing dependencies.</p>
+
+      <div class="tldr"><ul>
+        <li>The TPM hat owns <strong>flow, priority, dependencies, and predictability</strong>. It doesn't own the technical solution.</li>
+        <li><strong>Walk the board right to left</strong> in the daily. Finishing beats starting.</li>
+        <li>Use <strong>PULSE</strong> on any in-flight item: Priority, Unblock, Load, Scope, ETA.</li>
+        <li>Plan to <strong>80%</strong>, not 100%. SRE teams always get interrupted.</li>
+      </ul></div>
+
+      <h2 id="when-to-use">When to Use This Playbook</h2>
+      <div class="table-wrap"><table><thead><tr><th>Hat</th><th>You're focused on</th><th>Typical moment</th><th>Playbook</th></tr></thead><tbody>
+        <tr><td><strong>TPM</strong></td><td>Is the right work flowing, and will it land?</td><td>SRE daily, cycle planning, a slipping project, a cross-team dependency</td><td>This one</td></tr>
+        <tr><td><strong>People manager</strong></td><td>Is each person growing, healthy, and supported?</td><td>1:1s, feedback, hiring, on-call fairness</td><td><a href="../team/index.html">People &amp; Team</a></td></tr>
+        <tr><td><strong>Incident leader</strong></td><td>Are users being restored fast?</td><td>A declared incident</td><td><a href="../leaders/index.html">Incident Management</a></td></tr>
+      </tbody></table></div>
+      <div class="callout tip"><div class="callout-title">Say Which Hat You're Wearing</div><p>"With my TPM hat on: can we get this out of review today?" lands differently from the same words from "the boss". Naming the hat keeps the daily about flow, not performance.</p></div>
+
+      <h2 id="the-plays">The Plays</h2>
+      <div class="card-grid wide">
+        <a class="card t-lead" href="daily-standup.html"><h3>1. Run the SRE Daily</h3><p>Fifteen minutes in the US/India overlap. Walk the board right to left, PULSE the stuck items, and send problem-solving to the parking lot.</p></a>
+        <a class="card t-lead" href="linear-operating-model.html"><h3>2. Keep Linear Honest</h3><p>States with clear entry and exit rules, a label taxonomy, priorities that mean something, and saved views for you.</p></a>
+        <a class="card t-lead" href="planning-and-capacity.html"><h3>3. Plan Capacity</h3><p>Cycle planning with a split for projects, toil, and interrupts, prioritization tied to error budgets, and flow metrics.</p></a>
+        <a class="card t-lead" href="risks-and-dependencies.html"><h3>4. Manage Dependencies &amp; Risk</h3><p>A RAID log, dependency requests to CFTs and Cloud Infrastructure, and when to escalate.</p></a>
+      </div>
+
+      <h2 id="frameworks-used">Frameworks Used</h2>
+      <ul>
+        <li><a href="daily-standup.html#pulse"><strong>PULSE</strong></a>: Priority, Unblock, Load, Scope, ETA, for any item in flight.</li>
+        <li><a href="daily-standup.html#walk-the-board"><strong>Walk the Board</strong></a>: right to left, Done → In Review → In Progress → Todo.</li>
+        <li><a href="linear-operating-model.html#ready-and-done"><strong>Definition of Ready / Done</strong></a>: the entry and exit rules for work.</li>
+        <li><a href="planning-and-capacity.html#capacity-split"><strong>Capacity Split</strong></a>: projects, KTLO and toil, interrupt buffer.</li>
+        <li><a href="risks-and-dependencies.html#raid-log"><strong>RAID</strong></a>: Risks, Assumptions, Issues, Dependencies.</li>
+      </ul>
+
+      <h2 id="templates">Templates</h2>
+      <p><a href="../templates.html#standup-agenda">Standup agenda</a> · <a href="../templates.html#linear-issue-template">Linear issue template</a> · <a href="../templates.html#cycle-planning">Cycle planning</a> · <a href="../templates.html#linear-project-update">Project update</a> · <a href="../templates.html#raid-log">RAID log</a> · <a href="../templates.html#dependency-request">Dependency request</a></p>
+
+      <h2 id="metrics">Metrics That Tell You It's Working</h2>
+      <div class="table-wrap"><table><thead><tr><th>Metric</th><th>Healthy sign</th></tr></thead><tbody>
+        <tr><td>Cycle time (In Progress → Done)</td><td>Stable or falling. Most items finish within a week.</td></tr>
+        <tr><td>WIP per person</td><td>Usually 1–2 items</td></tr>
+        <tr><td>Carryover between cycles</td><td>Under about 20%</td></tr>
+        <tr><td>Interrupt share</td><td>Known, and inside the buffer you planned</td></tr>
+        <tr><td>Blocked items older than 3 days</td><td>Close to zero, because you escalate</td></tr>
+      </tbody></table></div>
+
+      <h2 id="weak-good-best">Weak / Good / Best</h2>
+      <div class="wgb">
+        <div><span class="q-level q-weak">Weak</span><p>The daily is a round-robin status report to the manager. Linear is out of date, so nobody trusts it. Blockers get mentioned for days without action.</p></div>
+        <div><span class="q-level q-good">Good</span><p>The board is current before the call. The daily walks the board, blockers get an owner and a date, and the cycle plan leaves room for interrupts.</p></div>
+        <div><span class="q-level q-best">Best</span><p>Facilitation rotates across regions, flow metrics guide planning, dependencies are escalated before they bite, and the Ops lead can run it all without you.</p></div>
+      </div>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

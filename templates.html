@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Template Library · Reliability Ops Playbook</title>
+  <title>Template Library · SRE & Ops Playbook</title>
   <meta name="description" content="Copy-paste templates for reliability operations managers: executive SITREP, weekly and monthly reports, quarterly review, vendor scorecard, 1:1s, SBI feedback, 30/60/90 plans, decision memo, pre-wire and escalation emails, stakeholder map, RACI, and hiring scorecards.">
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./assets/style.css">
@@ -11,13 +11,13 @@
 </head>
 <body data-root="./" data-page="templates">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="./index.html">Reliability Ops Playbook</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="./index.html">SRE &amp; Operations Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./playbook/index.html">Frameworks</a><a href="./operate/incident-operations.html">Incident Operations</a><a href="./team/contract-noc.html">Lead the Team</a><a href="./politics/index.html">Manage Up &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="./index.html">Home</a><a href="./leaders/index.html">1 · Incident Management</a><a href="./postmortems/index.html">2 · Post-Incident</a><a href="./delivery/index.html">3 · Execution &amp; Delivery</a><a href="./operate/service-model.html">4 · Service Operations</a><a href="./team/index.html">5 · People &amp; Team</a><a href="./politics/index.html">6 · Stakeholders &amp; Politics</a><a href="./tech/index.html">Technical Corner</a><a href="./templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Templates</div>
-      <div class="eyebrow">Template Library</div>
+      <div class="breadcrumb"><a href="index.html">Home</a> / Toolkit</div>
+      <div class="eyebrow">Toolkit</div>
       <h1>Template Library</h1>
       <p class="lede">Every copy-paste template in the playbook, grouped by situation. Fill in the [brackets], delete what you don't need, and send. Each one links back to the page that explains when and how to use it.</p>
 
@@ -158,6 +158,118 @@ Where we see gaps, we'll raise them with you in our weekly sync and the monthly 
 and rely on you to manage staffing, coaching, and performance within your team.
 
 Thanks — [Name]</code></pre></div>
+      </section>
+
+      <h2 id="execution-and-delivery">Execution and Delivery</h2>
+
+      <section class="tpl" data-tags="standup daily agenda linear tpm sre">
+      <h3 id="standup-agenda">SRE Daily Agenda</h3>
+      <p>Paste into the recurring invite. See <a href="delivery/daily-standup.html">The SRE Daily</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Invite</span><span class="title">Standup Agenda</span></div>
+<pre><code>SRE Daily — 15 min (US/India overlap) — facilitator this week: [name, region]
+
+Before you join: update your Linear issues (state, a one-line comment on anything stuck).
+
+1. Interrupts (2 min): incidents, pages, NOC escalations in the last 24h. Who's on call?
+2. Walk the board, right to left (10 min): Done → In Review → In Progress → Todo.
+   Only stuck, aging, or at-risk items. PULSE: Priority · Unblock · Load · Scope · ETA.
+3. Blocked (2 min): each item leaves with an owner, next step, and date.
+4. Parking lot (after): only the people needed stay.
+
+Board: [Linear view link]   Aging work: [view link]   Blocked: [view link]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="linear issue template ready done sre work">
+      <h3 id="linear-issue-template">Linear Issue Template</h3>
+      <p>A standard description for SRE work items. See <a href="delivery/linear-operating-model.html#ready-and-done">Ready and Done</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Markdown</span><span class="title">SRE Issue</span></div>
+<pre><code>## Problem
+[What's wrong or missing, and who it affects. Link the incident, SLO, or request.]
+
+## Outcome / acceptance criteria
+- [ ] [Observable result someone else could check]
+- [ ] [ ]
+
+## Approach (optional)
+[First idea. Fine to change.]
+
+## Dependencies
+[Team · person · Jira key · needed by]
+
+## Definition of done
+- [ ] Deployed / applied and verified in production (link dashboard or query)
+- [ ] Runbook, dashboard, or alert updated if affected
+- [ ] NOC / requesting team told, if relevant
+- [ ] Follow-ups filed
+
+Labels: type:[project|ktlo|toil|interrupt|incident-action|noc-request|tech-debt] · layer:[ ]
+Estimate: [≤ 3 days, or split]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="cycle planning capacity sprint linear">
+      <h3 id="cycle-planning">Cycle Planning</h3>
+      <p>Fill in before the planning meeting. See <a href="delivery/planning-and-capacity.html#cycle-planning">Cycle Planning Ritual</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Document</span><span class="title">Cycle Plan</span></div>
+<pre><code>Cycle [n] — [start] to [end]
+
+LOOK BACK
+Finished: [n] issues · Carried over: [n] ([%]) — why: [ ]
+Actual split: projects [ %] · KTLO/toil [ %] · interrupts [ %]  (plan was 50/30/20)
+
+CAPACITY
+People × days: [ ]  − on-call [ ]  − leave/holidays (US / India) [ ]  − training [ ]
+Available: [ ] days · Plan to 80%: [ ] days
+
+MUST-DOS
+- [High-priority incident actions]
+- [KTLO with deadlines: certificates, model retirements, quota]
+- [Commitments to other teams]
+
+PROJECTS (by priority)
+- [Project] — [issues pulled] — [days]
+
+RISKS / DEPENDENCIES → RAID log
+- [ ]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="project update status linear weekly on track at risk">
+      <h3 id="linear-project-update">Project Update</h3>
+      <p>Posted weekly by each project lead in Linear. Rolls into your weekly note.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Update</span><span class="title">Project Update</span></div>
+<pre><code>[Project] — [On track / At risk / Off track] — target [date]
+
+Since last week: [what finished]
+Next week: [what will finish]
+Risks / blockers: [what, owner, date] — Ask: [decision or help needed, or "none"]
+Confidence in target date: [high / medium / low] because [ ]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="raid risks assumptions issues dependencies project">
+      <h3 id="raid-log">RAID Log</h3>
+      <p>One per project, reviewed weekly. See <a href="delivery/risks-and-dependencies.html#raid-log">RAID</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Table</span><span class="title">RAID Log</span></div>
+<pre><code>Project: [ ]   Owner: [ ]   Last reviewed: [date]
+
+Type  Description                     Owner   Likelihood/Impact   Next action          Date     Status
+-------------------------------------------------------------------------------------------------------
+R     [ ]                             [ ]     [H/M/L] / [H/M/L]   [ ]                  [ ]      [open]
+A     [ ]                             [ ]     —                   [how we'll confirm]  [ ]      [ ]
+I     [ ]                             [ ]     —                   [ ]                  [ ]      [ ]
+D     [team · deliverable · Jira key] [ ]     —                   [follow-up]          [needed] [ ]</code></pre></div>
+      </section>
+
+      <section class="tpl" data-tags="dependency request cft cloud infrastructure jira">
+      <h3 id="dependency-request">Dependency Request</h3>
+      <p>Through the other team's intake process. See <a href="delivery/risks-and-dependencies.html#dependency-requests">Asking for a Dependency</a>.</p>
+      <div class="code-card"><div class="code-head"><span class="lang">Ticket</span><span class="title">Dependency Request</span></div>
+<pre><code>Title: [What we need] for [outcome] — needed by [date]
+
+What we need: [specific deliverable]
+Why: [user / SLO / incident impact — e.g. closes Sev 2 postmortem action INC-123]
+Needed by: [date] because [launch, retirement date, commitment]
+Smallest helpful version: [the minimum that unblocks us]
+Our side: [what we'll do, and our Linear issue link]
+Contact: [name, region, channel]</code></pre></div>
       </section>
 
       <h2 id="people">People</h2>

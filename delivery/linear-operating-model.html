@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Linear Operating Model · SRE & Ops Playbook</title>
+  <meta name="description" content="How an SRE team keeps Linear honest: workflow states with entry and exit rules, definition of ready and done, a label taxonomy for toil, KTLO, interrupts, and incident actions, priorities, estimates, cycles, project updates, and saved views for the manager.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="del-linear">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Execution &amp; Delivery</a></div>
+      <div class="eyebrow">Playbook 3 · Execution &amp; Delivery · Play 2</div>
+      <h1>Linear Operating Model</h1>
+      <p class="lede">The daily only works if the board tells the truth. That takes a few shared rules: what each state means, what "ready" and "done" mean, how work is labeled, and which views you check. Agree them with the team once, write them down, and revisit them each quarter.</p>
+
+      <div class="tldr"><ul>
+        <li>Every state has an <strong>entry rule</strong> and an <strong>exit rule</strong>.</li>
+        <li>Label every issue by <strong>work type</strong>, so you can see how much time goes to toil, interrupts, and projects.</li>
+        <li>Split anything bigger than <strong>three days</strong>.</li>
+        <li>Save <strong>five manager views</strong> and check them before the daily.</li>
+      </ul></div>
+
+      <h2 id="workflow-states">Workflow States</h2>
+      <div class="table-wrap"><table><thead><tr><th>State</th><th>Means</th><th>Enters when</th><th>Leaves when</th></tr></thead><tbody>
+        <tr><td><strong>Triage</strong></td><td>New requests from outside the team (NOC, CFTs, your director)</td><td>Someone files a request</td><td>Accepted into Backlog or Todo, or declined with a reason</td></tr>
+        <tr><td><strong>Backlog</strong></td><td>Accepted, but not planned</td><td>Accepted from Triage, or created by the team</td><td>Pulled into a cycle</td></tr>
+        <tr><td><strong>Todo</strong></td><td>Planned for this cycle and <strong>ready</strong></td><td>Meets the Definition of Ready</td><td>Someone starts it</td></tr>
+        <tr><td><strong>In Progress</strong></td><td>Actively being worked</td><td>The owner starts. They should have 1–2 items at most.</td><td>Ready for review, or blocked</td></tr>
+        <tr><td><strong>In Review</strong></td><td>Waiting on code, design, or change review</td><td>A review is requested from a named reviewer</td><td>Approved, or sent back</td></tr>
+        <tr><td><strong>Done</strong></td><td>Meets the Definition of Done</td><td>Deployed, verified, documented</td><td>n/a</td></tr>
+        <tr><td><strong>Canceled</strong></td><td>Decided not to do it</td><td>With a one-line reason</td><td>n/a</td></tr>
+      </tbody></table></div>
+      <p><strong>Blocked</strong> is best as a label or a blocking relation in Linear rather than a state, so the item keeps its place on the board and the blocker stays visible.</p>
+
+      <h2 id="ready-and-done">Definition of Ready and Done</h2>
+      <div class="wgb two">
+        <div><span class="q-level q-good">Ready</span><ul><li>Owner named</li><li>Problem and acceptance criteria written</li><li>Estimated, and 3 days or less (or split)</li><li>Linked to a project, SLO, incident, or request</li><li>Dependencies identified</li></ul></div>
+        <div><span class="q-level q-best">Done</span><ul><li>Merged and deployed, or the change is applied</li><li>Verified in production (a dashboard or query)</li><li>Runbook, dashboard, or alert updated if affected</li><li>NOC or the requesting team told, if relevant</li><li>Follow-ups filed as new issues</li></ul></div>
+      </div>
+
+      <h2 id="labels">Label Taxonomy</h2>
+      <div class="table-wrap"><table><thead><tr><th>Label</th><th>Use for</th><th>Why you care</th></tr></thead><tbody>
+        <tr><td><code>type:project</code></td><td>Planned roadmap work</td><td>Progress on what you promised</td></tr>
+        <tr><td><code>type:ktlo</code></td><td>Keep-the-lights-on: upgrades, certificates, quota requests</td><td>The cost of running what exists</td></tr>
+        <tr><td><code>type:toil</code></td><td>Manual, repetitive work that could be automated</td><td>Your automation backlog, and a burnout signal</td></tr>
+        <tr><td><code>type:interrupt</code></td><td>Unplanned asks that couldn't wait</td><td>Shows whether your interrupt buffer is the right size</td></tr>
+        <tr><td><code>type:incident-action</code></td><td>Postmortem action items</td><td>Learning follow-through (<a href="../postmortems/action-items.html">action items</a>)</td></tr>
+        <tr><td><code>type:noc-request</code></td><td>Requests from the NOC</td><td>Where the NOC needs tooling or runbooks</td></tr>
+        <tr><td><code>type:tech-debt</code></td><td>Debt with a known reliability cost</td><td>Evidence for your investment asks</td></tr>
+        <tr><td><code>layer:*</code></td><td>The layer it affects (device, edge, gateway, orchestrator, model, partner)</td><td>Matches the LAYERS model</td></tr>
+        <tr><td><code>region:us</code> / <code>region:in</code></td><td>Who owns it, optional</td><td>Fairness of interesting work across regions</td></tr>
+      </tbody></table></div>
+
+      <h2 id="priorities">Priorities That Mean Something</h2>
+      <div class="table-wrap"><table><thead><tr><th>Priority</th><th>Means</th><th>Example</th></tr></thead><tbody>
+        <tr><td><span class="badge sev1">Urgent</span></td><td>Drop other work today. Rare.</td><td>A certificate expiring in 48 hours, or an active-incident follow-up</td></tr>
+        <tr><td><span class="badge sev2">High</span></td><td>This cycle, ahead of other work</td><td>A Sev 1–2 postmortem action, or quota running out before a launch</td></tr>
+        <tr><td><span class="badge sev3">Medium</span></td><td>This cycle or next</td><td>Most project work</td></tr>
+        <tr><td><span class="badge sev4">Low</span></td><td>When there's room</td><td>Nice-to-have improvements</td></tr>
+      </tbody></table></div>
+      <div class="callout warn"><div class="callout-title">If Everything Is Urgent</div><p>If more than about 10% of open issues are Urgent or High, the priorities have stopped meaning anything. Re-rank them with the team in cycle planning.</p></div>
+
+      <h2 id="cycles-and-projects">Cycles, Projects, and Updates</h2>
+      <ul>
+        <li><strong>Cycles</strong> (for example, two weeks) hold the planned work. Unfinished issues roll over, so watch the carryover.</li>
+        <li><strong>Projects</strong> group issues toward an outcome, with a lead and a target date.</li>
+        <li><strong>Project updates</strong> (On track / At risk / Off track) are posted weekly by the project lead. They feed your <a href="../templates.html#weekly-reliability-note">weekly note</a> (<a href="../templates.html#linear-project-update">template</a>).</li>
+        <li><strong>The Triage inbox</strong> is reviewed daily by a rotating person, so requests from the NOC and CFTs get an answer within a day.</li>
+      </ul>
+
+      <h2 id="manager-views">Five Views to Save</h2>
+      <ol class="steps">
+        <li><strong>Aging Work</strong>In Progress for more than 3 days. Check before every daily.</li>
+        <li><strong>Blocked</strong>Everything with a blocked label or blocking relation, sorted by age.</li>
+        <li><strong>Not Ready</strong>Todo items with no estimate, no owner, or no project.</li>
+        <li><strong>Incident Actions</strong><code>type:incident-action</code> by due date, so overdue ones are visible.</li>
+        <li><strong>WIP by Person</strong>In Progress grouped by assignee. Look for anyone with more than 2.</li>
+      </ol>
+
+      <h2 id="linear-and-jira">Linear and Locked-Down Jira</h2>
+      <p>Some CFTs track work in Jira projects your team can't edit. Don't fight it. For each cross-team dependency, create <strong>one Linear issue</strong> that holds your side, link the Jira key in it, and add the <code>blocked</code> label until it moves. Your board then shows every dependency, even when another team's tool doesn't. See <a href="risks-and-dependencies.html">Risks &amp; Dependencies</a>.</p>
+      <p>A standard issue layout is in the <a href="../templates.html#linear-issue-template">Linear issue template</a>.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

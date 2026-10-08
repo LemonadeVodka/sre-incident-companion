@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The SRE Daily · SRE & Ops Playbook</title>
+  <meta name="description" content="How a senior manager wearing a TPM hat runs the SRE daily standup over a Linear board in US/India overlap hours: walk the board, the PULSE framework, question banks by column, signal, and person, and a question picker.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="del-standup">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Execution &amp; Delivery</a></div>
+      <div class="eyebrow">Playbook 3 · Execution &amp; Delivery · Play 1</div>
+      <h1>The SRE Daily</h1>
+      <p class="lede">Fifteen minutes, once a day, in the overlap between the US and India. Done well, it keeps work flowing, surfaces blockers early, and lets you coach through questions. Done badly, it's a status report to you that everyone resents. This page is how to do it well with your TPM hat on.</p>
+
+      <div class="tldr"><ul>
+        <li><strong>The board is the status report.</strong> Update Linear before the call, and spend the call on exceptions.</li>
+        <li><strong>Walk the board right to left.</strong> Finish work before starting new work.</li>
+        <li><strong>PULSE</strong> anything that's stuck: Priority, Unblock, Load, Scope, ETA.</li>
+        <li><strong>Problem-solving goes to the parking lot</strong>, straight after the call, with only the people needed.</li>
+      </ul></div>
+
+      <h2 id="format">The 15-Minute Format</h2>
+      <ol class="steps">
+        <li><strong>Interrupts (2 min)</strong>Incidents, pages, and NOC escalations in the last 24 hours, and anything still live. Who's on call now?</li>
+        <li><strong>Walk the Board (10 min)</strong>Right to left: Done → In Review → In Progress → Todo. Spend time only on items that are stuck, aging, or at risk.</li>
+        <li><strong>Blocked (2 min)</strong>Every blocked item leaves with an owner, a next step, and a date, including escalations you'll take on.</li>
+        <li><strong>Parking Lot (after)</strong>Topics that need discussion. Only the people needed stay. Everyone else gets their time back.</li>
+      </ol>
+
+      <h2 id="walk-the-board">Walk the Board, Right to Left</h2>
+      <p>Starting at the right of the Linear board (closest to done) focuses everyone on <strong>finishing</strong>. Work that's 90% done delivers nothing until it ships.</p>
+      <div class="table-wrap"><table><thead><tr><th>Column</th><th>Your question in one line</th><th>Watch for</th></tr></thead><tbody>
+        <tr><td><strong>Done</strong></td><td>Is it really done, and who needs to know?</td><td>Missing runbook or doc updates, and no announcement to the NOC or CFT</td></tr>
+        <tr><td><strong>In Review</strong></td><td>Who's reviewing, and how long has it waited?</td><td>Reviews older than a day, and single reviewers</td></tr>
+        <tr><td><strong>In Progress</strong></td><td>Is it moving, and will it finish?</td><td>Items over 3 days old, more than 2 items per person, "almost done" for days</td></tr>
+        <tr><td><strong>Blocked</strong></td><td>On whom, since when, and should I escalate?</td><td>Vague blockers ("waiting on infra"), and blockers with no follow-up date</td></tr>
+        <tr><td><strong>Todo</strong></td><td>Is the next item ready, and is it the right one?</td><td>No owner, no acceptance criteria, too big, not linked to a goal</td></tr>
+      </tbody></table></div>
+
+      <h2 id="pulse">The PULSE Framework</h2>
+      <p>For any item that's stuck, aging, or important, run a quick PULSE. You don't need all five every time. Pick the one that matters.</p>
+      <div class="acro five">
+        <a href="#pulse-p"><b>P</b><span>Priority</span><small>Still the most important thing?</small></a>
+        <a href="#pulse-u"><b>U</b><span>Unblock</span><small>What's in the way?</small></a>
+        <a href="#pulse-l"><b>L</b><span>Load</span><small>Who's carrying how much?</small></a>
+        <a href="#pulse-s"><b>S</b><span>Scope</span><small>What does done look like?</small></a>
+        <a href="#pulse-e"><b>E</b><span>ETA</span><small>When, and how sure?</small></a>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Step</th><th>Ask</th><th>Good answer</th><th>Red flag</th></tr></thead><tbody>
+        <tr id="pulse-p"><td><strong>P · Priority</strong></td><td>"Is this still the most important thing for you right now? What would you drop if something urgent came in?"</td><td>Linked to a project, SLO, or incident action</td><td>"It's what I was doing yesterday"</td></tr>
+        <tr id="pulse-u"><td><strong>U · Unblock</strong></td><td>"What's slowing this down? Is there anything I can clear today?"</td><td>A specific ask, or a confident "nothing"</td><td>A vague blocker with no follow-up date</td></tr>
+        <tr id="pulse-l"><td><strong>L · Load</strong></td><td>"How many things are you carrying? Which one finishes first?"</td><td>1–2 items, with a clear order</td><td>Four items in progress, all "nearly done"</td></tr>
+        <tr id="pulse-s"><td><strong>S · Scope</strong></td><td>"What does done look like? Has it grown since we started?"</td><td>Acceptance criteria in the issue. New asks become new issues.</td><td>"There's a bit more to it now"</td></tr>
+        <tr id="pulse-e"><td><strong>E · ETA</strong></td><td>"When will it be done, how confident are you, and what would change that?"</td><td>A date with a confidence level and a named risk</td><td>"Soon", or the same date three days running</td></tr>
+      </tbody></table></div>
+
+      <h2 id="question-picker">Standup Question Picker</h2>
+      <p>Choose the column, the signal you're seeing, and who you're asking. You'll get up to five questions with what to listen for. Copy them into your notes before the call.</p>
+      <div id="sp-app" aria-live="polite"></div>
+      <div id="sp-static"><p class="small">JavaScript is off. Use the question banks below.</p></div>
+
+      <h2 id="questions-by-signal">Questions by Signal</h2>
+      <div class="table-wrap"><table><thead><tr><th>You notice</th><th>Ask</th></tr></thead><tbody>
+        <tr><td>In Progress for 3+ days</td><td>"What changed since we last talked about this? If it had to land by Friday, what would we cut?"</td></tr>
+        <tr><td>More than 2 items in progress for one person</td><td>"Which finishes first? What can we pause or hand off?"</td></tr>
+        <tr><td>No owner or no estimate</td><td>"Who owns this? Let's decide before we leave the call. Is it a day, three days, or bigger?"</td></tr>
+        <tr><td>Scope creep</td><td>"What's the original ask and what's new? Can the new part be its own issue?"</td></tr>
+        <tr><td>Waiting on a CFT or Cloud Infrastructure</td><td>"Who exactly, what's their Jira key, and when did we last follow up? Should I talk to their manager?"</td></tr>
+        <tr><td>Unplanned work appearing</td><td>"Where did this come from, and what planned work does it push out? Should it wait for the next cycle?"</td></tr>
+        <tr><td>"Almost done" for three days</td><td>"What's the very last step? Would an hour of pairing finish it?"</td></tr>
+        <tr><td>Nothing on the board for someone</td><td>Ask privately afterwards: "What are you working on that isn't in Linear?" Invisible work is still work, and often toil.</td></tr>
+      </tbody></table></div>
+
+      <h2 id="questions-by-person">Questions by Person</h2>
+      <div class="card-grid">
+        <div class="card t-sre"><h3>Junior SRE</h3><p>Coach, don't rescue. "How would you find out?" "What have you tried?" Wait for the answer. If they're stuck, offer the next rung, not the solution. Follow up the next day: "What did you find?"</p></div>
+        <div class="card t-sre"><h3>Quiet Engineer</h3><p>Invite them by name with an open question before the senior voices speak. Alternate which region goes first. Praise good blockers raised early.</p></div>
+        <div class="card t-sre"><h3>Senior SRE</h3><p>Challenge: "What would make this fail?" "What's the simpler version?" "Who could you pair with so this isn't only in your head?"</p></div>
+        <div class="card t-noc"><h3>Ops Lead</h3><p>Your TPM apprentice. Have them facilitate once a week, then debrief privately on which questions moved things. See <a href="../team/ops-lead.html">their plan</a>.</p></div>
+      </div>
+
+      <h2 id="overlap-hours">Running It Across the US and India</h2>
+      <ul class="checklist" data-key="standup-overlap">
+        <li><strong>Protect the overlap.</strong> The daily is the only meeting that must be in the overlap. Keep everything else async.</li>
+        <li><strong>Share the pain.</strong> If the overlap is early for one region and late for the other, alternate who stretches, monthly.</li>
+        <li><strong>Update before the call.</strong> Each person updates their Linear issues (or posts a one-line comment) before joining.</li>
+        <li><strong>Rotate the facilitator</strong> between regions, so India isn't always reporting to the US.</li>
+        <li><strong>Hand off through Linear</strong>, not memory: decisions and next steps go in the issue during the call. See <a href="../team/global-sre.html#follow-the-sun">Follow the Sun</a>.</li>
+        <li><strong>Camera optional, focus required.</strong> Keep it to 15 minutes. People are at the start or end of their day.</li>
+      </ul>
+
+      <h2 id="anti-patterns">Manager Anti-Patterns</h2>
+      <div class="card-grid">
+        <div class="card"><h3>Status Theater</h3><p>Everyone recites yesterday and today to you. Replace it with the board walk.</p></div>
+        <div class="card"><h3>Solving in the Standup</h3><p>A 10-minute debugging session for two people while eight wait. Send it to the parking lot.</p></div>
+        <div class="card"><h3>Asking What the Board Says</h3><p>If Linear already shows it, don't ask. Ask about what the board can't tell you.</p></div>
+        <div class="card"><h3>Director Hijack</h3><p>A director's ask arrives and the whole team pivots. Take it offline and treat it as <a href="planning-and-capacity.html#unplanned-work">unplanned work</a> with an explicit trade-off.</p></div>
+        <div class="card"><h3>Public Pressure</h3><p>"Why is this still not done?" in front of the group. Ask PULSE questions instead, and keep performance conversations for 1:1s.</p></div>
+      </div>
+
+      <h2 id="weak-good-best">Weak / Good / Best</h2>
+      <div class="wgb">
+        <div><span class="q-level q-weak">Weak</span><p>A 40-minute round robin. Linear is stale. Blockers are mentioned every day with no action. The manager does most of the talking.</p></div>
+        <div><span class="q-level q-good">Good</span><p>Fifteen minutes. The board is updated beforehand. Right-to-left walk. Blockers leave with an owner and a date. The parking lot is used.</p></div>
+        <div><span class="q-level q-best">Best</span><p>Facilitation rotates across regions. The team asks PULSE questions of each other. Aging work is rare, and the manager mostly listens.</p></div>
+      </div>
+      <p>Copy the <a href="../templates.html#standup-agenda">standup agenda</a> into your meeting invite.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+<script src="../assets/standup.js"></script>
+</body>
+</html>

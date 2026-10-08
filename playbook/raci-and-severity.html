@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RACI & Severity · Reliability Ops Playbook</title>
+  <title>RACI & Severity · SRE & Ops Playbook</title>
   <meta name="description" content="RACI for reliability operations ownership across NOC vendor, SRE, CFTs, Cloud Infrastructure, and partners, plus a severity matrix tied to user impact.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,13 +11,13 @@
 </head>
 <body data-root="../" data-page="pb-raci">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Frameworks</a></div>
-      <div class="eyebrow">Framework · Ownership</div>
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="../leaders/index.html">Incident Management</a></div>
+      <div class="eyebrow">Playbook 1 · Incident Management</div>
       <h1>RACI &amp; Severity</h1>
       <p class="lede">Two frameworks that prevent the most common arguments in incidents: "whose job is this?" and "how big is this?". Agree them <em>before</em> incidents, write them down, and point to them when tension rises.</p>
 
@@ -36,12 +36,14 @@
       </tbody></table></div>
       <div class="callout tip"><div class="callout-title">One "A" per Row</div><p>If two people are Accountable, nobody is. Resolve disputes by agreeing the A before the next incident, and pre-wire it with both leaders.</p></div>
 
+      <!--SEV-->
       <h2 id="severity">Severity</h2>
-      <div class="table-wrap"><table><thead><tr><th>Severity</th><th>Definition</th><th>Nimbus examples</th><th>Response</th></tr></thead><tbody>
-        <tr><td><span class="badge sev1">Sev 1</span></td><td>Most users, or several features, badly affected</td><td>Edge outage, model provider down in the primary region, Ask Nimbus and Writing Assist failing for more than 25%</td><td>Page immediately. NOC is IC, SRE is Tech Lead, you're engaged. SITREP every 30 min. Postmortem required.</td></tr>
-        <tr><td><span class="badge sev2">Sev 2</span></td><td>One important feature badly affected, or partial impact across features</td><td>Device Care 429s above 10%, Writing Assist P95 more than 3× baseline, fallback surge, a major partner outage</td><td>Page the owners. Updates every 60 min. Postmortem required.</td></tr>
-        <tr><td><span class="badge sev3">Sev 3</span></td><td>Minor or contained, or a workaround exists</td><td>Next Step delayed, cross-device sync slow, a small cohort</td><td>Business hours. Ticket. Postmortem optional.</td></tr>
-        <tr><td><span class="badge sev4">Sev 4</span></td><td>No user impact, but a risk</td><td>Quota trending toward the limit, a misrouted alert</td><td>Backlog</td></tr>
+      <p>Severity follows <strong>user impact</strong>. The canonical definitions, with Nimbus examples and the response for each level, are on <a href="../incident-response.html#severity-levels">Incident Process</a>. Here's the short version:</p>
+      <div class="table-wrap"><table><thead><tr><th>Severity</th><th>In one line</th></tr></thead><tbody>
+        <tr><td><span class="badge sev1">Sev 1</span></td><td>Most users or several features badly affected. Page now, SITREP every 30 min.</td></tr>
+        <tr><td><span class="badge sev2">Sev 2</span></td><td>One important feature badly affected, or partial impact across features. SITREP every 60 min.</td></tr>
+        <tr><td><span class="badge sev3">Sev 3</span></td><td>Minor, contained, or a workaround exists. Business hours.</td></tr>
+        <tr><td><span class="badge sev4">Sev 4</span></td><td>No user impact yet, but a risk. Backlog.</td></tr>
       </tbody></table></div>
       <p>If unsure, go higher. Downgrading costs one message. See <a href="triage-or-incident.html">Triage or Incident?</a> for the step before severity.</p>
     </article>

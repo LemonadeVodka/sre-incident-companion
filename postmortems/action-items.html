@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Postmortem Action Items · Reliability Ops Playbook</title>
+  <title>Postmortem Action Items · SRE & Ops Playbook</title>
   <meta name="description" content="Writing postmortem action items that get done, and tracking them when your ticketing system is locked down.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,13 +11,13 @@
 </head>
 <body data-root="../" data-page="pm-actions">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Post-Incident</a></div>
-      <div class="eyebrow">Post-Incident · General Purpose</div>
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="../postmortems/index.html">Post-Incident &amp; Problem Management</a></div>
+      <div class="eyebrow">Playbook 2 · Post-Incident &amp; Problem Management</div>
       <h1>Action Items That Get Done</h1>
       <p class="lede">Action items are the whole point of a postmortem. Most teams write too many, write them vaguely, and never check whether they were done. Here's how to write fewer, better ones and see them through, even with a locked-down Jira.</p>
 
@@ -28,6 +28,8 @@
           <li>Track them <strong>linked to the incident ticket</strong>, and review open ones <strong>monthly</strong> until closed or explicitly dropped.</li>
         </ul>
       </div>
+
+      <div class="callout tip"><div class="callout-title">Track Actions in Linear</div><p>File each action as a Linear issue with the <code>type:incident-action</code> label and a due date, and save a view sorted by due date. Then overdue actions show up in the <a href="../delivery/linear-operating-model.html#manager-views">manager views</a> you check before every daily, not just in the monthly review.</p></div>
 
       <h2 id="writing-good-action-items">Writing Good Action Items</h2>
       <div class="table-wrap">

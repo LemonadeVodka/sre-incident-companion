@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Postmortems · Reliability Ops Playbook</title>
+  <title>Post-Incident & Problem Management Playbook · SRE & Ops Playbook</title>
   <meta name="description" content="Blameless postmortems as a first-class practice: when they're required, the timeline, who does what, and what a good one looks like.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,14 +11,14 @@
 </head>
 <body data-root="../" data-page="pm">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="../index.html">Home</a> / Post-Incident</div>
-      <div class="eyebrow">Post-Incident · All Roles · General Purpose</div>
-      <h1>Postmortems</h1>
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Post-Incident &amp; Problem Management</div>
+      <div class="eyebrow">Playbook 2 · Post-Incident &amp; Problem Management</div>
+      <h1>Post-Incident &amp; Problem Management Playbook</h1>
       <p class="lede">An incident you don't learn from is one you'll have again. Postmortems are one of our weakest practices: they get skipped, started and abandoned, or written as a blame document, and their action items disappear. This track makes them routine, blameless, and useful.</p>
 
       <div class="tldr">
@@ -29,6 +29,22 @@
           <li><strong>Blameless:</strong> ask how the system made the failure possible, not who caused it.</li>
         </ul>
       </div>
+
+<!--HUB-->
+      <h2 id="playbook-at-a-glance">Playbook at a Glance</h2>
+      <div class="table-wrap"><table class="glance"><tbody>
+        <tr><th>Use It When</th><td>After every Sev 1–2, repeat incident, or customer-detected incident, and monthly to follow actions through.</td></tr>
+        <tr><th>The Plays</th><td><ol><li><a href="../leaders/post-incident.html">Run an After Action Review</a></li><li><a href="../postmortems/template.html">Write the postmortem with the writer</a></li><li><a href="../postmortems/review-meeting.html">Chair a blameless review</a></li><li><a href="../postmortems/action-items.html">Track actions to done (Linear label <code>type:incident-action</code>)</a></li><li><a href="../operate/service-model.html#how-they-connect">Feed problem, change, and capacity management</a></li></ol></td></tr>
+        <tr><th>Frameworks</th><td><a href="../leaders/post-incident.html">After Action Review</a> · <a href="../postmortems/index.html#quality-rubric">Postmortem quality rubric</a> · <a href="../response-quality.html">Weak / Good / Best</a></td></tr>
+        <tr><th>Templates</th><td><a href="../postmortems/template.html">Postmortem writer</a> · <a href="../templates.html#monthly-ops-report">Monthly report (actions section)</a></td></tr>
+        <tr><th>It's Working When</th><td>Drafts within 2 business days, reviews within 5. Action completion trends up. Repeat incidents trend down.</td></tr>
+      </tbody></table></div>
+      <div class="wgb">
+        <div><span class="q-level q-weak">Weak</span><p>Postmortems are skipped or blame people, and actions vanish.</p></div>
+        <div><span class="q-level q-good">Good</span><p>Every Sev 1–2 gets a blameless review, and actions have owners and dates.</p></div>
+        <div><span class="q-level q-best">Best</span><p>Actions change the system, completion is an org goal, and repeats are rare.</p></div>
+      </div>
+<!--/HUB-->
 
       <div class="anywhere">
         <div class="callout-title">Applies Anywhere</div>

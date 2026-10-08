@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Politics Playbook · Reliability Ops Playbook</title>
+  <title>Stakeholders & Politics Playbook · SRE & Ops Playbook</title>
   <meta name="description" content="Navigating organizational politics as a reliability operations manager: political capital, stakeholder mapping, pre-wiring, influence without authority, managing up, and escalation.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,14 +11,14 @@
 </head>
 <body data-root="../" data-page="pol">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="../index.html">Home</a> / Manage Up &amp; Politics</div>
-      <div class="eyebrow">Manage Up &amp; Politics</div>
-      <h1>Politics Playbook</h1>
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Stakeholders &amp; Politics</div>
+      <div class="eyebrow">Playbook 6 · Stakeholders &amp; Politics</div>
+      <h1>Stakeholders &amp; Politics Playbook</h1>
       <p class="lede">Reliability work is political by nature. You depend on teams you don't manage, a director with strong opinions, vendors with their own incentives, and executives who mostly hear from you when something breaks. Politics here doesn't mean manipulation. It means <strong>getting the right things done through people you don't control</strong>, without burning trust.</p>
 
       <div class="tldr"><ul>
@@ -28,6 +28,22 @@
         <li><strong>Manage up deliberately</strong>, especially with a highly technical, low-EQ leader.</li>
         <li><strong>Escalate cleanly</strong>, and <strong>own the narrative</strong> after incidents with facts, early.</li>
       </ul></div>
+
+<!--HUB-->
+      <h2 id="playbook-at-a-glance">Playbook at a Glance</h2>
+      <div class="table-wrap"><table class="glance"><tbody>
+        <tr><th>Use It When</th><td>Getting things done through people you don't control: CFTs, Cloud Infrastructure, your director, executives, vendors.</td></tr>
+        <tr><th>The Plays</th><td><ol><li><a href="../politics/index.html#political-capital">Build and spend political capital deliberately</a></li><li><a href="../politics/stakeholders.html#stakeholder-map">Map stakeholders</a></li><li><a href="../politics/stakeholders.html#pre-wiring">Pre-wire every important decision</a></li><li><a href="../playbook/decision-memo.html">Ask for decisions with a one-page memo</a></li><li><a href="../politics/managing-up.html">Manage a highly technical, low-EQ director</a></li><li><a href="../politics/escalation-and-narrative.html">Escalate well and own the narrative</a></li></ol></td></tr>
+        <tr><th>Frameworks</th><td><a href="../politics/stakeholders.html#stakeholder-map">Power × interest map</a> · <a href="../politics/stakeholders.html#pre-wiring">Pre-wiring</a> · <a href="../playbook/decision-memo.html">Decision memo</a> · <a href="../team/one-on-ones.html#sbi-feedback">SBI (upward)</a></td></tr>
+        <tr><th>Templates</th><td><a href="../templates.html#stakeholder-map">Stakeholder map</a> · <a href="../templates.html#pre-wire-message">Pre-wire</a> · <a href="../templates.html#decision-memo">Decision memo</a> · <a href="../templates.html#technical-pre-read">Technical pre-read</a> · <a href="../templates.html#escalation-email">Escalation email</a> · <a href="../templates.html#no-with-options">No, with options</a> · <a href="../templates.html#political-capital-ledger">Capital ledger</a></td></tr>
+        <tr><th>It's Working When</th><td>No surprises in big meetings. Asks get decided rather than deferred. Escalations are rare and resolved. Your team hears less noise from above.</td></tr>
+      </tbody></table></div>
+      <div class="wgb">
+        <div><span class="q-level q-weak">Weak</span><p>Surprised in meetings, escalates in anger, and the team absorbs the director's frustration.</p></div>
+        <div><span class="q-level q-good">Good</span><p>Pre-wires decisions, escalates with options, and buffers the team.</p></div>
+        <div><span class="q-level q-best">Best</span><p>Trusted across teams, gets decisions quickly, and shapes the agenda instead of reacting to it.</p></div>
+      </div>
+<!--/HUB-->
 
       <h2 id="principles">Principles</h2>
       <div class="card-grid wide">

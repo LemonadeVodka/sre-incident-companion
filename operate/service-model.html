@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Service Operations Model · Reliability Ops Playbook</title>
+  <title>Service Operations Playbook · SRE & Ops Playbook</title>
   <meta name="description" content="The reliability operations model for an AI product: incident, problem, change, capacity, and vendor management, with who owns what and how the practices connect.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/style.css">
@@ -11,14 +11,14 @@
 </head>
 <body data-root="../" data-page="op-model">
 <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header" id="site-header"><a class="brand" href="../index.html">Reliability Ops Playbook</a></header>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
 <div class="layout">
-  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../playbook/index.html">Frameworks</a><a href="../operate/incident-operations.html">Incident Operations</a><a href="../team/contract-noc.html">Lead the Team</a><a href="../politics/index.html">Manage Up &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
   <main class="content" id="main">
     <article class="prose">
-      <div class="breadcrumb"><a href="../index.html">Home</a> / Run the Operation</div>
-      <div class="eyebrow">Run the Operation</div>
-      <h1>Service Operations Model</h1>
+      <div class="breadcrumb"><a href="../index.html">Home</a> / Service Operations</div>
+      <div class="eyebrow">Playbook 4 · Service Operations</div>
+      <h1>Service Operations Playbook</h1>
       <p class="lede">Incidents get the attention, but reliability is decided by five connected practices. As the senior manager you own how they fit together, even when other teams own parts of them. This page is your map.</p>
 
       <div class="tldr"><ul>
@@ -26,6 +26,22 @@
         <li>Most organizations are good at incidents and weak at problems. Postmortem actions that never close are a <strong>problem-management</strong> failure.</li>
         <li>For an AI product, <strong>capacity</strong> (model quota, fallback surges) and <strong>change</strong> (prompts, model versions, routing policy) need extra attention.</li>
       </ul></div>
+
+<!--HUB-->
+      <h2 id="playbook-at-a-glance">Playbook at a Glance</h2>
+      <div class="table-wrap"><table class="glance"><tbody>
+        <tr><th>Use It When</th><td>Running the steady state: rhythm, reporting, SLOs, change, capacity, vendors, and investment cases.</td></tr>
+        <tr><th>The Plays</th><td><ol><li><a href="../operate/service-model.html#the-five-practices">Connect incident, problem, change, capacity, and vendor management</a></li><li><a href="../operate/service-model.html#slos-and-error-budgets">Govern SLOs and error budgets</a></li><li><a href="../leaders/after-and-between.html">Run the operating rhythm</a></li><li><a href="../operate/metrics-and-reporting.html">Report the metrics that matter</a></li><li><a href="../operate/vendors-and-partners.html">Manage vendors and partners</a></li><li><a href="../leaders/investing.html">Make the investment case</a></li></ol></td></tr>
+        <tr><th>Frameworks</th><td><a href="../operate/service-model.html#the-five-practices">Five practices</a> · <a href="../fundamentals.html#slis-slos-and-error-budgets">SLOs &amp; error budgets</a> · <a href="../observability-maturity.html">Observability maturity</a></td></tr>
+        <tr><th>Templates</th><td><a href="../templates.html#weekly-reliability-note">Weekly note</a> · <a href="../templates.html#monthly-ops-report">Monthly report</a> · <a href="../templates.html#quarterly-reliability-review">Quarterly review</a> · <a href="../templates.html#vendor-scorecard">Vendor scorecard</a></td></tr>
+        <tr><th>It's Working When</th><td>SLOs are defined for every feature and reviewed monthly. Change-related incidents fall. Capacity is reviewed before launches. Vendor scorecards are green or improving.</td></tr>
+      </tbody></table></div>
+      <div class="wgb">
+        <div><span class="q-level q-weak">Weak</span><p>Reliability is discussed only during incidents.</p></div>
+        <div><span class="q-level q-good">Good</span><p>A weekly and monthly rhythm with SLOs, reports, and vendor reviews.</p></div>
+        <div><span class="q-level q-best">Best</span><p>Error budgets drive priorities across teams, and capacity and change risks are caught before launch.</p></div>
+      </div>
+<!--/HUB-->
 
       <h2 id="the-five-practices">The Five Practices</h2>
       <div class="table-wrap"><table><thead><tr><th>Practice</th><th>Goal</th><th>Owner at Nimbus</th><th>Your job</th><th>Key measure</th></tr></thead><tbody>
@@ -44,6 +60,17 @@
         <li><strong>Capacity findings</strong> feed the quarterly capacity review and launch sign-offs.</li>
         <li><strong>Vendor and partner findings</strong> feed the scorecard, the QBR, and the partner review.</li>
       </ol>
+
+      <h2 id="slos-and-error-budgets">SLOs and Error Budgets</h2>
+      <p>SLOs turn "is it reliable enough?" into a number everyone agrees on, and error budgets turn that number into a decision rule. The concepts are on <a href="../fundamentals.html#slis-slos-and-error-budgets">Fundamentals</a>. Governing them is your job:</p>
+      <ul class="checklist" data-key="slo-governance">
+        <li><strong>One SLO per feature</strong> for latency (P95) and errors, agreed with the owning CFT and written down.</li>
+        <li><strong>A monthly SLO review</strong> in the operating rhythm: attainment, budget remaining, and trends.</li>
+        <li><strong>An agreed error-budget policy:</strong> when a feature's budget is spent, reliability work goes ahead of feature work for that CFT until it recovers.</li>
+        <li><strong>Burn-rate alerts</strong> instead of static thresholds (<a href="../fundamentals.html#alert-on-burn-rate">how</a>).</li>
+        <li><strong>The policy drives planning:</strong> a burned budget moves reliability work up in <a href="../delivery/planning-and-capacity.html#prioritization">cycle planning</a>.</li>
+      </ul>
+      <div class="callout reality"><div class="callout-title">Start Small</div><p>With under 10% dashboard coverage, start with SLOs for the two or three most-used features, then expand. An approximate SLO that's reviewed beats a perfect one that isn't.</p></div>
 
       <h2 id="ai-specific-change-management">AI-Specific Change Management</h2>
       <p>In AI products, many risky changes don't look like code deploys. Make sure each one is visible and gated:</p>

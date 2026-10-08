@@ -1,4 +1,4 @@
-/* Reliability Ops Manager's Playbook — shared page chrome and behaviors.
+/* The Senior Manager's SRE & Operations Playbook — shared page chrome and behaviors.
    Pages provide <body data-root="./|../" data-page="id"> and empty #site-header, #sidebar, #pager, #toc, #footer slots. */
 (function () {
   "use strict";
@@ -9,42 +9,62 @@
       { id: "index", href: "index.html", title: "Manager Dashboard" },
       { id: "how-to-use", href: "how-to-use.html", title: "How to Use This Playbook" },
       { id: "environment", href: "environment.html", title: "Background: Nimbus" },
-      { id: "lead", href: "leaders/index.html", title: "Be the Expert in the Room" }
+      { id: "playbook", href: "playbook/index.html", title: "Framework Index" }
     ]},
-    { group: "Playbook · Frameworks", track: "frameworks", items: [
-      { id: "playbook", href: "playbook/index.html", title: "All Frameworks" },
-      { id: "lead-framework", href: "leaders/layers-framework.html", title: "LAYERS" },
+    { group: "1 · Incident Management", track: "incident", items: [
+      { id: "lead", href: "leaders/index.html", title: "Incident Management Playbook" },
       { id: "pb-triage", href: "playbook/triage-or-incident.html", title: "Triage or Incident?" },
-      { id: "lead-exec", href: "leaders/executive-updates.html", title: "SITREP & BLUF" },
-      { id: "lead-post", href: "leaders/post-incident.html", title: "After Action Review" },
-      { id: "pb-decision", href: "playbook/decision-memo.html", title: "Decision Memo" },
-      { id: "pb-raci", href: "playbook/raci-and-severity.html", title: "RACI & Severity" },
-      { id: "response-quality", href: "response-quality.html", title: "Weak / Good / Best" }
-    ]},
-    { group: "Run the Operation", track: "operate", items: [
-      { id: "op-model", href: "operate/service-model.html", title: "Service Operations Model" },
       { id: "op-incident", href: "operate/incident-operations.html", title: "Incident Operations" },
       { id: "lead-during", href: "leaders/during-an-incident.html", title: "During an Incident" },
+      { id: "lead-framework", href: "leaders/layers-framework.html", title: "LAYERS" },
+      { id: "lead-exec", href: "leaders/executive-updates.html", title: "SITREP & BLUF" },
+      { id: "pb-raci", href: "playbook/raci-and-severity.html", title: "RACI & Severity" },
+      { id: "incident-response", href: "incident-response.html", title: "Incident Process" },
+      { id: "playbooks", href: "playbooks.html", title: "Scenario Runbooks" },
+      { id: "lead-scenarios", href: "leaders/scenarios.html", title: "Scenarios in Plain English" },
+      { id: "tabletop", href: "tabletop.html", title: "Tabletop Exercise Kit" }
+    ]},
+    { group: "2 · Post-Incident & Problems", track: "post", items: [
+      { id: "pm", href: "postmortems/index.html", title: "Post-Incident Playbook" },
+      { id: "lead-post", href: "leaders/post-incident.html", title: "After Action Review" },
+      { id: "pm-template", href: "postmortems/template.html", title: "Postmortem Writer" },
+      { id: "pm-review", href: "postmortems/review-meeting.html", title: "Running the Review" },
+      { id: "pm-example", href: "postmortems/example.html", title: "Worked Postmortem" },
+      { id: "pm-actions", href: "postmortems/action-items.html", title: "Action Items" }
+    ]},
+    { group: "3 · Execution & Delivery", track: "delivery", items: [
+      { id: "del", href: "delivery/index.html", title: "Execution & Delivery Playbook" },
+      { id: "del-standup", href: "delivery/daily-standup.html", title: "The SRE Daily" },
+      { id: "del-linear", href: "delivery/linear-operating-model.html", title: "Linear Operating Model" },
+      { id: "del-planning", href: "delivery/planning-and-capacity.html", title: "Planning & Capacity" },
+      { id: "del-risks", href: "delivery/risks-and-dependencies.html", title: "Risks & Dependencies" }
+    ]},
+    { group: "4 · Service Operations", track: "operate", items: [
+      { id: "op-model", href: "operate/service-model.html", title: "Service Operations Playbook" },
       { id: "lead-after", href: "leaders/after-and-between.html", title: "Operating Rhythm" },
       { id: "op-metrics", href: "operate/metrics-and-reporting.html", title: "Metrics & Reporting" },
       { id: "op-vendors", href: "operate/vendors-and-partners.html", title: "Vendors & Partners" },
-      { id: "ways-of-working", href: "ways-of-working.html", title: "Ways of Working" }
+      { id: "ways-of-working", href: "ways-of-working.html", title: "Ways of Working" },
+      { id: "observability-maturity", href: "observability-maturity.html", title: "Observability Maturity" },
+      { id: "lead-invest", href: "leaders/investing.html", title: "Investing in Reliability" }
     ]},
-    { group: "Lead the Team", track: "team", items: [
-      { id: "team-noc", href: "team/contract-noc.html", title: "Managing a Contract NOC" },
-      { id: "lead-noc", href: "leaders/enabling-the-noc.html", title: "Growing the NOC" },
-      { id: "team-global", href: "team/global-sre.html", title: "SREs Across US & India" },
-      { id: "lead-sre", href: "leaders/enabling-sre.html", title: "Developing SRE Engineers" },
+    { group: "5 · People & Team", track: "team", items: [
+      { id: "team-hub", href: "team/index.html", title: "People & Team Playbook" },
+      { id: "team-noc", href: "team/contract-noc.html", title: "Contract NOC: Vendor Management" },
+      { id: "lead-noc", href: "leaders/enabling-the-noc.html", title: "Contract NOC: Building Capability" },
+      { id: "team-global", href: "team/global-sre.html", title: "SRE Team: Global Operating Model" },
+      { id: "lead-sre", href: "leaders/enabling-sre.html", title: "SRE Team: Developing Engineers" },
       { id: "team-ops-lead", href: "team/ops-lead.html", title: "Developing Your Ops Lead" },
       { id: "team-1on1", href: "team/one-on-ones.html", title: "1:1s, Feedback & Performance" },
       { id: "onboarding", href: "onboarding.html", title: "Hiring & Onboarding" },
       { id: "team-morale", href: "team/morale.html", title: "Morale & Burnout" }
     ]},
-    { group: "Manage Up & Politics", track: "politics", items: [
-      { id: "pol", href: "politics/index.html", title: "Politics Playbook" },
+    { group: "6 · Stakeholders & Politics", track: "politics", items: [
+      { id: "pol", href: "politics/index.html", title: "Stakeholders & Politics Playbook" },
       { id: "pol-stakeholders", href: "politics/stakeholders.html", title: "Stakeholders & Influence" },
       { id: "pol-up", href: "politics/managing-up.html", title: "A Technical, Low-EQ Leader" },
-      { id: "pol-escalate", href: "politics/escalation-and-narrative.html", title: "Escalation & Narrative" }
+      { id: "pol-escalate", href: "politics/escalation-and-narrative.html", title: "Escalation & Narrative" },
+      { id: "pb-decision", href: "playbook/decision-memo.html", title: "Decision Memo" }
     ]},
     { group: "Technical Corner", track: "tech", items: [
       { id: "tech", href: "tech/index.html", title: "Start Here" },
@@ -57,37 +77,25 @@
       { id: "tech-trouble", href: "tech/troubleshooting.html", title: "Troubleshooting Walkthrough" },
       { id: "tech-deep", href: "tech/deep-dives.html", title: "Deep Dives" },
       { id: "tech-catalog", href: "tech/failure-catalog.html", title: "Failure Catalog" },
+      { id: "fundamentals", href: "fundamentals.html", title: "SRE Fundamentals" },
       { id: "kql", href: "kql/index.html", title: "KQL Training" },
       { id: "kql-basics", href: "kql/basics.html", title: "KQL 1 · Basics" },
       { id: "kql-latency-errors", href: "kql/latency-and-errors.html", title: "KQL 2 · Latency & Errors" },
       { id: "kql-advanced", href: "kql/advanced.html", title: "KQL 3 · Across Layers" },
       { id: "kql-practice", href: "kql/practice.html", title: "KQL Quiz & Cheat Sheet" },
-      { id: "queries", href: "queries.html", title: "Nimbus KQL Library" }
+      { id: "lead-jargon", href: "leaders/jargon.html", title: "Jargon Decoder" }
     ]},
-    { group: "Templates", track: "templates", items: [
+    { group: "Toolkit", track: "toolkit", items: [
       { id: "templates", href: "templates.html", title: "Template Library" },
-      { id: "cards", href: "cards/manager.html", title: "LAYERS Pocket Card" }
-    ]},
-    { group: "Reference", track: "ref", items: [
-      { id: "playbooks", href: "playbooks.html", title: "Incident Playbooks" },
-      { id: "lead-scenarios", href: "leaders/scenarios.html", title: "Scenarios in Plain English" },
-      { id: "incident-response", href: "incident-response.html", title: "Incident Process" },
-      { id: "pm", href: "postmortems/index.html", title: "Postmortems" },
-      { id: "pm-template", href: "postmortems/template.html", title: "Postmortem Writer" },
-      { id: "pm-review", href: "postmortems/review-meeting.html", title: "Running the Review" },
-      { id: "pm-example", href: "postmortems/example.html", title: "Worked Postmortem" },
-      { id: "pm-actions", href: "postmortems/action-items.html", title: "Action Items" },
-      { id: "tabletop", href: "tabletop.html", title: "Tabletop Exercise Kit" },
-      { id: "lead-invest", href: "leaders/investing.html", title: "Investing in Reliability" },
-      { id: "fundamentals", href: "fundamentals.html", title: "SRE Fundamentals" },
-      { id: "observability-maturity", href: "observability-maturity.html", title: "Observability Maturity" },
-      { id: "lead-jargon", href: "leaders/jargon.html", title: "Jargon Decoder" },
+      { id: "card-manager", href: "cards/manager.html", title: "LAYERS Pocket Card" },
+      { id: "queries", href: "queries.html", title: "Nimbus KQL Library" },
+      { id: "response-quality", href: "response-quality.html", title: "Weak / Good / Best" },
       { id: "adapt", href: "adapt.html", title: "Using This Anywhere" },
       { id: "references", href: "references.html", title: "Glossary & References" }
     ]}
   ];
   var TRACK_HOME = {};
-  var TRACK_LABEL = { noc: "Growing the NOC", sre: "Developing SREs", lead: "Manager Playbook" };
+  var TRACK_LABEL = { noc: "Contract NOC: Building Capability", sre: "SRE Team: Developing Engineers", lead: "Incident Management Playbook" };
   var PANEL_HOME = { noc: "leaders/enabling-the-noc.html", sre: "leaders/enabling-sre.html", lead: "leaders/index.html" };
 
   var body = document.body;
@@ -126,7 +134,7 @@
   if (header) {
     header.innerHTML =
       '<button class="icon-btn menu-btn" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="sidebar">' + MENU + '</button>' +
-      '<a class="brand" href="' + root + 'index.html">' + CLOUD + '<span>Reliability Ops<small>Manager&rsquo;s Playbook</small></span></a>' +
+      '<a class="brand" href="' + root + 'index.html">' + CLOUD + '<span>SRE &amp; Operations<small>Senior Manager&rsquo;s Playbook</small></span></a>' +
       '<div class="header-spacer"></div>' +
       '<a class="incident-cta" href="' + root + 'index.html#triage"><i class="pulse"></i><span>In an Incident<span class="cta-long">? Start Triage</span></span></a>' +
       '<button class="icon-btn theme-btn" type="button" aria-label="Toggle dark mode"></button>';
@@ -198,7 +206,7 @@
   if (footer) {
     footer.innerHTML = 'Nimbus is a fictional product used for training. SRE concepts are summarized from public sources — see ' +
       '<a href="' + root + 'references.html">references</a>. · <a href="https://github.com/LemonadeVodka/kql-toolkit">KQL toolkit</a> · ' +
-      '<a href="https://github.com/LemonadeVodka/sre-incident-companion">Source on GitHub</a>';
+      '<a href="https://github.com/LemonadeVodka/sre-ops-playbook">Source on GitHub</a>';
   }
 
   /* ---------- Role panels: icon + link to that role's track ---------- */

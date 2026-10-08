@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planning & Capacity · SRE & Ops Playbook</title>
+  <meta name="description" content="Cycle planning for an SRE team: a capacity split for projects, KTLO and toil, and interrupts; prioritization tied to error budgets; roadmaps and OKRs; handling unplanned work; and flow metrics.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+  <script>try{var t=localStorage.getItem("nimbus-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+</head>
+<body data-root="../" data-page="del-planning">
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" id="site-header"><a class="brand" href="../index.html">SRE &amp; Operations Playbook</a></header>
+<div class="layout">
+  <nav class="sidebar" id="sidebar" aria-label="Site"><noscript><div class="nav-group"><a href="../index.html">Home</a><a href="../leaders/index.html">1 · Incident Management</a><a href="../postmortems/index.html">2 · Post-Incident</a><a href="../delivery/index.html">3 · Execution &amp; Delivery</a><a href="../operate/service-model.html">4 · Service Operations</a><a href="../team/index.html">5 · People &amp; Team</a><a href="../politics/index.html">6 · Stakeholders &amp; Politics</a><a href="../tech/index.html">Technical Corner</a><a href="../templates.html">Templates</a></div></noscript></nav>
+  <main class="content" id="main">
+    <article class="prose">
+      <div class="breadcrumb"><a href="../index.html">Home</a> / <a href="index.html">Execution &amp; Delivery</a></div>
+      <div class="eyebrow">Playbook 3 · Execution &amp; Delivery · Play 3</div>
+      <h1>Planning &amp; Capacity</h1>
+      <p class="lede">SRE teams can't plan like product teams. Pages, incidents, NOC requests, and director asks arrive every week. Good planning admits that up front: it reserves room for interrupts, protects time for the work that reduces them, and uses data to adjust the split each cycle.</p>
+
+      <div class="tldr"><ul>
+        <li>Start with a split like <strong>50% projects, 30% KTLO and toil, 20% interrupts</strong>, then tune it from your labels.</li>
+        <li><strong>Subtract on-call first.</strong> The person on call isn't project capacity.</li>
+        <li><strong>Error budget burned → reliability work goes first.</strong> That's the deal with product teams.</li>
+        <li>Every unplanned item that enters the cycle displaces something, so <strong>name the trade-off</strong>.</li>
+      </ul></div>
+
+      <h2 id="capacity-split">The Capacity Split</h2>
+      <div class="table-wrap"><table><thead><tr><th>Bucket</th><th>Starting point</th><th>Includes</th><th>Adjust when</th></tr></thead><tbody>
+        <tr><td><strong>Projects</strong></td><td>~50%</td><td>Roadmap work: automation, observability, resilience, NOC tooling</td><td>Projects keep slipping, so check whether interrupts are eating them</td></tr>
+        <tr><td><strong>KTLO &amp; Toil</strong></td><td>~30%</td><td>Upgrades, certificates, quota requests, manual operations</td><td>Toil grows above about 50% of anyone's time. Google SRE's guidance is to cap it there.</td></tr>
+        <tr><td><strong>Interrupt Buffer</strong></td><td>~20%</td><td>Incident follow-ups, urgent NOC and CFT asks, director requests</td><td>The buffer is used up every cycle (grow it) or never (shrink it)</td></tr>
+      </tbody></table></div>
+      <p>Measure the real split from your <a href="linear-operating-model.html#labels">work-type labels</a> each cycle, and adjust. The point isn't the exact numbers. It's making the trade-off visible.</p>
+
+      <h2 id="cycle-planning">Cycle Planning Ritual (45 Minutes)</h2>
+      <ol class="steps">
+        <li><strong>Look Back (10 min)</strong>What finished, what carried over and why, and the real split vs the plan.</li>
+        <li><strong>Capacity (5 min)</strong>People × days, minus on-call, leave, holidays in both countries, and training. Plan to about 80% of what's left.</li>
+        <li><strong>Must-Dos (10 min)</strong>High-priority incident actions, KTLO with deadlines (certificates, retirements, quota), and commitments to other teams.</li>
+        <li><strong>Projects (15 min)</strong>Pull the next ready items from the projects, by priority, until capacity is full.</li>
+        <li><strong>Risks (5 min)</strong>Dependencies, and anything likely to slip. Add them to the <a href="risks-and-dependencies.html#raid-log">RAID log</a>.</li>
+      </ol>
+      <div class="callout tip"><div class="callout-title">Holidays in Two Countries</div><p>Keep a shared calendar of US and Indian public holidays (including regional ones) and festival seasons. They change capacity and on-call coverage more than people expect.</p></div>
+
+      <h2 id="prioritization">Prioritization</h2>
+      <div class="table-wrap"><table><thead><tr><th>Ask</th><th>Why</th></tr></thead><tbody>
+        <tr><td>"Which SLO or user problem does this improve?"</td><td>Ties work to reliability outcomes</td></tr>
+        <tr><td>"What happens if we don't do it this quarter?"</td><td>Finds the real urgency</td></tr>
+        <tr><td>"How much toil or how many pages does it remove?"</td><td>Compounding returns. Automation frees future capacity.</td></tr>
+        <tr><td>"How big is it, honestly?"</td><td>Impact ÷ effort. Do the cheap high-impact items first.</td></tr>
+        <tr><td>"Is the error budget burned for this feature?"</td><td>If yes, reliability work moves ahead of features (<a href="../fundamentals.html">error budgets</a>)</td></tr>
+      </tbody></table></div>
+
+      <h2 id="roadmap-and-okrs">Roadmap and OKRs</h2>
+      <p>Keep the SRE roadmap to three to five outcomes a quarter, each written as a measurable result rather than a task:</p>
+      <div class="wgb two">
+        <div><span class="q-level q-weak">Task-Shaped</span><p>"Build Grafana dashboards." "Automate restarts." "Write runbooks."</p></div>
+        <div><span class="q-level q-best">Outcome-Shaped</span><p>"Every Nimbus feature has a P50/P95 and error-rate dashboard the NOC uses daily." "NOC-detected incidents rise from 40% to 70%." "Toil drops below 30% for both regions."</p></div>
+      </div>
+
+      <h2 id="unplanned-work">Handling Unplanned Work</h2>
+      <ol class="steps">
+        <li><strong>Label It</strong><code>type:interrupt</code>, plus where it came from.</li>
+        <li><strong>Size It</strong>Is it an hour, or a week?</li>
+        <li><strong>Name the Trade-Off</strong>"If we take this, [item] moves to next cycle." Say it to the requester, including your director.</li>
+        <li><strong>Decide</strong>Take it now, schedule it next cycle, or decline with options (<a href="../templates.html#no-with-options">template</a>).</li>
+      </ol>
+
+      <h2 id="flow-metrics">Flow Metrics</h2>
+      <div class="table-wrap"><table><thead><tr><th>Metric</th><th>What it tells you</th><th>Question it raises</th></tr></thead><tbody>
+        <tr><td>Cycle time</td><td>How long work takes from start to done</td><td>"What's making the slowest 20% slow: reviews, dependencies, or size?"</td></tr>
+        <tr><td>WIP</td><td>How much is in flight</td><td>"Are we starting more than we finish?"</td></tr>
+        <tr><td>Throughput</td><td>Issues finished per cycle</td><td>"Is it steady enough to forecast from?"</td></tr>
+        <tr><td>Carryover %</td><td>Planned work that didn't finish</td><td>"Did we over-plan, or did interrupts take it?"</td></tr>
+        <tr><td>Interrupt %</td><td>Share of unplanned work</td><td>"Is the buffer right? Which source causes most interrupts?"</td></tr>
+        <tr><td>Aging items</td><td>Work stuck in one state</td><td>"What's blocking these, and who's escalating?"</td></tr>
+      </tbody></table></div>
+      <div class="callout warn"><div class="callout-title">Don't Use Flow Metrics on People</div><p>These measure the system, not individuals. Comparing people's throughput encourages small, safe tickets and hides hard work. Keep them at team level.</p></div>
+      <p>Use the <a href="../templates.html#cycle-planning">cycle planning template</a>.</p>
+    </article>
+    <nav class="pager" id="pager"></nav>
+  </main>
+  <aside class="toc" id="toc"></aside>
+</div>
+<footer class="site-footer" id="footer"></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>
